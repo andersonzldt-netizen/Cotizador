@@ -3,33 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cotizador Avanzado de Melamina</title>
+    <title>Cotizador de muebles de melamina</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-color: #f7f6f4; --surface-color: #ffffff; --text-primary: #333333; --text-secondary: #6b6b6b; --border-color: #e2e0dc; --accent-color: #d4af37; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Helvetica Neue', Arial, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-primary); display: flex; justify-content: center; padding: 40px 20px; }
-        .cotizador-container { background-color: var(--surface-color); width: 100%; max-width: 800px; padding: 40px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); }
-        .cotizador-header { text-align: center; margin-bottom: 30px; }
-        .cotizador-header h2 { font-size: 24px; margin-bottom: 6px; }
-        .form-section { border: none; border-top: 1px solid var(--border-color); margin-bottom: 25px; padding-top: 20px; }
-        .form-section legend { font-size: 13px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; padding: 0 8px; }
-        .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
+        :root { 
+            --bg-color: #f0f0f0; 
+            --surface-color: #ffffff; 
+            --text-primary: #111111; 
+            --text-secondary: #666666; 
+            --border-color: #d1d1d1; 
+            --accent-dark: #000000; 
+            --accent-hover: #333333; 
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', Arial, sans-serif; }
+        
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-primary); 
+            display: flex; 
+            justify-content: center; 
+            padding: 50px 20px; 
+        }
+        
+        .cotizador-container { 
+            background-color: var(--surface-color); 
+            width: 100%; 
+            max-width: 800px; 
+            padding: 45px; 
+            border-radius: 8px; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); 
+        }
+        
+        .cotizador-header { text-align: center; margin-bottom: 35px; }
+        
+        .cotizador-header h2 { 
+            font-size: 26px; 
+            font-weight: 600; 
+            margin-bottom: 8px; 
+            color: var(--text-primary);
+        }
+        
+        .cotizador-header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+        
+        .form-section { 
+            border: none; 
+            border-top: 1px solid var(--border-color); 
+            margin-bottom: 25px; 
+            padding-top: 25px; 
+        }
+        
+        .form-section legend { 
+            font-size: 12px; 
+            font-weight: 600; 
+            color: var(--text-primary); 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            padding: 0 10px; 
+            margin-left: -10px;
+        }
+        
+        .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-top: 15px; }
         .input-group { display: flex; flex-direction: column; }
-        label { font-size: 13px; margin-bottom: 6px; font-weight: 500; }
-        input, select { padding: 12px; border: 1px solid var(--border-color); border-radius: 4px; background-color: #fafafa; font-size: 14px; }
-        input:focus, select:focus { outline: none; border-color: var(--accent-color); background-color: var(--surface-color); }
-        .btn-primary, .btn-secondary { width: 100%; padding: 14px; font-size: 14px; border-radius: 4px; cursor: pointer; border: none; font-weight: 600; }
-        .btn-primary { background-color: var(--text-primary); color: white; margin-top: 20px; }
-        .btn-secondary { background-color: white; color: var(--text-primary); border: 1px solid var(--border-color); margin-top: 15px; }
-        .resultado-panel { margin-top: 25px; padding: 20px; background-color: var(--bg-color); border-left: 4px solid var(--accent-color); }
+        .full-width { grid-column: 1 / -1; }
+        
+        label { font-size: 13px; margin-bottom: 8px; font-weight: 500; color: var(--text-primary); }
+        
+        input, select { 
+            padding: 14px; 
+            border: 1px solid var(--border-color); 
+            border-radius: 4px; 
+            background-color: #fafafa; 
+            font-size: 14px; 
+            color: var(--text-primary);
+            transition: all 0.3s ease; 
+        }
+        
+        input:focus, select:focus { 
+            outline: none; 
+            border-color: var(--accent-dark); 
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+            background-color: var(--surface-color); 
+        }
+        
+        .btn-primary, .btn-secondary { 
+            width: 100%; 
+            padding: 16px; 
+            font-size: 14px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            border: none; 
+            font-weight: 600; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary { 
+            background-color: var(--accent-dark); 
+            color: white; 
+            margin-top: 25px; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary { 
+            background-color: transparent; 
+            color: var(--text-primary); 
+            border: 1px solid var(--text-primary); 
+            margin-top: 15px; 
+        }
+        
+        .btn-secondary:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .resultado-panel { 
+            margin-top: 30px; 
+            padding: 25px; 
+            background-color: #f9f9f9; 
+            border-left: 4px solid var(--accent-dark); 
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .resultado-panel h3 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
         .oculta { display: none; }
-        .nota-consumibles { font-size: 11px; color: #888; margin-top: 5px; font-style: italic; }
+        .nota-consumibles { font-size: 12px; color: var(--text-secondary); margin-top: 6px; }
+        
         @media print {
             body { padding: 0; background: white; }
-            .cotizador-container { box-shadow: none; padding: 0; }
-            .btn-primary, .btn-secondary, p { display: none !important; }
+            .cotizador-container { box-shadow: none; padding: 0; max-width: 100%; }
+            .btn-primary, .btn-secondary, p.nota-consumibles { display: none !important; }
             input, select { border: none; background: transparent; -webkit-appearance: none; appearance: none; padding: 0; margin: 0; color: black; }
-            .resultado-panel { border: 1px solid black; }
+            .resultado-panel { border: 1px solid #ddd; }
+            .form-section { break-inside: avoid; }
         }
     </style>
 </head>
@@ -37,67 +157,74 @@
 
 <div class="cotizador-container">
     <header class="cotizador-header">
-        <h2>Presupuesto de Proyecto</h2>
+        <h2>Cotizador de muebles de melamina</h2>
+        <p>Cotizador profesional de mobiliario</p>
     </header>
 
     <form id="form-cotizador">
         
         <fieldset class="form-section">
-            <legend>Tableros y Cortes (18mm)</legend>
+            <legend>Proyecto y Medidas</legend>
             <div class="input-grid">
-                <div class="input-group">
-                    <label for="tipo_melamina_1">Melamina Principal</label>
-                    <select id="tipo_melamina_1">
-                        <option value="rojo" selected>Rojo Estándar</option>
-                        <option value="blanco">Blanco</option>
-                        <option value="maderado">Maderado Texturizado</option>
+                <div class="input-group full-width">
+                    <label for="tipo_proyecto">Tipo de Proyecto</label>
+                    <select id="tipo_proyecto">
+                        <option value="closet">Clóset / Roperos</option>
+                        <option value="cocina">Muebles de Cocina</option>
+                        <option value="tv">Centro de Entretenimiento (TV)</option>
+                        <option value="oficina">Escritorio / Oficina</option>
+                        <option value="comercial" selected>Mobiliario Comercial / Barras</option>
+                        <option value="otro">Otro</option>
                     </select>
                 </div>
                 <div class="input-group">
-                    <label for="planchas_1">Planchas Principales</label>
-                    <input type="number" id="planchas_1" step="0.5" value="1.5">
+                    <label for="largo">Largo total (mm)</label>
+                    <input type="number" id="largo" value="1200" required>
                 </div>
                 <div class="input-group">
-                    <label for="tipo_melamina_2">Melamina Secundaria</label>
-                    <select id="tipo_melamina_2">
-                        <option value="ninguno">Ninguna</option>
-                        <option value="maderado" selected>Maderado (Laterales)</option>
-                        <option value="blanco">Blanco</option>
-                        <option value="rojo">Rojo Estándar</option>
-                    </select>
+                    <label for="alto">Alto total (mm)</label>
+                    <input type="number" id="alto" value="800" required>
                 </div>
                 <div class="input-group">
-                    <label for="planchas_2">Planchas Secundarias</label>
-                    <input type="number" id="planchas_2" step="0.5" value="0.5">
+                    <label for="profundidad">Profundidad (mm)</label>
+                    <input type="number" id="profundidad" value="500" required>
                 </div>
             </div>
         </fieldset>
 
         <fieldset class="form-section">
-            <legend>Fondos, Cantos y Accesorios</legend>
+            <legend>Materiales y Cantos</legend>
             <div class="input-grid">
-                <div class="input-group">
-                    <label for="mdf_3mm">Planchas MDF 3mm (Fondos)</label>
-                    <input type="number" id="mdf_3mm" step="0.5" value="0.5">
-                </div>
-                <div class="input-group">
-                    <label for="color_canto">Color de Tapacantos</label>
-                    <select id="color_canto">
-                        <option value="blanco" selected>Blanco (Contraste)</option>
-                        <option value="igual">Igual al tablero</option>
-                        <option value="negro">Negro</option>
+                <div class="input-group full-width">
+                    <label for="tipo_melamina">Tablero Base (18mm)</label>
+                    <select id="tipo_melamina">
+                        <option value="amaderado" selected>Amaderado (Texturizado)</option>
+                        <option value="blanco">Color Blanco</option>
+                        <option value="solido">Color Sólido</option>
+                        <option value="blanco_rh">Blanco RH (Antihumedad)</option>
+                        <option value="amaderado_rh">Amaderado RH (Antihumedad)</option>
                     </select>
                 </div>
                 <div class="input-group">
-                    <label for="tapacanto_grueso">Metros Canto Grueso</label>
-                    <input type="number" id="tapacanto_grueso" value="15">
+                    <label for="tapacanto_grueso">Canto Grueso (metros)</label>
+                    <input type="number" id="tapacanto_grueso" value="10">
                 </div>
                 <div class="input-group">
-                    <label for="tapacanto_delgado">Metros Canto Delgado</label>
-                    <input type="number" id="tapacanto_delgado" value="8">
+                    <label for="tapacanto_delgado">Canto Delgado (metros)</label>
+                    <input type="number" id="tapacanto_delgado" value="5">
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="form-section">
+            <legend>Fondos y Accesorios</legend>
+            <div class="input-grid">
+                <div class="input-group">
+                    <label for="mdf_3mm">Fondo MDF 3mm (Planchas)</label>
+                    <input type="number" id="mdf_3mm" step="0.5" value="0.5">
                 </div>
                 <div class="input-group">
-                    <label for="cant_bisagras">Bisagras (Unidades)</label>
+                    <label for="cant_bisagras">Bisagras (Und)</label>
                     <input type="number" id="cant_bisagras" value="4">
                 </div>
                 <div class="input-group">
@@ -112,23 +239,19 @@
         </fieldset>
 
         <fieldset class="form-section">
-            <legend>Servicios y Diseño</legend>
+            <legend>Servicios Especiales</legend>
             <div class="input-grid">
-                <div class="input-group" style="grid-column: 1 / -1;">
-                    <label for="desc_cnc">Descripción de Cortes Especiales / CNC</label>
-                    <input type="text" id="desc_cnc" placeholder="Ej. Silueta de cabeza de toro, ruteado curvo..." value="Silueta de cabeza de toro (Frente)">
+                <div class="input-group">
+                    <label for="costo_cnc">Cortes CNC (S/)</label>
+                    <input type="number" id="costo_cnc" value="0">
                 </div>
                 <div class="input-group">
-                    <label for="costo_cnc">Costo Cortes Especiales (S/)</label>
-                    <input type="number" id="costo_cnc" value="80">
-                </div>
-                <div class="input-group">
-                    <label for="costo_transporte">Costo Transporte (S/)</label>
+                    <label for="costo_transporte">Transporte (S/)</label>
                     <input type="number" id="costo_transporte" value="50">
                 </div>
                 <div class="input-group">
-                    <label for="costo_armado">Mano de Obra Armado (S/)</label>
-                    <input type="number" id="costo_armado" value="150">
+                    <label for="costo_armado">Mano de Obra (S/)</label>
+                    <input type="number" id="costo_armado" value="120">
                 </div>
             </div>
         </fieldset>
@@ -136,10 +259,10 @@
         <button type="button" id="btn-calcular" class="btn-primary">Calcular Presupuesto</button>
 
         <div id="resultado-cotizacion" class="resultado-panel oculta">
-            <h3>Total Estimado: <span id="precio-total">S/ 0.00</span></h3>
-            <p class="nota-consumibles">* Incluye recargo automático del 2% para consumibles (tornillos, tapitas, pegamento).</p>
-            <p class="nota-consumibles">* Margen de ganancia operativa aplicado a materiales: 35%.</p>
-            <button type="button" id="btn-imprimir" class="btn-secondary">🖨️ Imprimir Hoja de Cotización</button>
+            <h3>Total: <span id="precio-total">S/ 0.00</span></h3>
+            <p class="nota-consumibles" id="detalle-planchas"></p>
+            <p class="nota-consumibles">* Incluye 2% para consumibles menores.</p>
+            <button type="button" id="btn-imprimir" class="btn-secondary">Imprimir Cotización</button>
         </div>
     </form>
 </div>
@@ -147,47 +270,49 @@
 <script>
     const inventario = {
       melamina: {
-        'blanco': 180,
-        'maderado': 260,
-        'rojo': 240,
-        'ninguno': 0
+        'blanco': { nombre: 'Color Blanco', precio: 180, areaUtil: 4.43 }, 
+        'amaderado': { nombre: 'Amaderado', precio: 260, areaUtil: 4.43 },
+        'solido': { nombre: 'Color Sólido', precio: 240, areaUtil: 4.43 },
+        'blanco_rh': { nombre: 'Blanco RH', precio: 220, areaUtil: 4.43 },
+        'amaderado_rh': { nombre: 'Amaderado RH', precio: 300, areaUtil: 4.43 }
       },
-      mdf_3mm: 45, // Costo por plancha de fondo
-      accesorios: {
-        bisagra: 5.00,
-        corredera: 15.00,
-        tirador: 12.00
-      },
-      servicios: {
-        canto_delgado: 1.50,
-        canto_grueso: 3.50
-      },
+      mdf_3mm: 45, 
+      accesorios: { bisagra: 5.00, corredera: 15.00, tirador: 12.00 },
+      servicios: { canto_delgado: 1.50, canto_grueso: 3.50 },
       margen_ganancia: 0.35,
       porcentaje_consumibles: 0.02
     };
 
     document.getElementById('btn-calcular').addEventListener('click', () => {
-      // 1. Materiales Base
-      const tipo1 = document.getElementById('tipo_melamina_1').value;
-      const planchas1 = parseFloat(document.getElementById('planchas_1').value) || 0;
-      const tipo2 = document.getElementById('tipo_melamina_2').value;
-      const planchas2 = parseFloat(document.getElementById('planchas_2').value) || 0;
+      const largo = parseFloat(document.getElementById('largo').value) || 0;
+      const alto = parseFloat(document.getElementById('alto').value) || 0;
+      const prof = parseFloat(document.getElementById('profundidad').value) || 0;
+      
+      const tipoMelamina = document.getElementById('tipo_melamina').value;
       const mdf3mm = parseFloat(document.getElementById('mdf_3mm').value) || 0;
-
-      // 2. Tapacantos y Accesorios
       const cantoG = parseFloat(document.getElementById('tapacanto_grueso').value) || 0;
       const cantoD = parseFloat(document.getElementById('tapacanto_delgado').value) || 0;
       const bisagras = parseInt(document.getElementById('cant_bisagras').value) || 0;
       const correderas = parseInt(document.getElementById('cant_correderas').value) || 0;
       const tiradores = parseInt(document.getElementById('cant_tiradores').value) || 0;
 
-      // 3. Servicios Directos (Sin margen extra)
       const costoCnc = parseFloat(document.getElementById('costo_cnc').value) || 0;
       const transporte = parseFloat(document.getElementById('costo_transporte').value) || 0;
       const armado = parseFloat(document.getElementById('costo_armado').value) || 0;
 
-      // --- CÁLCULOS ---
-      const costoMelamina = (planchas1 * inventario.melamina[tipo1]) + (planchas2 * inventario.melamina[tipo2]);
+      if (largo === 0 || alto === 0 || prof === 0) {
+        alert('Por favor, ingresa las dimensiones generales.');
+        return;
+      }
+
+      const areaMuebleM2 = ((largo * prof * 2) + (alto * prof * 2) + (largo * alto)) / 1000000;
+      const material = inventario.melamina[tipoMelamina];
+      
+      let planchasNecesarias = areaMuebleM2 / material.areaUtil;
+      planchasNecesarias = Math.ceil(planchasNecesarias * 2) / 2;
+      if(planchasNecesarias === 0) planchasNecesarias = 0.5;
+
+      const costoMelamina = planchasNecesarias * material.precio;
       const costoMdf = mdf3mm * inventario.mdf_3mm;
       const costoCantos = (cantoG * inventario.servicios.canto_grueso) + (cantoD * inventario.servicios.canto_delgado);
       const costoAccesorios = (bisagras * inventario.accesorios.bisagra) + 
@@ -195,18 +320,14 @@
                               (tiradores * inventario.accesorios.tirador);
 
       const subtotalMateriales = costoMelamina + costoMdf + costoCantos + costoAccesorios;
-      
-      // Consumibles menores (2% de los materiales)
       const costoConsumibles = subtotalMateriales * inventario.porcentaje_consumibles;
       const totalMaterialesFísicos = subtotalMateriales + costoConsumibles;
 
-      // Aplicar 35% de ganancia solo sobre los materiales
       const precioMaterialesConMargen = totalMaterialesFísicos * (1 + inventario.margen_ganancia);
-
-      // Sumar servicios directos
       const precioFinal = precioMaterialesConMargen + costoCnc + transporte + armado;
 
       document.getElementById('precio-total').innerText = `S/ ${precioFinal.toFixed(2)}`;
+      document.getElementById('detalle-planchas').innerText = `* Cálculo: ${planchasNecesarias} plancha(s) de ${material.nombre}.`;
       document.getElementById('resultado-cotizacion').classList.remove('oculta');
     });
 
