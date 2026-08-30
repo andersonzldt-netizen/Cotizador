@@ -225,6 +225,15 @@
                     <div class="row total"><span>TOTAL A COBRAR:</span> <span id="resTotal">S/ 0.00</span></div>
                 </div>
             </div>
+
+            <!-- Opciones de Presentación y Reportes Integradas -->
+            <div class="card-presupuesto" style="margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+                <h4 style="color: #94a3b8; text-transform: uppercase; font-size: 0.85em; letter-spacing: 1px; margin-bottom: 12px;">Opciones de Presentación y Reportes</h4>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="generarReporteCliente()" style="flex: 1; background: #2563eb; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">🖨️ Resumen Comercial (Cliente)</button>
+                    <button onclick="generarReporteInterno()" style="flex: 1; background: #334155; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">📊 Hoja de Costos (Taller)</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -282,18 +291,14 @@
                 }
             } 
             else if (vistaActual === 'lateral') {
-                // Vista Lateral (Perfil del mueble: Muestra Profundidad x Alto)
                 const scale = Math.min((canvas.width - padding*2) / prof, (canvas.height - padding*2) / alto);
                 const pPx = prof * scale, hPx = alto * scale, gPx = grosor * scale;
                 const oX = (canvas.width - pPx) / 2, oY = (canvas.height - hPx) / 2;
 
-                // Contorno del lateral general
                 drawFace(oX, oY, pPx, hPx, 'rgba(217, 185, 155, 0.2)', 'var(--wood-stroke)');
-                // Techo y base vistos de perfil
                 drawFace(oX, oY, pPx, gPx);
                 drawFace(oX, oY + hPx - gPx, pPx, gPx);
 
-                // Cantidad de repisas vistas de perfil (líneas horizontales internas)
                 const rowH = (hPx - 2*gPx - (hRepisas * gPx)) / (hRepisas + 1);
                 for(let r=1; r<=hRepisas; r++) {
                     drawFace(oX, oY + gPx + (r * rowH) + ((r-1) * gPx), pPx, gPx);
@@ -486,14 +491,122 @@
             document.getElementById('resultados').style.display = 'block';
             document.getElementById('resultados').scrollIntoView({ behavior: 'smooth' });
         }
-<!-- Agregar al final de la sección de presupuesto -->
-<div class="card-presupuesto" style="margin-top: 20px;">
-    <h3>Opciones de Presentación y Reportes</h3>
-    <div style="display: flex; gap: 10px; margin-top: 12px;">
-        <button onclick="generarReporteCliente()" style="flex: 1; background: #2563eb; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">🖨️ Resumen Comercial (Cliente)</button>
-        <button onclick="generarReporteInterno()" style="flex: 1; background: #1e293b; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">📊 Hoja de Costos (Taller)</button>
-    </div>
-</div>
+
+        // --- Funciones para Generar Reportes Comerciales e Internos ---
+        function generarReporteCliente() {
+            const cliente = document.getElementById('nombreProyecto')?.value || 'Closet Principal';
+            const material = document.getElementById('tipoPlanchaTxt')?.value || 'Melamina blanco 18mm';
+            const canvas3D = document.getElementById('muebleCanvas');
+            const imagen3DURL = canvas3D ? canvas3D.toDataURL('image/png') : '';
+
+            // Construir filas dinámicas de la tabla de despiece para el cliente
+            let filasTabla = '';
+            document.querySelectorAll('#bodyPiezas tr').forEach(fila => {
+                const ref = fila.querySelector('.ref')?.value || 'Pieza';
+                const cant = fila.querySelector('.cant')?.value || '1';
+                const largo = fila.querySelector('.largo')?.value || '0';
+                const ancho = fila.querySelector('.ancho')?.value || '0';
+                if(largo > 0 && ancho > 0) {
+                    filasTabla += `<tr><td>${ref}</td><td>${cant}</td><td>${largo} x ${ancho} mm</td></tr>`;
+                }
+            });
+
+            const ventana = window.open('', '_blank');
+            ventana.document.write(`
+                <!DOCTYPE html>
+                <html lang="es">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Propuesta Comercial — ${cliente}</title>
+                    <style>
+                        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1e293b; padding: 25px; margin: 0; }
+                        .header { border-bottom: 3px solid #2563eb; padding-bottom: 10px; margin-bottom: 20px; }
+                        h1 { margin: 0; font-size: 20px; color: #1e293b; }
+                        p { margin: 5px 0; color: #64748b; font-size: 14px; }
+                        .card { background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 15px; border-radius: 6px; margin-bottom: 20px; }
+                        .preview-3d { text-align: center; margin: 20px 0; background: #fff; border: 2px dashed #cbd5e1; padding: 15px; border-radius: 8px; }
+                        .preview-3d img { max-width: 100%; height: auto; max-height: 250px; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+                        th, td { border: 1px solid #cbd5e1; padding: 8px 10px; text-align: left; font-size: 13px; }
+                        th { background: #f1f5f9; color: #334155; font-weight: 600; }
+                        .footer { margin-top: 30px; text-align: center; font-size: 11px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 10px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>ProMueble CAD & Cotizador</h1>
+                        <p>Presentación Comercial de Proyecto</p>
+                    </div>
+                    <div class="card">
+                        <strong>Proyecto:</strong> ${cliente}<br>
+                        <strong>Material / Color:</strong> ${material}
+                    </div>
+                    <div class="preview-3d">
+                        <strong>Vista del Mueble</strong><br><br>
+                        ${imagen3DURL ? `<img src="${imagen3DURL}" alt="Modelo CAD">` : '<em>[Modelo generado]</em>'}
+                    </div>
+                    <h3>Despiece y Componentes Técnicos</h3>
+                    <table>
+                        <tr><th>Componente (Ref)</th><th>Cantidad</th><th>Medidas (mm)</th></tr>
+                        ${filasTabla || '<tr><td colspan="3">No hay piezas registradas</td></tr>'}
+                    </table>
+                    <div class="footer">Diseñado a medida con ProMueble CAD — Calidad y garantía garantizadas.</div>
+                    <script>window.onload = function() { window.print(); }</script>
+                </body>
+                </html>
+            `);
+            ventana.document.close();
+        }
+
+        function generarReporteInterno() {
+            const cliente = document.getElementById('nombreProyecto')?.value || 'Closet Principal';
+            const area = document.getElementById('resArea')?.innerText || '0 m²';
+            const cantPlanchas = document.getElementById('resPlanchas')?.innerText || '0';
+            const mCantoD = document.getElementById('resMetrosD')?.innerText || '0 m';
+            const mCantoG = document.getElementById('resMetrosG')?.innerText || '0 m';
+            const cMelamina = document.getElementById('resCostoMelamina')?.innerText || 'S/ 0.00';
+            const cCanto = document.getElementById('resCostoCanto')?.innerText || 'S/ 0.00';
+            const cFerreteria = document.getElementById('resCostoFerreteria')?.innerText || 'S/ 0.00';
+            const subtotal = document.getElementById('resSubtotal')?.innerText || 'S/ 0.00';
+            const manoObra = document.getElementById('resManoObra')?.innerText || 'S/ 0.00';
+            const instalacion = document.getElementById('resInstalacion')?.innerText || 'S/ 0.00';
+            const totalCobrar = document.getElementById('resTotal')?.innerText || 'S/ 0.00';
+
+            const ventana = window.open('', '_blank');
+            ventana.document.write(`
+                <!DOCTYPE html>
+                <html lang="es">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Hoja de Costos Interna — ${cliente}</title>
+                    <style>
+                        body { font-family: sans-serif; padding: 20px; color: #0f172a; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+                        th, td { border: 1px solid #cbd5e1; padding: 8px; text-align: left; font-size: 13px; }
+                        th { background: #1e293b; color: white; }
+                        .total { font-size: 16px; font-weight: bold; background: #e2e8f0; }
+                    </style>
+                </head>
+                <body>
+                    <h2>Hoja de Costos y Producción: ${cliente}</h2>
+                    <table>
+                        <tr><th>Concepto</th><th>Monto / Detalle</th></tr>
+                        <tr><td>Área neta tableros</td><td>${area} (${cantPlanchas} Planchas requeridas)</td></tr>
+                        <tr><td>Canto Delgado (1mm) / Grueso (3mm)</td><td>${mCantoD} / ${mCantoG}</td></tr>
+                        <tr><td>Melamina + Cortes</td><td>${cMelamina}</td></tr>
+                        <tr><td>Servicio Tapacantos</td><td>${cCanto}</td></tr>
+                        <tr><td>Accesorios y Varios</td><td>${cFerreteria}</td></tr>
+                        <tr><td>Costo Producción (Subtotal)</td><td>${subtotal}</td></tr>
+                        <tr><td>Mano de Obra (Ganancia)</td><td>${manoObra}</td></tr>
+                        <tr><td>Instalación y Transporte</td><td>${instalacion}</td></tr>
+                        <tr class="total"><td>TOTAL A COBRAR</td><td>${totalCobrar}</td></tr>
+                    </table>
+                    <script>window.onload = function() { window.print(); }</script>
+                </body>
+                </html>
+            `);
+            ventana.document.close();
+        }
 
         window.onload = dibujarMueble;
     </script>
