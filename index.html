@@ -486,6 +486,14 @@
             document.getElementById('resultados').style.display = 'block';
             document.getElementById('resultados').scrollIntoView({ behavior: 'smooth' });
         }
+<!-- Agregar al final de la sección de presupuesto -->
+<div class="card-presupuesto" style="margin-top: 20px;">
+    <h3>Opciones de Presentación y Reportes</h3>
+    <div style="display: flex; gap: 10px; margin-top: 12px;">
+        <button onclick="generarReporteCliente()" style="flex: 1; background: #2563eb; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">🖨️ Resumen Comercial (Cliente)</button>
+        <button onclick="generarReporteInterno()" style="flex: 1; background: #1e293b; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">📊 Hoja de Costos (Taller)</button>
+    </div>
+</div>
 
         window.onload = dibujarMueble;
     </script>
