@@ -5,48 +5,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generador 2D + Cotizador de Melamina</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f4f4f5; color: #333; padding: 20px; font-size: 14px; }
-        .container { max-width: 1000px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f4f4f5; color: #333; padding: 15px; font-size: 14px; }
+        .container { max-width: 1000px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         h2, h3, h4 { color: #222; margin-top: 0; }
-        .section { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
+        .section { margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
         
-        /* Estilos del Generador 2D */
-        .layout-2d { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; background: #fdfdfd; border: 1px solid #e0e0e0; padding: 20px; border-radius: 6px; }
-        .canvas-container { text-align: center; background: #fff; border: 1px dashed #ccc; border-radius: 4px; display: flex; align-items: center; justify-content: center; height: 350px; }
+        /* Input Proyecto */
+        .input-proyecto { font-size: 1.1em; padding: 10px; border: 1px solid #bbb; background-color: #fafafa; width: 100%; border-radius: 4px; box-sizing: border-box; }
+        .input-proyecto:focus { border-color: #222; outline: none; background-color: #fff; }
+        .titulo-resultado { color: #722f37; border-bottom: 2px solid #222; padding-bottom: 10px; margin-top: 0; margin-bottom: 20px; font-size: 1.4em; }
+
+        /* Generador 2D Responsive */
+        .layout-2d { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #fdfdfd; border: 1px solid #e0e0e0; padding: 15px; border-radius: 6px; }
+        .canvas-container { text-align: center; background: #fff; border: 1px dashed #ccc; border-radius: 4px; display: flex; align-items: center; justify-content: center; min-height: 300px; overflow: hidden; padding: 10px; }
+        canvas { max-width: 100%; height: auto; }
         
-        table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+        /* Tabla Responsive */
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 15px; border: 1px solid #eee; border-radius: 4px; }
+        table { width: 100%; border-collapse: collapse; min-width: 650px; } 
         th, td { text-align: left; padding: 8px; border-bottom: 1px solid #eee; }
         th { background: #fafafa; font-weight: 600; font-size: 0.9em; color: #555; }
-        input, select { width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        input, select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
         
         .form-group { margin-bottom: 12px; }
         .form-group label { display: block; margin-bottom: 4px; font-size: 0.85em; font-weight: 600; color: #555; }
         .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         
-        .btn { padding: 10px 15px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.2s; text-align: center; }
-        .btn-primary { background-color: #222; color: #fff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 10px;}
+        .btn { padding: 12px 15px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.2s; text-align: center; }
+        .btn-primary { background-color: #222; color: #fff; width: 100%; font-size: 1.1em; margin-top: 10px;}
         .btn-primary:hover { background-color: #444; }
         .btn-action { background-color: #0066cc; color: #fff; margin-top: 10px; width: 100%; }
-        .btn-action:hover { background-color: #005bb5; }
-        .btn-add { background: #eee; color: #333; border: 1px solid #ccc; width: auto; }
-        .btn-delete { background: #fee; color: #c00; padding: 6px; }
+        .btn-add { background: #eee; color: #333; border: 1px solid #ccc; width: auto; margin-top: 5px; }
+        .btn-delete { background: #fee; color: #c00; padding: 8px; }
         
         .grid-precios { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
         
-        #resultados { margin-top: 25px; padding: 25px; background-color: #f9f9f9; border-radius: 6px; display: none; border: 1px solid #eaeaea; }
-        .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        #resultados { margin-top: 25px; padding: 20px; background-color: #f9f9f9; border-radius: 6px; display: none; border: 1px solid #eaeaea; }
+        .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95em; border-bottom: 1px dashed #e0e0e0; padding-bottom: 4px; }
         .total { font-weight: bold; font-size: 1.25em; border-top: 2px solid #222; padding-top: 10px; margin-top: 10px; color: #722f37; border-bottom: none; }
+
+        @media (max-width: 768px) {
+            .layout-2d { grid-template-columns: 1fr; }
+            .res-grid { grid-template-columns: 1fr; gap: 15px; }
+            .grid-precios { grid-template-columns: 1fr 1fr; }
+            .btn-add { width: 100%; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>Generador de Muebles y Presupuestos</h2>
         
-        <!-- MÓDULO PARAMÉTRICO 2D -->
+        <div class="section" style="border-bottom: none; padding-bottom: 0;">
+            <div class="form-group">
+                <label style="font-size: 1em; font-weight: bold;">Datos del Proyecto / Cliente</label>
+                <input type="text" id="nombreProyecto" class="input-proyecto" placeholder="Ej: Clóset Principal - Familia Martínez">
+            </div>
+        </div>
+
         <div class="section">
-            <h3>1. Asistente 2D: Estante / Clóset Básico</h3>
-            <p style="font-size: 0.9em; color: #666; margin-top: -10px;">Ingresa las medidas finales del mueble. El sistema descontará los grosores de la melamina y calculará el tamaño de los espacios internos.</p>
+            <h3>1. Asistente 2D: Estructura Básica</h3>
+            <p style="font-size: 0.9em; color: #666; margin-top: -10px;">Ingresa las medidas generales. El sistema descontará los grosores automáticamente.</p>
             
             <div class="layout-2d">
                 <div>
@@ -54,9 +74,9 @@
                         <div class="form-group"><label>Alto Total (mm)</label><input type="number" id="mAlto" value="1800" oninput="dibujarMueble()"></div>
                         <div class="form-group"><label>Ancho Total (mm)</label><input type="number" id="mAncho" value="1200" oninput="dibujarMueble()"></div>
                         <div class="form-group"><label>Profundidad (mm)</label><input type="number" id="mProf" value="500"></div>
-                        <div class="form-group"><label>Grosor Melamina (mm)</label><input type="number" id="mGrosor" value="18" oninput="dibujarMueble()"></div>
-                        <div class="form-group"><label>Divisiones Verticales</label><input type="number" id="mDivV" value="1" min="0" oninput="dibujarMueble()"></div>
-                        <div class="form-group"><label>Repisas (Por columna)</label><input type="number" id="mRepisas" value="3" min="0" oninput="dibujarMueble()"></div>
+                        <div class="form-group"><label>Grosor Melamina</label><input type="number" id="mGrosor" value="18" oninput="dibujarMueble()"></div>
+                        <div class="form-group"><label>Div. Verticales</label><input type="number" id="mDivV" value="1" min="0" oninput="dibujarMueble()"></div>
+                        <div class="form-group"><label>Repisas (x columna)</label><input type="number" id="mRepisas" value="3" min="0" oninput="dibujarMueble()"></div>
                     </div>
                     <button class="btn btn-action" onclick="enviarAlDespiece()">Generar Lista de Cortes ⬇</button>
                 </div>
@@ -66,69 +86,93 @@
             </div>
         </div>
 
-        <!-- MÓDULO DE LISTA DE CORTES -->
         <div class="section">
             <h3>2. Lista de Piezas para Despiece</h3>
-            <p style="font-size: 0.9em; color: #666; margin-top: -10px;">Aquí puedes agregar manualmente puertas, tapas de cajón o fondos (MDF 3mm).</p>
-            <table id="tablaPiezas">
-                <thead>
-                    <tr>
-                        <th>Pieza (Ref)</th>
-                        <th style="width: 12%;">Largo</th>
-                        <th style="width: 12%;">Ancho</th>
-                        <th style="width: 8%;">Cant.</th>
-                        <th>Canto L.</th>
-                        <th>Canto A.</th>
-                        <th>Tipo Canto</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="bodyPiezas">
-                    <!-- Fila base vacía -->
-                    <tr>
-                        <td><input type="text" class="ref" placeholder="Pieza extra"></td>
-                        <td><input type="number" class="largo" placeholder="0"></td>
-                        <td><input type="number" class="ancho" placeholder="0"></td>
-                        <td><input type="number" class="cant" value="1"></td>
-                        <td><select class="cLargo"><option value="0">0</option><option value="1">1</option><option value="2">2</option></select></td>
-                        <td><select class="cAncho"><option value="0">0</option><option value="1">1</option><option value="2">2</option></select></td>
-                        <td><select class="cTipo"><option value="ninguno">-</option><option value="delgado">1mm</option><option value="grueso">3mm</option></select></td>
-                        <td><button class="btn btn-delete" onclick="eliminarFila(this)">✖</button></td>
-                    </tr>
-                </tbody>
-            </table>
-            <button class="btn btn-add" onclick="agregarFilaVacia()">+ Agregar Pieza Manual</button>
+            <div class="table-responsive">
+                <table id="tablaPiezas">
+                    <thead>
+                        <tr>
+                            <th>Pieza (Ref)</th>
+                            <th style="width: 15%;">Largo</th>
+                            <th style="width: 15%;">Ancho</th>
+                            <th style="width: 10%;">Cant.</th>
+                            <th>Canto L.</th>
+                            <th>Canto A.</th>
+                            <th>Tipo Canto</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="bodyPiezas">
+                        <tr>
+                            <td><input type="text" class="ref" placeholder="Ej: Puerta"></td>
+                            <td><input type="number" class="largo" placeholder="0"></td>
+                            <td><input type="number" class="ancho" placeholder="0"></td>
+                            <td><input type="number" class="cant" value="1"></td>
+                            <td><select class="cLargo"><option value="0">0</option><option value="1">1</option><option value="2">2</option></select></td>
+                            <td><select class="cAncho"><option value="0">0</option><option value="1">1</option><option value="2">2</option></select></td>
+                            <td><select class="cTipo"><option value="ninguno" selected>-</option><option value="delgado">1mm</option><option value="grueso">3mm</option></select></td>
+                            <td><button class="btn btn-delete" onclick="eliminarFila(this)">✖</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button class="btn btn-add" onclick="agregarFilaPieza()">+ Agregar Pieza Manual</button>
         </div>
 
-        <!-- PRECIOS -->
         <div class="section">
-            <h3>3. Costos Unitarios (S/)</h3>
+            <h3>3. Lista de Accesorios y Ferretería</h3>
+            <div class="table-responsive">
+                <table id="tablaAccesorios">
+                    <thead>
+                        <tr>
+                            <th>Accesorio (Descripción)</th>
+                            <th style="width: 20%;">Cantidad</th>
+                            <th style="width: 25%;">Precio Unit. (S/)</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="bodyAccesorios">
+                        <tr>
+                            <td><input type="text" class="acc-nombre" placeholder="Ej: Bisagra / Corredera"></td>
+                            <td><input type="number" class="acc-cant" value="1"></td>
+                            <td><input type="number" class="acc-precio" placeholder="0.00" step="0.1"></td>
+                            <td><button class="btn btn-delete" onclick="eliminarFila(this)">✖</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button class="btn btn-add" onclick="agregarFilaAccesorio()">+ Agregar Accesorio</button>
+        </div>
+
+        <div class="section">
+            <h3>4. Costos Base de Taller (S/)</h3>
             <div class="grid-precios">
                 <div class="form-group"><label>Precio Plancha</label><input type="number" id="pPlancha" value="240"></div>
                 <div class="form-group"><label>Corte x Plancha</label><input type="number" id="pCorte" value="18"></div>
-                <div class="form-group"><label>M. Canto Delgado</label><input type="number" id="pCantoD" value="2.00"></div>
-                <div class="form-group"><label>M. Canto Grueso</label><input type="number" id="pCantoG" value="5.00"></div>
-                <div class="form-group"><label>Ferretería Global</label><input type="number" id="pFerreteria" value="60"></div>
+                <div class="form-group"><label>Canto Delgado (m)</label><input type="number" id="pCantoD" value="2.00"></div>
+                <div class="form-group"><label>Canto Grueso (m)</label><input type="number" id="pCantoG" value="5.00"></div>
+                <div class="form-group"><label>Tornillos/Varios (Fijo)</label><input type="number" id="pTornillos" value="20"></div>
                 <div class="form-group"><label>Margen Utilidad (%)</label><input type="number" id="pMargen" value="50"></div>
             </div>
         </div>
 
-        <button class="btn btn-primary" onclick="calcularProyecto()">Calcular Presupuesto Total</button>
+        <button class="btn btn-primary" onclick="calcularProyecto()">Generar Cotización Final</button>
 
         <div id="resultados">
+            <h3 id="resNombreProyecto" class="titulo-resultado">Presupuesto General</h3>
             <div class="res-grid">
                 <div>
                     <h4>Resumen de Material</h4>
                     <div class="row"><span>Área neta de piezas:</span> <span id="resArea">0.00 m²</span></div>
                     <div class="row"><span>Canto Delgado requerido:</span> <span id="resMetrosD">0.0 m</span></div>
                     <div class="row"><span>Canto Grueso requerido:</span> <span id="resMetrosG">0.0 m</span></div>
-                    <div class="row" style="color:#d35400; font-weight:bold;"><span>Planchas a comprar (Melamina):</span> <span id="resPlanchas">0</span></div>
+                    <div class="row" style="color:#d35400; font-weight:bold;"><span>Planchas a comprar:</span> <span id="resPlanchas">0</span></div>
                 </div>
                 <div>
                     <h4>Presupuesto Económico</h4>
-                    <div class="row"><span>Materiales + Cortes:</span> <span id="resCostoMelamina">S/ 0.00</span></div>
-                    <div class="row"><span>Servicio de Tapacantos:</span> <span id="resCostoCanto">S/ 0.00</span></div>
-                    <div class="row"><span>Ferretería:</span> <span id="resCostoFerreteria">S/ 0.00</span></div>
+                    <div class="row"><span>Melamina + Cortes:</span> <span id="resCostoMelamina">S/ 0.00</span></div>
+                    <div class="row"><span>Servicio Tapacantos:</span> <span id="resCostoCanto">S/ 0.00</span></div>
+                    <div class="row"><span>Ferretería y Accesorios:</span> <span id="resCostoFerreteria">S/ 0.00</span></div>
                     <div class="row" style="font-weight: 500; margin-top: 10px;"><span>Subtotal (Costo Producción):</span> <span id="resSubtotal">S/ 0.00</span></div>
                     <div class="row"><span>Mano de Obra y Ganancia:</span> <span id="resManoObra">S/ 0.00</span></div>
                     <div class="row total"><span>PRECIO FINAL A COBRAR:</span> <span id="resTotal">S/ 0.00</span></div>
@@ -138,7 +182,6 @@
     </div>
 
     <script>
-        // === LÓGICA DE DIBUJO EN CANVAS 2D ===
         function dibujarMueble() {
             const canvas = document.getElementById('muebleCanvas');
             const ctx = canvas.getContext('2d');
@@ -151,7 +194,6 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             if (alto <= 0 || ancho <= 0) return;
 
-            // Calcular escala para encajar en el canvas (dejando 20px de margen)
             const padding = 20;
             const maxWidth = canvas.width - padding*2;
             const maxHeight = canvas.height - padding*2;
@@ -160,12 +202,10 @@
             const wPx = ancho * scale;
             const hPx = alto * scale;
             const gPx = grosor * scale;
-
-            // Centrar el dibujo
             const offsetX = (canvas.width - wPx) / 2;
             const offsetY = (canvas.height - hPx) / 2;
 
-            ctx.fillStyle = '#eaddcf'; // Color madera claro
+            ctx.fillStyle = '#eaddcf';
             ctx.strokeStyle = '#8b5a2b';
             ctx.lineWidth = 1;
 
@@ -174,15 +214,11 @@
                 ctx.strokeRect(offsetX + x, offsetY + y, w, h);
             }
 
-            // 1. Laterales (tocan el piso)
-            drawRect(0, 0, gPx, hPx); // Izquierdo
-            drawRect(wPx - gPx, 0, gPx, hPx); // Derecho
+            drawRect(0, 0, gPx, hPx); 
+            drawRect(wPx - gPx, 0, gPx, hPx);
+            drawRect(gPx, 0, wPx - 2*gPx, gPx);
+            drawRect(gPx, hPx - gPx, wPx - 2*gPx, gPx);
 
-            // 2. Techo y Base (van por dentro de los laterales)
-            drawRect(gPx, 0, wPx - 2*gPx, gPx); // Techo
-            drawRect(gPx, hPx - gPx, wPx - 2*gPx, gPx); // Base
-
-            // 3. Divisiones Verticales
             const cols = vDivs + 1;
             const espacioInternoAncho = wPx - 2*gPx;
             const colW = (espacioInternoAncho - (vDivs * gPx)) / cols;
@@ -192,7 +228,6 @@
                 drawRect(x, gPx, gPx, hPx - 2*gPx);
             }
 
-            // 4. Repisas (Horizontales)
             const espacioInternoAlto = hPx - 2*gPx;
             const rowH = (espacioInternoAlto - (hRepisas * gPx)) / (hRepisas + 1);
             
@@ -205,7 +240,6 @@
             }
         }
 
-        // === LÓGICA DEL TRASPASO AL DESPIECE ===
         function enviarAlDespiece() {
             const alto = parseFloat(document.getElementById('mAlto').value) || 0;
             const ancho = parseFloat(document.getElementById('mAncho').value) || 0;
@@ -215,9 +249,8 @@
             const hRepisas = parseInt(document.getElementById('mRepisas').value) || 0;
 
             const tbody = document.getElementById('bodyPiezas');
-            tbody.innerHTML = ''; // Limpiar tabla actual
+            tbody.innerHTML = '';
 
-            // Función ayudante para inyectar filas
             const inyectarFila = (ref, l, a, cant) => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -233,21 +266,15 @@
                 tbody.appendChild(tr);
             }
 
-            // Matemática de despice estructural
-            // 1. Laterales (Alto x Profundidad)
             inyectarFila('Laterales', alto, prof, 2);
-
-            // 2. Techo y Base (Ancho interno x Profundidad)
             const anchoInterno = ancho - (2 * grosor);
             inyectarFila('Techo y Base', anchoInterno, prof, 2);
 
-            // 3. Divisiones Verticales
             const altoInterno = alto - (2 * grosor);
             if (vDivs > 0) {
                 inyectarFila('Div. Vertical', altoInterno, prof, vDivs);
             }
 
-            // 4. Repisas
             const cols = vDivs + 1;
             const anchoColumna = (anchoInterno - (vDivs * grosor)) / cols;
             const totalRepisas = cols * hRepisas;
@@ -255,11 +282,12 @@
                 inyectarFila('Repisa', anchoColumna, prof, totalRepisas);
             }
             
-            alert("✅ Medidas calculadas y enviadas a la tabla inferior.");
+            alert("✅ Medidas calculadas y enviadas a la tabla de cortes.");
         }
 
-        // === FUNCIONES DE LA TABLA Y COTIZACIÓN ===
-        function agregarFilaVacia() {
+        function eliminarFila(btn) { btn.closest('tr').remove(); }
+
+        function agregarFilaPieza() {
             const tbody = document.getElementById('bodyPiezas');
             const tr = document.createElement('tr');
             tr.innerHTML = `
@@ -275,13 +303,32 @@
             tbody.appendChild(tr);
         }
 
-        function eliminarFila(btn) { btn.closest('tr').remove(); }
+        function agregarFilaAccesorio() {
+            const tbody = document.getElementById('bodyAccesorios');
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="text" class="acc-nombre" placeholder="Ej: Bisagra / Corredera"></td>
+                <td><input type="number" class="acc-cant" value="1"></td>
+                <td><input type="number" class="acc-precio" placeholder="0.00" step="0.1"></td>
+                <td><button class="btn btn-delete" onclick="eliminarFila(this)">✖</button></td>
+            `;
+            tbody.appendChild(tr);
+        }
 
         function calcularProyecto() {
+            // Nombre Proyecto
+            const nombreProyecto = document.getElementById('nombreProyecto').value.trim();
+            const tituloRes = document.getElementById('resNombreProyecto');
+            if(nombreProyecto !== "") {
+                tituloRes.innerText = "Presupuesto: " + nombreProyecto;
+            } else {
+                tituloRes.innerText = "Presupuesto General";
+            }
+
             let areaM2 = 0, cantoD = 0, cantoG = 0;
-            const filas = document.querySelectorAll('#bodyPiezas tr');
+            const filasPiezas = document.querySelectorAll('#bodyPiezas tr');
             
-            filas.forEach(fila => {
+            filasPiezas.forEach(fila => {
                 const L = parseFloat(fila.querySelector('.largo').value) || 0;
                 const A = parseFloat(fila.querySelector('.ancho').value) || 0;
                 const cant = parseFloat(fila.querySelector('.cant').value) || 0;
@@ -296,17 +343,27 @@
                 }
             });
 
-            const planchas = Math.ceil(areaM2 / 4.45); // 4.45m2 efectivos por plancha
+            let totalAccesorios = 0;
+            const filasAcc = document.querySelectorAll('#bodyAccesorios tr');
+            filasAcc.forEach(fila => {
+                const cant = parseFloat(fila.querySelector('.acc-cant').value) || 0;
+                const precio = parseFloat(fila.querySelector('.acc-precio').value) || 0;
+                totalAccesorios += (cant * precio);
+            });
+
+            const planchas = Math.ceil(areaM2 / 4.45); 
             const pPlan = parseFloat(document.getElementById('pPlancha').value) || 0;
             const pCort = parseFloat(document.getElementById('pCorte').value) || 0;
             const pCD = parseFloat(document.getElementById('pCantoD').value) || 0;
             const pCG = parseFloat(document.getElementById('pCantoG').value) || 0;
-            const pFerr = parseFloat(document.getElementById('pFerreteria').value) || 0;
+            const pTornillos = parseFloat(document.getElementById('pTornillos').value) || 0;
             const margen = parseFloat(document.getElementById('pMargen').value) || 0;
 
             const cMelamina = planchas * (pPlan + pCort);
             const cCanto = (cantoD * pCD) + (cantoG * pCG);
-            const subtotal = cMelamina + cCanto + pFerr;
+            const cFerreteriaTotal = totalAccesorios + pTornillos; 
+            
+            const subtotal = cMelamina + cCanto + cFerreteriaTotal;
             const mObra = subtotal * (margen / 100);
             const total = subtotal + mObra;
 
@@ -317,7 +374,7 @@
 
             document.getElementById('resCostoMelamina').innerText = 'S/ ' + cMelamina.toFixed(2);
             document.getElementById('resCostoCanto').innerText = 'S/ ' + cCanto.toFixed(2);
-            document.getElementById('resCostoFerreteria').innerText = 'S/ ' + pFerr.toFixed(2);
+            document.getElementById('resCostoFerreteria').innerText = 'S/ ' + cFerreteriaTotal.toFixed(2);
             document.getElementById('resSubtotal').innerText = 'S/ ' + subtotal.toFixed(2);
             document.getElementById('resManoObra').innerText = 'S/ ' + mObra.toFixed(2);
             document.getElementById('resTotal').innerText = 'S/ ' + total.toFixed(2);
@@ -325,7 +382,6 @@
             document.getElementById('resultados').style.display = 'block';
         }
 
-        // Dibujar al cargar la página por primera vez
         window.onload = dibujarMueble;
     </script>
 </body>
