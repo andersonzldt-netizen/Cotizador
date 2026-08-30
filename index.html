@@ -3,338 +3,330 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cotizador de muebles de melamina</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>Generador 2D + Cotizador de Melamina</title>
     <style>
-        :root { 
-            --bg-color: #f0f0f0; 
-            --surface-color: #ffffff; 
-            --text-primary: #111111; 
-            --text-secondary: #666666; 
-            --border-color: #d1d1d1; 
-            --accent-dark: #000000; 
-            --accent-hover: #333333; 
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f4f4f5; color: #333; padding: 20px; font-size: 14px; }
+        .container { max-width: 1000px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        h2, h3, h4 { color: #222; margin-top: 0; }
+        .section { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
         
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', Arial, sans-serif; }
+        /* Estilos del Generador 2D */
+        .layout-2d { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; background: #fdfdfd; border: 1px solid #e0e0e0; padding: 20px; border-radius: 6px; }
+        .canvas-container { text-align: center; background: #fff; border: 1px dashed #ccc; border-radius: 4px; display: flex; align-items: center; justify-content: center; height: 350px; }
         
-        body { 
-            background-color: var(--bg-color); 
-            color: var(--text-primary); 
-            display: flex; 
-            justify-content: center; 
-            padding: 50px 20px; 
-        }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+        th, td { text-align: left; padding: 8px; border-bottom: 1px solid #eee; }
+        th { background: #fafafa; font-weight: 600; font-size: 0.9em; color: #555; }
+        input, select { width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
         
-        .cotizador-container { 
-            background-color: var(--surface-color); 
-            width: 100%; 
-            max-width: 800px; 
-            padding: 45px; 
-            border-radius: 8px; 
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); 
-        }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; margin-bottom: 4px; font-size: 0.85em; font-weight: 600; color: #555; }
+        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         
-        .cotizador-header { text-align: center; margin-bottom: 35px; }
+        .btn { padding: 10px 15px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.2s; text-align: center; }
+        .btn-primary { background-color: #222; color: #fff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 10px;}
+        .btn-primary:hover { background-color: #444; }
+        .btn-action { background-color: #0066cc; color: #fff; margin-top: 10px; width: 100%; }
+        .btn-action:hover { background-color: #005bb5; }
+        .btn-add { background: #eee; color: #333; border: 1px solid #ccc; width: auto; }
+        .btn-delete { background: #fee; color: #c00; padding: 6px; }
         
-        .cotizador-header h2 { 
-            font-size: 26px; 
-            font-weight: 600; 
-            margin-bottom: 8px; 
-            color: var(--text-primary);
-        }
+        .grid-precios { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
         
-        .cotizador-header p {
-            color: var(--text-secondary);
-            font-size: 14px;
-            letter-spacing: 0.5px;
-        }
-        
-        .form-section { 
-            border: none; 
-            border-top: 1px solid var(--border-color); 
-            margin-bottom: 25px; 
-            padding-top: 25px; 
-        }
-        
-        .form-section legend { 
-            font-size: 12px; 
-            font-weight: 600; 
-            color: var(--text-primary); 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-            padding: 0 10px; 
-            margin-left: -10px;
-        }
-        
-        .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-top: 15px; }
-        .input-group { display: flex; flex-direction: column; }
-        .full-width { grid-column: 1 / -1; }
-        
-        label { font-size: 13px; margin-bottom: 8px; font-weight: 500; color: var(--text-primary); }
-        
-        input, select { 
-            padding: 14px; 
-            border: 1px solid var(--border-color); 
-            border-radius: 4px; 
-            background-color: #fafafa; 
-            font-size: 14px; 
-            color: var(--text-primary);
-            transition: all 0.3s ease; 
-        }
-        
-        input:focus, select:focus { 
-            outline: none; 
-            border-color: var(--accent-dark); 
-            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
-            background-color: var(--surface-color); 
-        }
-        
-        .btn-primary, .btn-secondary { 
-            width: 100%; 
-            padding: 16px; 
-            font-size: 14px; 
-            border-radius: 4px; 
-            cursor: pointer; 
-            border: none; 
-            font-weight: 600; 
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary { 
-            background-color: var(--accent-dark); 
-            color: white; 
-            margin-top: 25px; 
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-        }
-        
-        .btn-primary:hover {
-            background-color: var(--accent-hover);
-            transform: translateY(-1px);
-        }
-        
-        .btn-secondary { 
-            background-color: transparent; 
-            color: var(--text-primary); 
-            border: 1px solid var(--text-primary); 
-            margin-top: 15px; 
-        }
-        
-        .btn-secondary:hover {
-            background-color: #f5f5f5;
-        }
-        
-        .resultado-panel { 
-            margin-top: 30px; 
-            padding: 25px; 
-            background-color: #f9f9f9; 
-            border-left: 4px solid var(--accent-dark); 
-            border-radius: 0 4px 4px 0;
-        }
-        
-        .resultado-panel h3 {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-        
-        .oculta { display: none; }
-        .nota-consumibles { font-size: 12px; color: var(--text-secondary); margin-top: 6px; }
-        
-        @media print {
-            body { padding: 0; background: white; }
-            .cotizador-container { box-shadow: none; padding: 0; max-width: 100%; }
-            .btn-primary, .btn-secondary, p.nota-consumibles { display: none !important; }
-            input, select { border: none; background: transparent; -webkit-appearance: none; appearance: none; padding: 0; margin: 0; color: black; }
-            .resultado-panel { border: 1px solid #ddd; }
-            .form-section { break-inside: avoid; }
-        }
+        #resultados { margin-top: 25px; padding: 25px; background-color: #f9f9f9; border-radius: 6px; display: none; border: 1px solid #eaeaea; }
+        .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95em; border-bottom: 1px dashed #e0e0e0; padding-bottom: 4px; }
+        .total { font-weight: bold; font-size: 1.25em; border-top: 2px solid #222; padding-top: 10px; margin-top: 10px; color: #722f37; border-bottom: none; }
     </style>
 </head>
 <body>
-
-<div class="cotizador-container">
-    <header class="cotizador-header">
-        <h2>Cotizador de muebles de melamina</h2>
-        <p>Cotizador profesional de mobiliario</p>
-    </header>
-
-    <form id="form-cotizador">
+    <div class="container">
+        <h2>Generador de Muebles y Presupuestos</h2>
         
-        <fieldset class="form-section">
-            <legend>Proyecto y Medidas</legend>
-            <div class="input-grid">
-                <div class="input-group full-width">
-                    <label for="tipo_proyecto">Tipo de Proyecto</label>
-                    <select id="tipo_proyecto">
-                        <option value="closet">Clóset / Roperos</option>
-                        <option value="cocina">Muebles de Cocina</option>
-                        <option value="tv">Centro de Entretenimiento (TV)</option>
-                        <option value="oficina">Escritorio / Oficina</option>
-                        <option value="comercial" selected>Mobiliario Comercial / Barras</option>
-                        <option value="otro">Otro</option>
-                    </select>
+        <!-- MÓDULO PARAMÉTRICO 2D -->
+        <div class="section">
+            <h3>1. Asistente 2D: Estante / Clóset Básico</h3>
+            <p style="font-size: 0.9em; color: #666; margin-top: -10px;">Ingresa las medidas finales del mueble. El sistema descontará los grosores de la melamina y calculará el tamaño de los espacios internos.</p>
+            
+            <div class="layout-2d">
+                <div>
+                    <div class="grid-inputs">
+                        <div class="form-group"><label>Alto Total (mm)</label><input type="number" id="mAlto" value="1800" oninput="dibujarMueble()"></div>
+                        <div class="form-group"><label>Ancho Total (mm)</label><input type="number" id="mAncho" value="1200" oninput="dibujarMueble()"></div>
+                        <div class="form-group"><label>Profundidad (mm)</label><input type="number" id="mProf" value="500"></div>
+                        <div class="form-group"><label>Grosor Melamina (mm)</label><input type="number" id="mGrosor" value="18" oninput="dibujarMueble()"></div>
+                        <div class="form-group"><label>Divisiones Verticales</label><input type="number" id="mDivV" value="1" min="0" oninput="dibujarMueble()"></div>
+                        <div class="form-group"><label>Repisas (Por columna)</label><input type="number" id="mRepisas" value="3" min="0" oninput="dibujarMueble()"></div>
+                    </div>
+                    <button class="btn btn-action" onclick="enviarAlDespiece()">Generar Lista de Cortes ⬇</button>
                 </div>
-                <div class="input-group">
-                    <label for="largo">Largo total (mm)</label>
-                    <input type="number" id="largo" value="1200" required>
-                </div>
-                <div class="input-group">
-                    <label for="alto">Alto total (mm)</label>
-                    <input type="number" id="alto" value="800" required>
-                </div>
-                <div class="input-group">
-                    <label for="profundidad">Profundidad (mm)</label>
-                    <input type="number" id="profundidad" value="500" required>
+                <div class="canvas-container">
+                    <canvas id="muebleCanvas" width="350" height="330"></canvas>
                 </div>
             </div>
-        </fieldset>
-
-        <fieldset class="form-section">
-            <legend>Materiales y Cantos</legend>
-            <div class="input-grid">
-                <div class="input-group full-width">
-                    <label for="tipo_melamina">Tablero Base (18mm)</label>
-                    <select id="tipo_melamina">
-                        <option value="amaderado" selected>Amaderado (Texturizado)</option>
-                        <option value="blanco">Color Blanco</option>
-                        <option value="solido">Color Sólido</option>
-                        <option value="blanco_rh">Blanco RH (Antihumedad)</option>
-                        <option value="amaderado_rh">Amaderado RH (Antihumedad)</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label for="tapacanto_grueso">Canto Grueso (metros)</label>
-                    <input type="number" id="tapacanto_grueso" value="10">
-                </div>
-                <div class="input-group">
-                    <label for="tapacanto_delgado">Canto Delgado (metros)</label>
-                    <input type="number" id="tapacanto_delgado" value="5">
-                </div>
-            </div>
-        </fieldset>
-
-        <fieldset class="form-section">
-            <legend>Fondos y Accesorios</legend>
-            <div class="input-grid">
-                <div class="input-group">
-                    <label for="mdf_3mm">Fondo MDF 3mm (Planchas)</label>
-                    <input type="number" id="mdf_3mm" step="0.5" value="0.5">
-                </div>
-                <div class="input-group">
-                    <label for="cant_bisagras">Bisagras (Und)</label>
-                    <input type="number" id="cant_bisagras" value="4">
-                </div>
-                <div class="input-group">
-                    <label for="cant_correderas">Correderas (Pares)</label>
-                    <input type="number" id="cant_correderas" value="2">
-                </div>
-                <div class="input-group">
-                    <label for="cant_tiradores">Tiradores / Perfiles</label>
-                    <input type="number" id="cant_tiradores" value="4">
-                </div>
-            </div>
-        </fieldset>
-
-        <fieldset class="form-section">
-            <legend>Servicios Especiales</legend>
-            <div class="input-grid">
-                <div class="input-group">
-                    <label for="costo_cnc">Cortes CNC (S/)</label>
-                    <input type="number" id="costo_cnc" value="0">
-                </div>
-                <div class="input-group">
-                    <label for="costo_transporte">Transporte (S/)</label>
-                    <input type="number" id="costo_transporte" value="50">
-                </div>
-                <div class="input-group">
-                    <label for="costo_armado">Mano de Obra (S/)</label>
-                    <input type="number" id="costo_armado" value="120">
-                </div>
-            </div>
-        </fieldset>
-
-        <button type="button" id="btn-calcular" class="btn-primary">Calcular Presupuesto</button>
-
-        <div id="resultado-cotizacion" class="resultado-panel oculta">
-            <h3>Total: <span id="precio-total">S/ 0.00</span></h3>
-            <p class="nota-consumibles" id="detalle-planchas"></p>
-            <p class="nota-consumibles">* Incluye 2% para consumibles menores.</p>
-            <button type="button" id="btn-imprimir" class="btn-secondary">Imprimir Cotización</button>
         </div>
-    </form>
-</div>
 
-<script>
-    const inventario = {
-      melamina: {
-        'blanco': { nombre: 'Color Blanco', precio: 180, areaUtil: 4.43 }, 
-        'amaderado': { nombre: 'Amaderado', precio: 260, areaUtil: 4.43 },
-        'solido': { nombre: 'Color Sólido', precio: 240, areaUtil: 4.43 },
-        'blanco_rh': { nombre: 'Blanco RH', precio: 220, areaUtil: 4.43 },
-        'amaderado_rh': { nombre: 'Amaderado RH', precio: 300, areaUtil: 4.43 }
-      },
-      mdf_3mm: 45, 
-      accesorios: { bisagra: 5.00, corredera: 15.00, tirador: 12.00 },
-      servicios: { canto_delgado: 1.50, canto_grueso: 3.50 },
-      margen_ganancia: 0.35,
-      porcentaje_consumibles: 0.02
-    };
+        <!-- MÓDULO DE LISTA DE CORTES -->
+        <div class="section">
+            <h3>2. Lista de Piezas para Despiece</h3>
+            <p style="font-size: 0.9em; color: #666; margin-top: -10px;">Aquí puedes agregar manualmente puertas, tapas de cajón o fondos (MDF 3mm).</p>
+            <table id="tablaPiezas">
+                <thead>
+                    <tr>
+                        <th>Pieza (Ref)</th>
+                        <th style="width: 12%;">Largo</th>
+                        <th style="width: 12%;">Ancho</th>
+                        <th style="width: 8%;">Cant.</th>
+                        <th>Canto L.</th>
+                        <th>Canto A.</th>
+                        <th>Tipo Canto</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="bodyPiezas">
+                    <!-- Fila base vacía -->
+                    <tr>
+                        <td><input type="text" class="ref" placeholder="Pieza extra"></td>
+                        <td><input type="number" class="largo" placeholder="0"></td>
+                        <td><input type="number" class="ancho" placeholder="0"></td>
+                        <td><input type="number" class="cant" value="1"></td>
+                        <td><select class="cLargo"><option value="0">0</option><option value="1">1</option><option value="2">2</option></select></td>
+                        <td><select class="cAncho"><option value="0">0</option><option value="1">1</option><option value="2">2</option></select></td>
+                        <td><select class="cTipo"><option value="ninguno">-</option><option value="delgado">1mm</option><option value="grueso">3mm</option></select></td>
+                        <td><button class="btn btn-delete" onclick="eliminarFila(this)">✖</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button class="btn btn-add" onclick="agregarFilaVacia()">+ Agregar Pieza Manual</button>
+        </div>
 
-    document.getElementById('btn-calcular').addEventListener('click', () => {
-      const largo = parseFloat(document.getElementById('largo').value) || 0;
-      const alto = parseFloat(document.getElementById('alto').value) || 0;
-      const prof = parseFloat(document.getElementById('profundidad').value) || 0;
-      
-      const tipoMelamina = document.getElementById('tipo_melamina').value;
-      const mdf3mm = parseFloat(document.getElementById('mdf_3mm').value) || 0;
-      const cantoG = parseFloat(document.getElementById('tapacanto_grueso').value) || 0;
-      const cantoD = parseFloat(document.getElementById('tapacanto_delgado').value) || 0;
-      const bisagras = parseInt(document.getElementById('cant_bisagras').value) || 0;
-      const correderas = parseInt(document.getElementById('cant_correderas').value) || 0;
-      const tiradores = parseInt(document.getElementById('cant_tiradores').value) || 0;
+        <!-- PRECIOS -->
+        <div class="section">
+            <h3>3. Costos Unitarios (S/)</h3>
+            <div class="grid-precios">
+                <div class="form-group"><label>Precio Plancha</label><input type="number" id="pPlancha" value="240"></div>
+                <div class="form-group"><label>Corte x Plancha</label><input type="number" id="pCorte" value="18"></div>
+                <div class="form-group"><label>M. Canto Delgado</label><input type="number" id="pCantoD" value="2.00"></div>
+                <div class="form-group"><label>M. Canto Grueso</label><input type="number" id="pCantoG" value="5.00"></div>
+                <div class="form-group"><label>Ferretería Global</label><input type="number" id="pFerreteria" value="60"></div>
+                <div class="form-group"><label>Margen Utilidad (%)</label><input type="number" id="pMargen" value="50"></div>
+            </div>
+        </div>
 
-      const costoCnc = parseFloat(document.getElementById('costo_cnc').value) || 0;
-      const transporte = parseFloat(document.getElementById('costo_transporte').value) || 0;
-      const armado = parseFloat(document.getElementById('costo_armado').value) || 0;
+        <button class="btn btn-primary" onclick="calcularProyecto()">Calcular Presupuesto Total</button>
 
-      if (largo === 0 || alto === 0 || prof === 0) {
-        alert('Por favor, ingresa las dimensiones generales.');
-        return;
-      }
+        <div id="resultados">
+            <div class="res-grid">
+                <div>
+                    <h4>Resumen de Material</h4>
+                    <div class="row"><span>Área neta de piezas:</span> <span id="resArea">0.00 m²</span></div>
+                    <div class="row"><span>Canto Delgado requerido:</span> <span id="resMetrosD">0.0 m</span></div>
+                    <div class="row"><span>Canto Grueso requerido:</span> <span id="resMetrosG">0.0 m</span></div>
+                    <div class="row" style="color:#d35400; font-weight:bold;"><span>Planchas a comprar (Melamina):</span> <span id="resPlanchas">0</span></div>
+                </div>
+                <div>
+                    <h4>Presupuesto Económico</h4>
+                    <div class="row"><span>Materiales + Cortes:</span> <span id="resCostoMelamina">S/ 0.00</span></div>
+                    <div class="row"><span>Servicio de Tapacantos:</span> <span id="resCostoCanto">S/ 0.00</span></div>
+                    <div class="row"><span>Ferretería:</span> <span id="resCostoFerreteria">S/ 0.00</span></div>
+                    <div class="row" style="font-weight: 500; margin-top: 10px;"><span>Subtotal (Costo Producción):</span> <span id="resSubtotal">S/ 0.00</span></div>
+                    <div class="row"><span>Mano de Obra y Ganancia:</span> <span id="resManoObra">S/ 0.00</span></div>
+                    <div class="row total"><span>PRECIO FINAL A COBRAR:</span> <span id="resTotal">S/ 0.00</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-      const areaMuebleM2 = ((largo * prof * 2) + (alto * prof * 2) + (largo * alto)) / 1000000;
-      const material = inventario.melamina[tipoMelamina];
-      
-      let planchasNecesarias = areaMuebleM2 / material.areaUtil;
-      planchasNecesarias = Math.ceil(planchasNecesarias * 2) / 2;
-      if(planchasNecesarias === 0) planchasNecesarias = 0.5;
+    <script>
+        // === LÓGICA DE DIBUJO EN CANVAS 2D ===
+        function dibujarMueble() {
+            const canvas = document.getElementById('muebleCanvas');
+            const ctx = canvas.getContext('2d');
+            const alto = parseFloat(document.getElementById('mAlto').value) || 0;
+            const ancho = parseFloat(document.getElementById('mAncho').value) || 0;
+            const grosor = parseFloat(document.getElementById('mGrosor').value) || 18;
+            const vDivs = parseInt(document.getElementById('mDivV').value) || 0;
+            const hRepisas = parseInt(document.getElementById('mRepisas').value) || 0;
 
-      const costoMelamina = planchasNecesarias * material.precio;
-      const costoMdf = mdf3mm * inventario.mdf_3mm;
-      const costoCantos = (cantoG * inventario.servicios.canto_grueso) + (cantoD * inventario.servicios.canto_delgado);
-      const costoAccesorios = (bisagras * inventario.accesorios.bisagra) + 
-                              (correderas * inventario.accesorios.corredera) + 
-                              (tiradores * inventario.accesorios.tirador);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (alto <= 0 || ancho <= 0) return;
 
-      const subtotalMateriales = costoMelamina + costoMdf + costoCantos + costoAccesorios;
-      const costoConsumibles = subtotalMateriales * inventario.porcentaje_consumibles;
-      const totalMaterialesFísicos = subtotalMateriales + costoConsumibles;
+            // Calcular escala para encajar en el canvas (dejando 20px de margen)
+            const padding = 20;
+            const maxWidth = canvas.width - padding*2;
+            const maxHeight = canvas.height - padding*2;
+            const scale = Math.min(maxWidth / ancho, maxHeight / alto);
 
-      const precioMaterialesConMargen = totalMaterialesFísicos * (1 + inventario.margen_ganancia);
-      const precioFinal = precioMaterialesConMargen + costoCnc + transporte + armado;
+            const wPx = ancho * scale;
+            const hPx = alto * scale;
+            const gPx = grosor * scale;
 
-      document.getElementById('precio-total').innerText = `S/ ${precioFinal.toFixed(2)}`;
-      document.getElementById('detalle-planchas').innerText = `* Cálculo: ${planchasNecesarias} plancha(s) de ${material.nombre}.`;
-      document.getElementById('resultado-cotizacion').classList.remove('oculta');
-    });
+            // Centrar el dibujo
+            const offsetX = (canvas.width - wPx) / 2;
+            const offsetY = (canvas.height - hPx) / 2;
 
-    document.getElementById('btn-imprimir').addEventListener('click', () => {
-      window.print();
-    });
-</script>
+            ctx.fillStyle = '#eaddcf'; // Color madera claro
+            ctx.strokeStyle = '#8b5a2b';
+            ctx.lineWidth = 1;
 
+            const drawRect = (x, y, w, h) => {
+                ctx.fillRect(offsetX + x, offsetY + y, w, h);
+                ctx.strokeRect(offsetX + x, offsetY + y, w, h);
+            }
+
+            // 1. Laterales (tocan el piso)
+            drawRect(0, 0, gPx, hPx); // Izquierdo
+            drawRect(wPx - gPx, 0, gPx, hPx); // Derecho
+
+            // 2. Techo y Base (van por dentro de los laterales)
+            drawRect(gPx, 0, wPx - 2*gPx, gPx); // Techo
+            drawRect(gPx, hPx - gPx, wPx - 2*gPx, gPx); // Base
+
+            // 3. Divisiones Verticales
+            const cols = vDivs + 1;
+            const espacioInternoAncho = wPx - 2*gPx;
+            const colW = (espacioInternoAncho - (vDivs * gPx)) / cols;
+            
+            for(let i=1; i<=vDivs; i++) {
+                let x = gPx + (i * colW) + ((i-1) * gPx);
+                drawRect(x, gPx, gPx, hPx - 2*gPx);
+            }
+
+            // 4. Repisas (Horizontales)
+            const espacioInternoAlto = hPx - 2*gPx;
+            const rowH = (espacioInternoAlto - (hRepisas * gPx)) / (hRepisas + 1);
+            
+            for(let c=0; c<cols; c++) {
+                let cx = gPx + (c * colW) + (c * gPx);
+                for(let r=1; r<=hRepisas; r++) {
+                    let cy = gPx + (r * rowH) + ((r-1) * gPx);
+                    drawRect(cx, cy, colW, gPx);
+                }
+            }
+        }
+
+        // === LÓGICA DEL TRASPASO AL DESPIECE ===
+        function enviarAlDespiece() {
+            const alto = parseFloat(document.getElementById('mAlto').value) || 0;
+            const ancho = parseFloat(document.getElementById('mAncho').value) || 0;
+            const prof = parseFloat(document.getElementById('mProf').value) || 0;
+            const grosor = parseFloat(document.getElementById('mGrosor').value) || 18;
+            const vDivs = parseInt(document.getElementById('mDivV').value) || 0;
+            const hRepisas = parseInt(document.getElementById('mRepisas').value) || 0;
+
+            const tbody = document.getElementById('bodyPiezas');
+            tbody.innerHTML = ''; // Limpiar tabla actual
+
+            // Función ayudante para inyectar filas
+            const inyectarFila = (ref, l, a, cant) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><input type="text" class="ref" value="${ref}"></td>
+                    <td><input type="number" class="largo" value="${Math.round(l)}"></td>
+                    <td><input type="number" class="ancho" value="${Math.round(a)}"></td>
+                    <td><input type="number" class="cant" value="${cant}"></td>
+                    <td><select class="cLargo"><option value="0">0</option><option value="1">1</option><option value="2" selected>2</option></select></td>
+                    <td><select class="cAncho"><option value="0">0</option><option value="1" selected>1</option><option value="2">2</option></select></td>
+                    <td><select class="cTipo"><option value="ninguno">-</option><option value="delgado" selected>1mm</option><option value="grueso">3mm</option></select></td>
+                    <td><button class="btn btn-delete" onclick="eliminarFila(this)">✖</button></td>
+                `;
+                tbody.appendChild(tr);
+            }
+
+            // Matemática de despice estructural
+            // 1. Laterales (Alto x Profundidad)
+            inyectarFila('Laterales', alto, prof, 2);
+
+            // 2. Techo y Base (Ancho interno x Profundidad)
+            const anchoInterno = ancho - (2 * grosor);
+            inyectarFila('Techo y Base', anchoInterno, prof, 2);
+
+            // 3. Divisiones Verticales
+            const altoInterno = alto - (2 * grosor);
+            if (vDivs > 0) {
+                inyectarFila('Div. Vertical', altoInterno, prof, vDivs);
+            }
+
+            // 4. Repisas
+            const cols = vDivs + 1;
+            const anchoColumna = (anchoInterno - (vDivs * grosor)) / cols;
+            const totalRepisas = cols * hRepisas;
+            if (totalRepisas > 0) {
+                inyectarFila('Repisa', anchoColumna, prof, totalRepisas);
+            }
+            
+            alert("✅ Medidas calculadas y enviadas a la tabla inferior.");
+        }
+
+        // === FUNCIONES DE LA TABLA Y COTIZACIÓN ===
+        function agregarFilaVacia() {
+            const tbody = document.getElementById('bodyPiezas');
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="text" class="ref" placeholder="Ej: Puerta"></td>
+                <td><input type="number" class="largo" placeholder="0"></td>
+                <td><input type="number" class="ancho" placeholder="0"></td>
+                <td><input type="number" class="cant" value="1"></td>
+                <td><select class="cLargo"><option value="0">0</option><option value="1">1</option><option value="2">2</option></select></td>
+                <td><select class="cAncho"><option value="0">0</option><option value="1">1</option><option value="2">2</option></select></td>
+                <td><select class="cTipo"><option value="ninguno" selected>-</option><option value="delgado">1mm</option><option value="grueso">3mm</option></select></td>
+                <td><button class="btn btn-delete" onclick="eliminarFila(this)">✖</button></td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        function eliminarFila(btn) { btn.closest('tr').remove(); }
+
+        function calcularProyecto() {
+            let areaM2 = 0, cantoD = 0, cantoG = 0;
+            const filas = document.querySelectorAll('#bodyPiezas tr');
+            
+            filas.forEach(fila => {
+                const L = parseFloat(fila.querySelector('.largo').value) || 0;
+                const A = parseFloat(fila.querySelector('.ancho').value) || 0;
+                const cant = parseFloat(fila.querySelector('.cant').value) || 0;
+                const lL = parseFloat(fila.querySelector('.cLargo').value) || 0;
+                const lA = parseFloat(fila.querySelector('.cAncho').value) || 0;
+                const tipo = fila.querySelector('.cTipo').value;
+
+                areaM2 += (L * A * cant) / 1000000;
+                if (tipo !== 'ninguno') {
+                    const perim = ((L * lL * cant) + (A * lA * cant)) / 1000;
+                    tipo === 'delgado' ? cantoD += perim : cantoG += perim;
+                }
+            });
+
+            const planchas = Math.ceil(areaM2 / 4.45); // 4.45m2 efectivos por plancha
+            const pPlan = parseFloat(document.getElementById('pPlancha').value) || 0;
+            const pCort = parseFloat(document.getElementById('pCorte').value) || 0;
+            const pCD = parseFloat(document.getElementById('pCantoD').value) || 0;
+            const pCG = parseFloat(document.getElementById('pCantoG').value) || 0;
+            const pFerr = parseFloat(document.getElementById('pFerreteria').value) || 0;
+            const margen = parseFloat(document.getElementById('pMargen').value) || 0;
+
+            const cMelamina = planchas * (pPlan + pCort);
+            const cCanto = (cantoD * pCD) + (cantoG * pCG);
+            const subtotal = cMelamina + cCanto + pFerr;
+            const mObra = subtotal * (margen / 100);
+            const total = subtotal + mObra;
+
+            document.getElementById('resArea').innerText = areaM2.toFixed(2) + ' m²';
+            document.getElementById('resMetrosD').innerText = cantoD.toFixed(1) + ' m';
+            document.getElementById('resMetrosG').innerText = cantoG.toFixed(1) + ' m';
+            document.getElementById('resPlanchas').innerText = planchas;
+
+            document.getElementById('resCostoMelamina').innerText = 'S/ ' + cMelamina.toFixed(2);
+            document.getElementById('resCostoCanto').innerText = 'S/ ' + cCanto.toFixed(2);
+            document.getElementById('resCostoFerreteria').innerText = 'S/ ' + pFerr.toFixed(2);
+            document.getElementById('resSubtotal').innerText = 'S/ ' + subtotal.toFixed(2);
+            document.getElementById('resManoObra').innerText = 'S/ ' + mObra.toFixed(2);
+            document.getElementById('resTotal').innerText = 'S/ ' + total.toFixed(2);
+
+            document.getElementById('resultados').style.display = 'block';
+        }
+
+        // Dibujar al cargar la página por primera vez
+        window.onload = dibujarMueble;
+    </script>
 </body>
 </html>
