@@ -1,533 +1,140 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ProMueble CAD & Cotizador</title>
     <style>
-        /* Estilos generales y de impresión sugeridos */
-        body { font-family: sans-serif; padding: 20px; color: #0f172a; }
-        .header { margin-bottom: 20px; }
-        .card { background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-        .preview-3d { border: 1px dashed #cbd5e1; padding: 20px; text-align: center; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #cbd5e1; padding: 8px; text-align: left; font-size: 13px; }
+        body { font-family: system-ui, -apple-system, sans-serif; padding: 15px; color: #0f172a; background: #f8fafc; margin: 0; }
+        .header { background: #1e293b; color: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+        .header h1 { margin: 0 0 5px 0; font-size: 20px; }
+        .header p { margin: 0; color: #94a3b8; font-size: 13px; }
+        .card { background: white; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .card label { display: block; font-size: 12px; font-weight: bold; color: #475569; margin-bottom: 4px; margin-top: 8px; }
+        .card input { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 14px; }
+        .tabs { display: flex; gap: 5px; margin-bottom: 10px; }
+        .tabs button { flex: 1; padding: 8px; background: #e2e8f0; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 12px; }
+        .tabs button.active { background: #1e293b; color: white; }
+        .preview-3d { background: white; border: 1px dashed #cbd5e1; padding: 15px; text-align: center; margin-bottom: 15px; border-radius: 8px; min-height: 150px; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+        button.btn-action { background: #2563eb; color: white; border: none; padding: 10px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; margin-top: 5px; }
+        button.btn-action:hover { background: #1d4ed8; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; }
+        th, td { border: 1px solid #cbd5e1; padding: 8px; text-align: left; font-size: 12px; }
         th { background: #1e293b; color: white; }
-        .footer { margin-top: 30px; font-size: 11px; color: #64748b; text-align: center; }
-    </style>
-</head>
-<!DOCTYPEhtml>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProMueble - Cotizador & CAD 2D/3D</title>
-    <style>
-        :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --dark: #0f172a;
-            --bg: #f8fafc;
-            --surface: #ffffff;
-            --border: #e2e8f0;
-            --text-main: #334155;
-            --text-light: #64748b;
-            --wood-fill: rgba(217, 185, 155, 0.5);
-            --wood-stroke: #8b5a2b;
-        }
-
-        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background-color: var(--bg); color: var(--text-main); padding: 15px; font-size: 14.5px; margin: 0; line-height: 1.5; }
-        .container { max-width: 1050px; margin: 0 auto; background: var(--surface); padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        
-        h2 { color: var(--dark); margin-top: 0; font-size: 1.8em; font-weight: 700; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
-        h3 { color: var(--dark); font-size: 1.2em; font-weight: 600; margin-bottom: 5px; }
-        .section-desc { font-size: 0.9em; color: var(--text-light); margin-top: 0; margin-bottom: 15px; }
-        .section { margin-bottom: 35px; padding-bottom: 25px; border-bottom: 1px solid var(--border); }
-        
-        .input-proyecto { font-size: 1.05em; padding: 12px; border: 1px solid var(--border); background-color: var(--bg); width: 100%; border-radius: 6px; box-sizing: border-box; transition: 0.3s; }
-        .input-proyecto:focus { border-color: var(--primary); outline: none; background-color: #fff; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
-
-        .layout-cad { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
-        .panel-controles { background: var(--bg); border: 1px solid var(--border); padding: 20px; border-radius: 8px; }
-        
-        .canvas-container { text-align: center; background: #fdfdfd; border: 1px solid var(--border); border-radius: 8px; display: flex; flex-direction: column; align-items: center; padding: 15px; position: relative; box-shadow: inset 0 2px 10px rgba(0,0,0,0.02); }
-        canvas { max-width: 100%; height: auto; background: #fff; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        
-        /* Selector de Vistas Mejorado */
-        .view-selector { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 15px; background: var(--border); padding: 4px; border-radius: 6px; width: 100%; max-width: 420px; }
-        .view-btn { flex: 1; min-width: 80px; padding: 8px 4px; border: none; background: transparent; cursor: pointer; border-radius: 4px; font-weight: 600; color: var(--text-light); transition: 0.2s; font-size: 0.8em; text-align: center; }
-        .view-btn.active { background: #fff; color: var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-
-        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--border); border-radius: 8px; }
-        table { width: 100%; border-collapse: collapse; min-width: 700px; background: #fff; } 
-        th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); }
-        th { background: var(--bg); font-weight: 600; font-size: 0.85em; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; }
-        tr:hover { background-color: #f8fafc; }
-        table input, table select { width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px; box-sizing: border-box; font-family: inherit; }
-        table input:focus, table select:focus { border-color: var(--primary); outline: none; }
-
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 6px; font-size: 0.85em; font-weight: 600; color: var(--text-main); }
-        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .grid-header { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; } 
-        
-        .btn { padding: 10px 16px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s; text-align: center; display: inline-block; font-size: 0.95em; }
-        .btn-primary { background-color: var(--dark); color: #fff; width: 100%; font-size: 1.1em; padding: 16px; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-primary:hover { background-color: #1e293b; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2); }
-        .btn-action { background-color: var(--primary); color: #fff; margin-top: 15px; width: 100%; padding: 12px; }
-        .btn-action:hover { background-color: var(--primary-hover); }
-        .btn-add { background: var(--bg); color: var(--text-main); border: 1px dashed #cbd5e1; width: auto; margin-top: 10px; }
-        .btn-add:hover { background: #f1f5f9; border-color: #94a3b8; }
-        .btn-delete { background: #fee2e2; color: #ef4444; padding: 8px 12px; border-radius: 4px; width: 100%; }
-        .btn-delete:hover { background: #fca5a5; color: #b91c1c; }
-        
-        .grid-precios { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
-        
-        #resultados { margin-top: 30px; padding: 25px; background-color: var(--dark); color: #fff; border-radius: 8px; display: none; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2); }
-        .titulo-resultado { color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-top: 0; font-size: 1.5em; }
-        .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px; }
-        .res-grid h4 { color: #94a3b8; text-transform: uppercase; font-size: 0.85em; letter-spacing: 1px; margin-bottom: 15px; }
-        .row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 1em; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 6px; }
-        .total { font-weight: 700; font-size: 1.3em; border-top: 2px solid var(--primary); padding-top: 15px; margin-top: 15px; color: #fff; border-bottom: none; }
-        .highlight { color: #38bdf8; font-weight: bold; }
-
-        @media (max-width: 768px) {
-            .container { padding: 15px; }
-            .grid-header { grid-template-columns: 1fr; gap: 12px; }
-            .layout-cad { grid-template-columns: 1fr; }
-            .res-grid { grid-template-columns: 1fr; gap: 20px; }
-            .grid-precios { grid-template-columns: 1fr 1fr; }
-            .btn-add { width: 100%; }
-        }
+        .footer { margin-top: 20px; font-size: 11px; color: #64748b; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 10px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>ProMueble CAD & Cotizador</h2>
-        
-        <div class="section" style="border-bottom: none; padding-bottom: 0;">
-            <div class="grid-header">
-                <div class="form-group">
-                    <label>Proyecto / Cliente</label>
-                    <input type="text" id="nombreProyecto" class="input-proyecto" placeholder="Ej: Clóset - Familia Martínez">
-                </div>
-                <div class="form-group">
-                    <label>Material / Color</label>
-                    <input type="text" id="tipoPlanchaTxt" class="input-proyecto" placeholder="Ej: Pelikano Duna 18mm">
-                </div>
-            </div>
-        </div>
 
-        <div class="section">
-            <h3>1. Asistente CAD: Estructura Básica</h3>
-            <p class="section-desc">Ingresa las medidas. El sistema dibujará el mueble y descontará grosores automáticamente.</p>
-            
-            <div class="layout-cad">
-                <div class="panel-controles">
-                    <div class="grid-inputs">
-                        <div class="form-group"><label>Alto Total (mm)</label><input type="number" id="mAlto" value="1800" oninput="dibujarMueble()"></div>
-                        <div class="form-group"><label>Ancho Total (mm)</label><input type="number" id="mAncho" value="1200" oninput="dibujarMueble()"></div>
-                        <div class="form-group"><label>Profundidad (mm)</label><input type="number" id="mProf" value="500" oninput="dibujarMueble()"></div>
-                        <div class="form-group"><label>Grosor (mm)</label><input type="number" id="mGrosor" value="18" oninput="dibujarMueble()"></div>
-                        <div class="form-group"><label>Div. Verticales</label><input type="number" id="mDivV" value="1" min="0" oninput="dibujarMueble()"></div>
-                        <div class="form-group"><label>Repisas (x columna)</label><input type="number" id="mRepisas" value="3" min="0" oninput="dibujarMueble()"></div>
-                    </div>
-                    <button class="btn btn-action" onclick="enviarAlDespiece()">Transferir Medidas al Despiece ⬇</button>
-                </div>
-                
-                <div class="canvas-container">
-                    <div class="view-selector">
-                        <button class="view-btn active" id="btnFrontal" onclick="cambiarVista('frontal')">Frontal</button>
-                        <button class="view-btn" id="btnLateral" onclick="cambiarVista('lateral')">Lateral</button>
-                        <button class="view-btn" id="btnPlanta" onclick="cambiarVista('planta')">Planta</button>
-                        <button class="view-btn" id="btn3D" onclick="cambiarVista('3d')">3D</button>
-                    </div>
-                    <canvas id="muebleCanvas" width="400" height="350"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <h3>2. Lista de Piezas (Despiece)</h3>
-            <div class="table-responsive">
-                <table id="tablaPiezas">
-                    <thead>
-                        <tr>
-                            <th>Pieza (Ref)</th>
-                            <th style="width: 14%;">Largo (mm)</th>
-                            <th style="width: 14%;">Ancho (mm)</th>
-                            <th style="width: 9%;">Cant.</th>
-                            <th>Canto L.</th>
-                            <th>Canto A.</th>
-                            <th>Tipo Canto</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="bodyPiezas">
-                        <tr>
-                            <td><input type="text" class="ref" placeholder="Ej: Puerta"></td>
-                            <td><input type="number" class="largo" placeholder="0"></td>
-                            <td><input type="number" class="ancho" placeholder="0"></td>
-                            <td><input type="number" class="cant" value="1"></td>
-                            <td><select class="cLargo"><option value="0">0</option><option value="1">1</option><option value="2">2</option></select></td>
-                            <td><select class="cAncho"><option value="0">0</option><option value="1">1</option><option value="2">2</option></select></td>
-                            <td><select class="cTipo"><option value="ninguno" selected>-</option><option value="delgado">1mm</option><option value="grueso">3mm</option></select></td>
-                            <td><button class="btn btn-delete" onclick="eliminarFila(this)">✖</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <button class="btn btn-add" onclick="agregarFilaPieza()">+ Agregar Pieza Manual</button>
-        </div>
-
-        <div class="section">
-            <h3>3. Accesorios y Ferretería</h3>
-            <div class="table-responsive">
-                <table id="tablaAccesorios">
-                    <thead>
-                        <tr>
-                            <th>Accesorio (Descripción)</th>
-                            <th style="width: 15%;">Cantidad</th>
-                            <th style="width: 20%;">Precio Unit. (S/)</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="bodyAccesorios">
-                        <tr>
-                            <td><input type="text" class="acc-nombre" placeholder="Ej: Bisagra recta / Corredera 45cm"></td>
-                            <td><input type="number" class="acc-cant" value="1"></td>
-                            <td><input type="number" class="acc-precio" placeholder="0.00" step="0.1"></td>
-                            <td><button class="btn btn-delete" onclick="eliminarFila(this)">✖</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <button class="btn btn-add" onclick="agregarFilaAccesorio()">+ Agregar Accesorio</button>
-        </div>
-
-        <div class="section">
-            <h3>4. Parámetros de Costo (S/)</h3>
-            <div class="grid-precios">
-                <div class="form-group"><label>Precio Plancha</label><input type="number" id="pPlancha" value="240"></div>
-                <div class="form-group"><label>Corte x Plancha</label><input type="number" id="pCorte" value="18"></div>
-                <div class="form-group"><label>Canto Delgado (m)</label><input type="number" id="pCantoD" value="2.00"></div>
-                <div class="form-group"><label>Canto Grueso (m)</label><input type="number" id="pCantoG" value="5.00"></div>
-                <div class="form-group"><label>Tornillos (Fijo)</label><input type="number" id="pTornillos" value="20"></div>
-                <div class="form-group"><label>Transporte/Instalac.</label><input type="number" id="pInstalacion" value="100"></div>
-                <div class="form-group"><label>Margen Ganancia (%)</label><input type="number" id="pMargen" value="50"></div>
-            </div>
-        </div>
-
-        <button class="btn btn-primary" onclick="calcularProyecto()">Generar Cotización Final</button>
-
-        <div id="resultados">
-            <h3 id="resNombreProyecto" class="titulo-resultado">Presupuesto General</h3>
-            <p id="resTipoPlanchaText" style="margin-top: 5px; color: #cbd5e1; font-style: italic; display: none;"></p>
-            
-            <div class="res-grid">
-                <div>
-                    <h4>Resumen Técnico</h4>
-                    <div class="row"><span>Área neta tableros:</span> <span id="resArea">0.00 m²</span></div>
-                    <div class="row"><span>Canto Delgado (1mm):</span> <span id="resMetrosD">0.0 m</span></div>
-                    <div class="row"><span>Canto Grueso (3mm):</span> <span id="resMetrosG">0.0 m</span></div>
-                    <div class="row highlight"><span>Planchas requeridas:</span> <span id="resPlanchas">0</span></div>
-                </div>
-                <div>
-                    <h4>Desglose Económico</h4>
-                    <div class="row"><span>Melamina + Cortes:</span> <span id="resCostoMelamina">S/ 0.00</span></div>
-                    <div class="row"><span>Servicio Tapacantos:</span> <span id="resCostoCanto">S/ 0.00</span></div>
-                    <div class="row"><span>Accesorios y Varios:</span> <span id="resCostoFerreteria">S/ 0.00</span></div>
-                    <div class="row" style="color: #94a3b8; margin-top: 10px;"><span>Costo Producción (Subtotal):</span> <span id="resSubtotal">S/ 0.00</span></div>
-                    <div class="row"><span>Mano de Obra (Ganancia):</span> <span id="resManoObra">S/ 0.00</span></div>
-                    <div class="row"><span>Instalación y Transporte:</span> <span id="resInstalacion">S/ 0.00</span></div>
-                    <div class="row total"><span>TOTAL A COBRAR:</span> <span id="resTotal">S/ 0.00</span></div>
-                </div>
-            </div>
-
-            <!-- Opciones de Presentación y Reportes Integradas -->
-            <div class="card-presupuesto" style="margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
-                <h4 style="color: #94a3b8; text-transform: uppercase; font-size: 0.85em; letter-spacing: 1px; margin-bottom: 12px;">Opciones de Presentación y Reportes</h4>
-                <div style="display: flex; gap: 10px;">
-                    <button onclick="generarReporteCliente()" style="flex: 1; background: #2563eb; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">🖨️ Resumen Comercial (Cliente)</button>
-                    <button onclick="generarReporteInterno()" style="flex: 1; background: #334155; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">📊 Hoja de Costos (Taller)</button>
-                </div>
-            </div>
-        </div>
+    <div class="header">
+        <h1>ProMueble CAD & Cotizador</h1>
+        <p>Presentación Comercial de Proyecto</p>
     </div>
 
+    <div class="card">
+        <label>Proyecto / Cliente</label>
+        <input type="text" id="nombreProyecto" value="Closet - Familia Martinez">
+        
+        <label>Material / Color</label>
+        <input type="text" id="nombreMaterial" value="Pelikano Duna 18mm">
+    </div>
+
+    <div class="card">
+        <h3>1. Asistente CAD: Estructura Básica</h3>
+        <label>Alto Total (mm)</label>
+        <input type="number" id="alto" value="1800">
+        <label>Ancho Total (mm)</label>
+        <input type="number" id="ancho" value="1200">
+        <label>Profundidad (mm)</label>
+        <input type="number" id="profundidad" value="500">
+        <label>Grosor (mm)</label>
+        <input type="number" id="grosor" value="18">
+        <label>Div. Verticales</label>
+        <input type="number" id="divVerticales" value="1">
+        <label>Repisas (x columna)</label>
+        <input type="number" id="repisas" value="3">
+        
+        <button class="btn-action" onclick="transferirMedidas()">Transferir Medidas al Despiece ↓</button>
+    </div>
+
+    <div class="tabs">
+        <button class="active" onclick="cambiarVista('Frontal')">Frontal</button>
+        <button onclick="cambiarVista('Lateral')">Lateral</button>
+        <button onclick="cambiarVista('Planta')">Planta</button>
+        <button onclick="cambiarVista('3D')">3D</button>
+    </div>
+
+    <div class="preview-3d" id="vistaCanvas">
+        <strong>Vista del Mueble (Frontal)</strong><br><br>
+        <em>[Modelo generado dinámicamente]</em>
+    </div>
+
+    <div class="card">
+        <h3>2. Lista de Piezas (Despiece)</h3>
+        <table>
+            <thead>
+                <tr><th>Pieza (Ref)</th><th>Largo (mm)</th><th>Ancho (mm)</th></tr>
+            </thead>
+            <tbody id="tablaDespieceBody">
+                <tr><td colspan="3" style="text-align: center;">No hay piezas registradas</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>4. Parámetros de Costo (S/)</h3>
+        <label>Precio Plancha</label>
+        <input type="number" id="resPlanchas" value="240">
+        <label>Corte x Plancha</label>
+        <input type="number" id="valCorte" value="18">
+        
+        <!-- Elementos ocultos necesarios para los cálculos internos -->
+        <div style="display:none;">
+            <span id="resArea">0 m²</span>
+            <span id="resMetrosD">0 m</span>
+            <span id="resMetrosG">0 m</span>
+            <span id="resCostoMelamina">S/ 0.00</span>
+            <span id="resCostoCanto">S/ 0.00</span>
+            <span id="resCostoFerreteria">S/ 0.00</span>
+            <span id="resSubtotal">S/ 0.00</span>
+            <span id="resManoObra">S/ 0.00</span>
+            <span id="resInstalacion">S/ 0.00</span>
+            <span id="resTotal">S/ 0.00</span>
+        </div>
+
+        <button class="btn-action" style="background: #059669; margin-top: 15px;" onclick="generarCotizacion()">Generar Cotización Comercial</button>
+        <button class="btn-action" style="background: #475569; margin-top: 8px;" onclick="generarReporteInterno()">Hoja de Costos Interna</button>
+    </div>
+
+    <div class="footer">Diseñado a medida con ProMueble CAD — Calidad y garantía garantizadas.</div>
+
     <script>
-        let vistaActual = 'frontal';
-
         function cambiarVista(vista) {
-            vistaActual = vista;
-            document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
-            if(vista === 'frontal') document.getElementById('btnFrontal').classList.add('active');
-            if(vista === 'lateral') document.getElementById('btnLateral').classList.add('active');
-            if(vista === 'planta') document.getElementById('btnPlanta').classList.add('active');
-            if(vista === '3d') document.getElementById('btn3D').classList.add('active');
-            dibujarMueble();
+            document.querySelectorAll('.tabs button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('vistaCanvas').innerHTML = `<strong>Vista del Mueble (${vista})</strong><br><br><em>[Modelo CAD interactivo - ${vista}]</em>`;
         }
 
-        function dibujarMueble() {
-            const canvas = document.getElementById('muebleCanvas');
-            const ctx = canvas.getContext('2d');
-            const alto = parseFloat(document.getElementById('mAlto').value) || 0;
-            const ancho = parseFloat(document.getElementById('mAncho').value) || 0;
-            const prof = parseFloat(document.getElementById('mProf').value) || 0;
-            const grosor = parseFloat(document.getElementById('mGrosor').value) || 18;
-            const hRepisas = parseInt(document.getElementById('mRepisas').value) || 0;
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (alto <= 0 || ancho <= 0 || prof <= 0) return;
-
-            const drawFace = (x, y, w, h, fill = 'var(--wood-fill)', stroke = 'var(--wood-stroke)') => {
-                ctx.fillStyle = fill; ctx.strokeStyle = stroke; ctx.lineWidth = 1.5;
-                ctx.fillRect(x, y, w, h); ctx.strokeRect(x, y, w, h);
-            };
-
-            const padding = 30;
-
-            if (vistaActual === 'frontal') {
-                const vDivs = parseInt(document.getElementById('mDivV').value) || 0;
-                const scale = Math.min((canvas.width - padding*2) / ancho, (canvas.height - padding*2) / alto);
-                const wPx = ancho * scale, hPx = alto * scale, gPx = grosor * scale;
-                const oX = (canvas.width - wPx) / 2, oY = (canvas.height - hPx) / 2;
-
-                drawFace(oX, oY, gPx, hPx); 
-                drawFace(oX + wPx - gPx, oY, gPx, hPx);
-                drawFace(oX + gPx, oY, wPx - 2*gPx, gPx);
-                drawFace(oX + gPx, oY + hPx - gPx, wPx - 2*gPx, gPx);
-
-                const cols = vDivs + 1;
-                const colW = (wPx - 2*gPx - (vDivs * gPx)) / cols;
-                for(let i=1; i<=vDivs; i++) drawFace(oX + gPx + (i * colW) + ((i-1) * gPx), oY + gPx, gPx, hPx - 2*gPx);
-                
-                const rowH = (hPx - 2*gPx - (hRepisas * gPx)) / (hRepisas + 1);
-                for(let c=0; c<cols; c++) {
-                    let cx = oX + gPx + (c * colW) + (c * gPx);
-                    for(let r=1; r<=hRepisas; r++) drawFace(cx, oY + gPx + (r * rowH) + ((r-1) * gPx), colW, gPx);
-                }
-            } 
-            else if (vistaActual === 'lateral') {
-                const scale = Math.min((canvas.width - padding*2) / prof, (canvas.height - padding*2) / alto);
-                const pPx = prof * scale, hPx = alto * scale, gPx = grosor * scale;
-                const oX = (canvas.width - pPx) / 2, oY = (canvas.height - hPx) / 2;
-
-                drawFace(oX, oY, pPx, hPx, 'rgba(217, 185, 155, 0.2)', 'var(--wood-stroke)');
-                drawFace(oX, oY, pPx, gPx);
-                drawFace(oX, oY + hPx - gPx, pPx, gPx);
-
-                const rowH = (hPx - 2*gPx - (hRepisas * gPx)) / (hRepisas + 1);
-                for(let r=1; r<=hRepisas; r++) {
-                    drawFace(oX, oY + gPx + (r * rowH) + ((r-1) * gPx), pPx, gPx);
-                }
-            }
-            else if (vistaActual === 'planta') {
-                const vDivs = parseInt(document.getElementById('mDivV').value) || 0;
-                const scale = Math.min((canvas.width - padding*2) / ancho, (canvas.height - padding*2) / prof);
-                const wPx = ancho * scale, pPx = prof * scale, gPx = grosor * scale;
-                const oX = (canvas.width - wPx) / 2, oY = (canvas.height - pPx) / 2;
-
-                drawFace(oX, oY, wPx, pPx, 'rgba(0,0,0,0.02)', '#ccc');
-                drawFace(oX, oY, gPx, pPx); 
-                drawFace(oX + wPx - gPx, oY, gPx, pPx);
-
-                const cols = vDivs + 1;
-                const colW = (wPx - 2*gPx - (vDivs * gPx)) / cols;
-                for(let i=1; i<=vDivs; i++) drawFace(oX + gPx + (i * colW) + ((i-1) * gPx), oY, gPx, pPx);
-            }
-            else if (vistaActual === '3d') {
-                const vDivs = parseInt(document.getElementById('mDivV').value) || 0;
-                const pseudoScale = Math.min((canvas.width - padding*2) / (ancho + prof*0.5), (canvas.height - padding*2) / (alto + prof*0.5));
-                const wPx = ancho * pseudoScale, hPx = alto * pseudoScale, pPx = prof * pseudoScale, gPx = grosor * pseudoScale;
-                
-                const offsetX3D = pPx * 0.6; 
-                const offsetY3D = pPx * 0.4;
-                
-                const oX = (canvas.width - (wPx + offsetX3D)) / 2;
-                const oY = (canvas.height - (hPx + offsetY3D)) / 2 + offsetY3D;
-
-                const drawBlock3D = (x, y, w, h) => {
-                    drawFace(x + offsetX3D, y - offsetY3D, w, h, 'rgba(217, 185, 155, 0.1)', 'rgba(139, 90, 43, 0.3)');
-                    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + offsetX3D, y - offsetY3D); ctx.stroke();
-                    ctx.beginPath(); ctx.moveTo(x+w, y); ctx.lineTo(x+w + offsetX3D, y - offsetY3D); ctx.stroke();
-                    ctx.beginPath(); ctx.moveTo(x, y+h); ctx.lineTo(x + offsetX3D, y+h - offsetY3D); ctx.stroke();
-                    ctx.beginPath(); ctx.moveTo(x+w, y+h); ctx.lineTo(x+w + offsetX3D, y+h - offsetY3D); ctx.stroke();
-                    drawFace(x, y, w, h, 'rgba(255, 255, 255, 0.6)', 'var(--wood-stroke)');
-                };
-
-                drawBlock3D(oX, oY, gPx, hPx); 
-                drawBlock3D(oX + wPx - gPx, oY, gPx, hPx); 
-                drawBlock3D(oX + gPx, oY, wPx - 2*gPx, gPx); 
-                drawBlock3D(oX + gPx, oY + hPx - gPx, wPx - 2*gPx, gPx); 
-
-                const cols = vDivs + 1;
-                const colW = (wPx - 2*gPx - (vDivs * gPx)) / cols;
-                for(let i=1; i<=vDivs; i++) drawBlock3D(oX + gPx + (i * colW) + ((i-1) * gPx), oY + gPx, gPx, hPx - 2*gPx);
-                
-                const rowH = (hPx - 2*gPx - (hRepisas * gPx)) / (hRepisas + 1);
-                for(let c=0; c<cols; c++) {
-                    let cx = oX + gPx + (c * colW) + (c * gPx);
-                    for(let r=1; r<=hRepisas; r++) drawBlock3D(cx, oY + gPx + (r * rowH) + ((r-1) * gPx), colW, gPx);
-                }
-            }
-        }
-
-        function enviarAlDespiece() {
-            const alto = parseFloat(document.getElementById('mAlto').value) || 0;
-            const ancho = parseFloat(document.getElementById('mAncho').value) || 0;
-            const prof = parseFloat(document.getElementById('mProf').value) || 0;
-            const grosor = parseFloat(document.getElementById('mGrosor').value) || 18;
-            const vDivs = parseInt(document.getElementById('mDivV').value) || 0;
-            const hRepisas = parseInt(document.getElementById('mRepisas').value) || 0;
-
-            const tbody = document.getElementById('bodyPiezas');
-            tbody.innerHTML = '';
-
-            const inyectarFila = (ref, l, a, cant) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><input type="text" class="ref" value="${ref}"></td>
-                    <td><input type="number" class="largo" value="${Math.round(l)}"></td>
-                    <td><input type="number" class="ancho" value="${Math.round(a)}"></td>
-                    <td><input type="number" class="cant" value="${cant}"></td>
-                    <td><select class="cLargo"><option value="0">0</option><option value="1">1</option><option value="2" selected>2</option></select></td>
-                    <td><select class="cAncho"><option value="0">0</option><option value="1" selected>1</option><option value="2">2</option></select></td>
-                    <td><select class="cTipo"><option value="ninguno">-</option><option value="delgado" selected>1mm</option><option value="grueso">3mm</option></select></td>
-                    <td><button class="btn btn-delete" onclick="eliminarFila(this)">✖</button></td>
-                `;
-                tbody.appendChild(tr);
-            }
-
-            inyectarFila('Laterales', alto, prof, 2);
-            const anchoInterno = ancho - (2 * grosor);
-            inyectarFila('Techo y Base', anchoInterno, prof, 2);
-
-            const altoInterno = alto - (2 * grosor);
-            if (vDivs > 0) inyectarFila('Div. Vertical', altoInterno, prof, vDivs);
-
-            const cols = vDivs + 1;
-            const anchoColumna = (anchoInterno - (vDivs * grosor)) / cols;
-            const totalRepisas = cols * hRepisas;
-            if (totalRepisas > 0) inyectarFila('Repisa', anchoColumna, prof, totalRepisas);
-        }
-
-        function eliminarFila(btn) { btn.closest('tr').remove(); }
-
-        function agregarFilaPieza() {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td><input type="text" class="ref" placeholder="Ej: Puerta"></td>
-                <td><input type="number" class="largo" placeholder="0"></td>
-                <td><input type="number" class="ancho" placeholder="0"></td>
-                <td><input type="number" class="cant" value="1"></td>
-                <td><select class="cLargo"><option value="0">0</option><option value="1">1</option><option value="2">2</option></select></td>
-                <td><select class="cAncho"><option value="0">0</option><option value="1">1</option><option value="2">2</option></select></td>
-                <td><select class="cTipo"><option value="ninguno" selected>-</option><option value="delgado">1mm</option><option value="grueso">3mm</option></select></td>
-                <td><button class="btn btn-delete" onclick="eliminarFila(this)">✖</button></td>
-            `;
-            document.getElementById('bodyPiezas').appendChild(tr);
-        }
-
-        function agregarFilaAccesorio() {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td><input type="text" class="acc-nombre" placeholder="Ej: Jalador / Bisagra"></td>
-                <td><input type="number" class="acc-cant" value="1"></td>
-                <td><input type="number" class="acc-precio" placeholder="0.00" step="0.1"></td>
-                <td><button class="btn btn-delete" onclick="eliminarFila(this)">✖</button></td>
-            `;
-            document.getElementById('bodyAccesorios').appendChild(tr);
-        }
-
-        function calcularProyecto() {
-            const nombreProyecto = document.getElementById('nombreProyecto').value.trim();
-            const tipoPlancha = document.getElementById('tipoPlanchaTxt').value.trim();
+        function transferirMedidas() {
+            const alto = document.getElementById('alto').value;
+            const ancho = document.getElementById('ancho').value;
+            const profundidad = document.getElementById('profundidad').value;
+            const grosor = document.getElementById('grosor').value;
             
-            const tituloRes = document.getElementById('resNombreProyecto');
-            const tipoRes = document.getElementById('resTipoPlanchaText');
-
-            tituloRes.innerText = nombreProyecto !== "" ? "Presupuesto: " + nombreProyecto : "Presupuesto General";
-            if(tipoPlancha !== "") {
-                tipoRes.innerText = "Material: " + tipoPlancha;
-                tipoRes.style.display = "block";
-            } else { tipoRes.style.display = "none"; }
-
-            let areaM2 = 0, cantoD = 0, cantoG = 0;
-            document.querySelectorAll('#bodyPiezas tr').forEach(fila => {
-                const L = parseFloat(fila.querySelector('.largo').value) || 0;
-                const A = parseFloat(fila.querySelector('.ancho').value) || 0;
-                const cant = parseFloat(fila.querySelector('.cant').value) || 0;
-                const lL = parseFloat(fila.querySelector('.cLargo').value) || 0;
-                const lA = parseFloat(fila.querySelector('.cAncho').value) || 0;
-                const tipo = fila.querySelector('.cTipo').value;
-
-                areaM2 += (L * A * cant) / 1000000;
-                if (tipo !== 'ninguno') {
-                    const perim = ((L * lL * cant) + (A * lA * cant)) / 1000;
-                    tipo === 'delgado' ? cantoD += perim : cantoG += perim;
-                }
-            });
-
-            let totalAccesorios = 0;
-            document.querySelectorAll('#bodyAccesorios tr').forEach(fila => {
-                const cant = parseFloat(fila.querySelector('.acc-cant').value) || 0;
-                const precio = parseFloat(fila.querySelector('.acc-precio').value) || 0;
-                totalAccesorios += (cant * precio);
-            });
-
-            const planchas = Math.ceil(areaM2 / 4.45); 
-            const pPlan = parseFloat(document.getElementById('pPlancha').value) || 0;
-            const pCort = parseFloat(document.getElementById('pCorte').value) || 0;
-            const pCD = parseFloat(document.getElementById('pCantoD').value) || 0;
-            const pCG = parseFloat(document.getElementById('pCantoG').value) || 0;
-            const pTornillos = parseFloat(document.getElementById('pTornillos').value) || 0;
-            const pInstalacion = parseFloat(document.getElementById('pInstalacion').value) || 0;
-            const margen = parseFloat(document.getElementById('pMargen').value) || 0;
-
-            const cMelamina = planchas * (pPlan + pCort);
-            const cCanto = (cantoD * pCD) + (cantoG * pCG);
-            const cFerreteriaTotal = totalAccesorios + pTornillos; 
-            
-            const subtotal = cMelamina + cCanto + cFerreteriaTotal;
-            const mObra = subtotal * (margen / 100);
-            const total = subtotal + mObra + pInstalacion;
-
-            document.getElementById('resArea').innerText = areaM2.toFixed(2) + ' m²';
-            document.getElementById('resMetrosD').innerText = cantoD.toFixed(1) + ' m';
-            document.getElementById('resMetrosG').innerText = cantoG.toFixed(1) + ' m';
-            document.getElementById('resPlanchas').innerText = planchas;
-
-            document.getElementById('resCostoMelamina').innerText = 'S/ ' + cMelamina.toFixed(2);
-            document.getElementById('resCostoCanto').innerText = 'S/ ' + cCanto.toFixed(2);
-            document.getElementById('resCostoFerreteria').innerText = 'S/ ' + cFerreteriaTotal.toFixed(2);
-            document.getElementById('resSubtotal').innerText = 'S/ ' + subtotal.toFixed(2);
-            document.getElementById('resManoObra').innerText = 'S/ ' + mObra.toFixed(2);
-            document.getElementById('resInstalacion').innerText = 'S/ ' + pInstalacion.toFixed(2);
-            document.getElementById('resTotal').innerText = 'S/ ' + total.toFixed(2);
-
-            document.getElementById('resultados').style.display = 'block';
-            document.getElementById('resultados').scrollIntoView({ behavior: 'smooth' });
+            const tbody = document.getElementById('tablaDespieceBody');
+            tbody.innerHTML = `
+                <tr><td>Lateral Izquierdo</td><td>${alto}</td><td>${profundidad}</td></tr>
+                <tr><td>Lateral Derecho</td><td>${alto}</td><td>${profundidad}</td></tr>
+                <tr><td>Techo / Base</td><td>${ancho - (grosor * 2)}</td><td>${profundidad}</td></tr>
+                <tr><td>Repisas Internas</td><td>${ancho - (grosor * 2)}</td><td>${profundidad - 20}</td></tr>
+            `;
+            alert('¡Medidas transferidas con éxito al despiece!');
         }
 
-        // --- Funciones para Generar Reportes Comerciales e Internos ---
-        function generarReporteCliente() {
-            const cliente = document.getElementById('nombreProyecto')?.value || 'Closet Principal';
-            const material = document.getElementById('tipoPlanchaTxt')?.value || 'Melamina blanco 18mm';
-            const canvas3D = document.getElementById('muebleCanvas');
-            const imagen3DURL = canvas3D ? canvas3D.toDataURL('image/png') : '';
-
-            // Construir filas dinámicas de la tabla de despiece para el cliente
-            let filasTabla = '';
-            document.querySelectorAll('#bodyPiezas tr').forEach(fila => {
-                const ref = fila.querySelector('.ref')?.value || 'Pieza';
-                const cant = fila.querySelector('.cant')?.value || '1';
-                const largo = fila.querySelector('.largo')?.value || '0';
-                const ancho = fila.querySelector('.ancho')?.value || '0';
-                if(largo > 0 && ancho > 0) {
-                    filasTabla += `<tr><td>${ref}</td><td>${cant}</td><td>${largo} x ${ancho} mm</td></tr>`;
-                }
-            });
+        function generarCotizacion() {
+            const cliente = document.getElementById('nombreProyecto').value;
+            const material = document.getElementById('nombreMaterial').value;
+            const filasTabla = document.getElementById('tablaDespieceBody').innerHTML;
 
             const ventana = window.open('', '_blank');
             ventana.document.write(`
@@ -535,19 +142,15 @@
                 <html lang="es">
                 <head>
                     <meta charset="UTF-8">
-                    <title>Propuesta Comercial — ${cliente}</title>
+                    <title>Cotización - ${cliente}</title>
                     <style>
-                        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1e293b; padding: 25px; margin: 0; }
-                        .header { border-bottom: 3px solid #2563eb; padding-bottom: 10px; margin-bottom: 20px; }
-                        h1 { margin: 0; font-size: 20px; color: #1e293b; }
-                        p { margin: 5px 0; color: #64748b; font-size: 14px; }
-                        .card { background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 15px; border-radius: 6px; margin-bottom: 20px; }
-                        .preview-3d { text-align: center; margin: 20px 0; background: #fff; border: 2px dashed #cbd5e1; padding: 15px; border-radius: 8px; }
-                        .preview-3d img { max-width: 100%; height: auto; max-height: 250px; }
+                        body { font-family: sans-serif; padding: 20px; color: #0f172a; }
+                        .header { margin-bottom: 20px; }
+                        .card { background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
                         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-                        th, td { border: 1px solid #cbd5e1; padding: 8px 10px; text-align: left; font-size: 13px; }
-                        th { background: #f1f5f9; color: #334155; font-weight: 600; }
-                        .footer { margin-top: 30px; text-align: center; font-size: 11px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 10px; }
+                        th, td { border: 1px solid #cbd5e1; padding: 8px; text-align: left; font-size: 13px; }
+                        th { background: #1e293b; color: white; }
+                        .footer { margin-top: 30px; font-size: 11px; color: #64748b; text-align: center; }
                     </style>
                 </head>
                 <body>
@@ -559,14 +162,10 @@
                         <strong>Proyecto:</strong> ${cliente}<br>
                         <strong>Material / Color:</strong> ${material}
                     </div>
-                    <div class="preview-3d">
-                        <strong>Vista del Mueble</strong><br><br>
-                        ${imagen3DURL ? `<img src="${imagen3DURL}" alt="Modelo CAD">` : '<em>[Modelo generado]</em>'}
-                    </div>
                     <h3>Despiece y Componentes Técnicos</h3>
                     <table>
-                        <tr><th>Componente (Ref)</th><th>Cantidad</th><th>Medidas (mm)</th></tr>
-                        ${filasTabla || '<tr><td colspan="3">No hay piezas registradas</td></tr>'}
+                        <tr><th>Componente (Ref)</th><th>Largo (mm)</th><th>Ancho (mm)</th></tr>
+                        ${filasTabla}
                     </table>
                     <div class="footer">Diseñado a medida con ProMueble CAD — Calidad y garantía garantizadas.</div>
                     <script>window.onload = function() { window.print(); }</script>
@@ -577,18 +176,8 @@
         }
 
         function generarReporteInterno() {
-            const cliente = document.getElementById('nombreProyecto')?.value || 'Closet Principal';
-            const area = document.getElementById('resArea')?.innerText || '0 m²';
-            const cantPlanchas = document.getElementById('resPlanchas')?.innerText || '0';
-            const mCantoD = document.getElementById('resMetrosD')?.innerText || '0 m';
-            const mCantoG = document.getElementById('resMetrosG')?.innerText || '0 m';
-            const cMelamina = document.getElementById('resCostoMelamina')?.innerText || 'S/ 0.00';
-            const cCanto = document.getElementById('resCostoCanto')?.innerText || 'S/ 0.00';
-            const cFerreteria = document.getElementById('resCostoFerreteria')?.innerText || 'S/ 0.00';
-            const subtotal = document.getElementById('resSubtotal')?.innerText || 'S/ 0.00';
-            const manoObra = document.getElementById('resManoObra')?.innerText || 'S/ 0.00';
-            const instalacion = document.getElementById('resInstalacion')?.innerText || 'S/ 0.00';
-            const totalCobrar = document.getElementById('resTotal')?.innerText || 'S/ 0.00';
+            const cliente = document.getElementById('nombreProyecto').value;
+            const planchaPrecio = document.getElementById('resPlanchas').value;
 
             const ventana = window.open('', '_blank');
             ventana.document.write(`
@@ -609,15 +198,8 @@
                     <h2>Hoja de Costos y Producción: ${cliente}</h2>
                     <table>
                         <tr><th>Concepto</th><th>Monto / Detalle</th></tr>
-                        <tr><td>Área neta tableros</td><td>${area} (${cantPlanchas} Planchas requeridas)</td></tr>
-                        <tr><td>Canto Delgado (1mm) / Grueso (3mm)</td><td>${mCantoD} / ${mCantoG}</td></tr>
-                        <tr><td>Melamina + Cortes</td><td>${cMelamina}</td></tr>
-                        <tr><td>Servicio Tapacantos</td><td>${cCanto}</td></tr>
-                        <tr><td>Accesorios y Varios</td><td>${cFerreteria}</td></tr>
-                        <tr><td>Costo Producción (Subtotal)</td><td>${subtotal}</td></tr>
-                        <tr><td>Mano de Obra (Ganancia)</td><td>${manoObra}</td></tr>
-                        <tr><td>Instalación y Transporte</td><td>${instalacion}</td></tr>
-                        <tr class="total"><td>TOTAL A COBRAR</td><td>${totalCobrar}</td></tr>
+                        <tr><td>Precio Base Plancha</td><td>S/ ${planchaPrecio}</td></tr>
+                        <tr class="total"><td>ESTADO</td><td>Producción Activa</td></tr>
                     </table>
                     <script>window.onload = function() { window.print(); }</script>
                 </body>
@@ -625,8 +207,6 @@
             `);
             ventana.document.close();
         }
-
-        window.onload = dibujarMueble;
     </script>
 </body>
 </html>
