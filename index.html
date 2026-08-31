@@ -15,7 +15,7 @@
         .tabs { display: flex; gap: 5px; margin-bottom: 10px; }
         .tabs button { flex: 1; padding: 8px; background: #e2e8f0; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 12px; }
         .tabs button.active { background: #1e293b; color: white; }
-        .preview-3d { background: white; border: 1px dashed #cbd5e1; padding: 15px; text-align: center; margin-bottom: 15px; border-radius: 8px; min-height: 150px; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+        .preview-3d { background: white; border: 1px dashed #cbd5e1; padding: 15px; text-align: center; margin-bottom: 15px; border-radius: 8px; min-height: 180px; display: flex; align-items: center; justify-content: center; flex-direction: column; }
         button.btn-action { background: #2563eb; color: white; border: none; padding: 10px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; margin-top: 5px; }
         button.btn-action:hover { background: #1d4ed8; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; }
@@ -65,8 +65,7 @@
     </div>
 
     <div class="preview-3d" id="vistaCanvas">
-        <strong>Vista del Mueble (Frontal)</strong><br><br>
-        <em>[Modelo CAD interactivo - Frontal]</em>
+        <canvas id="canvasMueble" width="280" height="160" style="background:#f1f5f9; border-radius:4px;"></canvas>
     </div>
 
     <div class="card">
@@ -79,6 +78,20 @@
                 <tr><td colspan="3" style="text-align: center;">No hay piezas registradas</td></tr>
             </tbody>
         </table>
+        <button class="btn-action" style="background: #475569; margin-top: 10px;" onclick="agregarPiezaManual()">+ Agregar Pieza Manual</button>
+    </div>
+
+    <div class="card">
+        <h3>3. Accesorios y Ferretería</h3>
+        <table>
+            <thead>
+                <tr><th>Accesorio (Descripción)</th></tr>
+            </thead>
+            <tbody id="tablaAccesoriosBody">
+                <tr><td>Bisagra recta / Corredera 45cm</td></tr>
+            </tbody>
+        </table>
+        <button class="btn-action" style="background: #475569; margin-top: 10px;" onclick="agregarAccesorio()">+ Agregar Accesorio</button>
     </div>
 
     <div class="card">
@@ -89,16 +102,64 @@
         <input type="number" id="valCorte" value="18">
 
         <button class="btn-action" style="background: #059669; margin-top: 15px;" onclick="generarCotizacion()">Generar Cotización Comercial</button>
-        <button class="btn-action" style="background: #475569; margin-top: 8px;" onclick="generarReporteInterno()">Hoja de Costos Interna</button>
+        <button class="btn-action" style="background: #334155; margin-top: 8px;" onclick="generarReporteInterno()">Hoja de Costos Interna</button>
     </div>
 
     <div class="footer">Diseñado a medida con ProMueble CAD — Calidad y garantía garantizadas.</div>
 
     <script>
+        let vistaActual = 'Frontal';
+
         function cambiarVista(vista, event) {
             document.querySelectorAll('.tabs button').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            document.getElementById('vistaCanvas').innerHTML = `<strong>Vista del Mueble (${vista})</strong><br><br><em>[Modelo CAD interactivo - ${vista}]</em>`;
+            if(event) event.target.classList.add('active');
+            vistaActual = vista;
+            dibujarMueble();
+        }
+
+        function dibujarMueble() {
+            const canvas = document.getElementById('canvasMueble');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const alto = parseFloat(document.getElementById('alto').value) || 1800;
+            const ancho = parseFloat(document.getElementById('ancho').value) || 1200;
+            const profundidad = parseFloat(document.getElementById('profundidad').value) || 500;
+
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 2;
+            ctx.fillStyle = '#cbd5e1';
+
+            if (vistaActual === 'Frontal') {
+                ctx.strokeRect(70, 20, 140, 120);
+                ctx.strokeRect(140, 20, 1, 120); // División vertical
+                ctx.fillStyle = '#475569';
+                ctx.font = '11px sans-serif';
+                ctx.fillText(`Frente: ${ancho}mm x ${alto}mm`, 50, 155);
+            } else if (vistaActual === 'Lateral') {
+                ctx.strokeRect(90, 20, 100, 120);
+                ctx.fillStyle = '#475569';
+                ctx.font = '11px sans-serif';
+                ctx.fillText(`Lateral: ${profundidad}mm x ${alto}mm`, 60, 155);
+            } else if (vistaActual === 'Planta') {
+                ctx.strokeRect(70, 50, 140, 60);
+                ctx.fillStyle = '#475569';
+                ctx.font = '11px sans-serif';
+                ctx.fillText(`Planta: ${ancho}mm x ${profundidad}mm`, 60, 135);
+            } else {
+                // 3D Simulado
+                ctx.strokeRect(50, 40, 110, 100);
+                ctx.beginPath();
+                ctx.moveTo(50, 40); ctx.lineTo(80, 20); ctx.lineTo(190, 20); ctx.lineTo(160, 40);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(160, 40); ctx.lineTo(190, 20); ctx.lineTo(190, 120); ctx.lineTo(160, 140);
+                ctx.stroke();
+                ctx.fillStyle = '#475569';
+                ctx.font = '11px sans-serif';
+                ctx.fillText(`Modelo 3D Isométrico`, 90, 155);
+            }
         }
 
         function transferirMedidas() {
@@ -114,7 +175,26 @@
                 <tr><td>Techo / Base</td><td>${ancho - (grosor * 2)}</td><td>${profundidad}</td></tr>
                 <tr><td>Repisas Internas</td><td>${ancho - (grosor * 2)}</td><td>${profundidad - 20}</td></tr>
             `;
-            alert('¡Medidas transferidas con éxito al despiece!');
+            dibujarMueble();
+            alert('¡Medidas transferidas con éxito al despiece y actualizadas en el gráfico!');
+        }
+
+        function agregarPiezaManual() {
+            const pieza = prompt("Nombre de la pieza (Ej: Puerta):");
+            const largo = prompt("Largo en mm:");
+            const ancho = prompt("Ancho en mm:");
+            if (pieza && largo && ancho) {
+                const tbody = document.getElementById('tablaDespieceBody');
+                tbody.innerHTML += `<tr><td>${pieza}</td><td>${largo}</td><td>${ancho}</td></tr>`;
+            }
+        }
+
+        function agregarAccesorio() {
+            const accesorio = prompt("Descripción del accesorio (Ej: Tubo ovalado 1.2m):");
+            if (accesorio) {
+                const tbody = document.getElementById('tablaAccesoriosBody');
+                tbody.innerHTML += `<tr><td>${accesorio}</td></tr>`;
+            }
         }
 
         function generarCotizacion() {
@@ -193,6 +273,10 @@
             `);
             ventana.document.close();
         }
+
+        window.onload = function() {
+            dibujarMueble();
+        };
     </script>
 </body>
 </html>
