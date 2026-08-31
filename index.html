@@ -122,7 +122,7 @@
                 <tr>
                     <th>Pieza</th>
                     <th>L × A (mm)</th>
-                    <th>Cantos</th>
+                    <th>Cantos (L1 / L2 / A1 / A2)</th>
                 </tr>
             </thead>
             <tbody id="tablaDespieceBody">
@@ -169,8 +169,6 @@
         <input type="number" id="resPlanchas" value="240" oninput="calcularTotalGeneral()">
         <label>Precio Plancha MDF</label>
         <input type="number" id="resMdf" value="95" oninput="calcularTotalGeneral()">
-        <label>Corte por Plancha</label>
-        <input type="number" id="valCorte" value="18" oninput="calcularTotalGeneral()">
         <label>Precio Metro Canto Delgado (1mm)</label>
         <input type="number" id="valCantoD" value="1.50" oninput="calcularTotalGeneral()">
         <label>Precio Metro Canto Grueso (3mm)</label>
@@ -178,9 +176,6 @@
         
         <label>Costo de Mano de Obra / Armado e Instalación (S/)</label>
         <input type="number" id="costoInstalacion" value="150" oninput="calcularTotalGeneral()">
-
-        <label>Margen de Utilidad Comercial (%) para el Cliente</label>
-        <input type="number" id="margenUtilidad" value="30" oninput="calcularTotalGeneral()">
 
         <div class="resumen-caja" id="cajaResumenCalculado">
             Total Proyecto: S/ 0.00
@@ -455,16 +450,31 @@
 
         function crearSelectorCantos(defL1 = '0', defL2 = '0', defA1 = '0', defA2 = '0') {
             const opciones = `
-                <option value="0">-</option>
-                <option value="D">Delgado 1mm</option>
-                <option value="G">Grueso 3mm</option>
+                <option value="0" ${defL1==='0'?'selected':''}>-</option>
+                <option value="D" ${defL1==='D'?'selected':''}>Delgado 1mm</option>
+                <option value="G" ${defL1==='G'?'selected':''}>Grueso 3mm</option>
+            `;
+            const opcionesL2 = `
+                <option value="0" ${defL2==='0'?'selected':''}>-</option>
+                <option value="D" ${defL2==='D'?'selected':''}>Delgado 1mm</option>
+                <option value="G" ${defL2==='G'?'selected':''}>Grueso 3mm</option>
+            `;
+            const opcionesA1 = `
+                <option value="0" ${defA1==='0'?'selected':''}>-</option>
+                <option value="D" ${defA1==='D'?'selected':''}>Delgado 1mm</option>
+                <option value="G" ${defA1==='G'?'selected':''}>Grueso 3mm</option>
+            `;
+            const opcionesA2 = `
+                <option value="0" ${defA2==='0'?'selected':''}>-</option>
+                <option value="D" ${defA2==='D'?'selected':''}>Delgado 1mm</option>
+                <option value="G" ${defA2==='G'?'selected':''}>Grueso 3mm</option>
             `;
             return `
                 <div class="cantos-grid">
-                    <select class="canto-l1" onchange="calcularTotalGeneral()">${opciones.replace(`value="${defL1}"`, `value="${defL1}" selected`)}</select>
-                    <select class="canto-l2" onchange="calcularTotalGeneral()">${opciones.replace(`value="${defL2}"`, `value="${defL2}" selected`)}</select>
-                    <select class="canto-a1" onchange="calcularTotalGeneral()">${opciones.replace(`value="${defA1}"`, `value="${defA1}" selected`)}</select>
-                    <select class="canto-a2" onchange="calcularTotalGeneral()">${opciones.replace(`value="${defA2}"`, `value="${defA2}" selected`)}</select>
+                    <select class="canto-l1" onchange="calcularTotalGeneral()">${opciones}</select>
+                    <select class="canto-l2" onchange="calcularTotalGeneral()">${opcionesL2}</select>
+                    <select class="canto-a1" onchange="calcularTotalGeneral()">${opcionesA1}</select>
+                    <select class="canto-a2" onchange="calcularTotalGeneral()">${opcionesA2}</select>
                 </div>
             `;
         }
@@ -484,21 +494,45 @@
             
             const tbody = document.getElementById('tablaDespieceBody');
             
+            let estadosPrevios = [];
+            tbody.querySelectorAll('tr').forEach(tr => {
+                const selects = tr.querySelectorAll('select');
+                if(selects.length === 4) {
+                    estadosPrevios.push({
+                        l1: selects[0].value,
+                        l2: selects[1].value,
+                        a1: selects[2].value,
+                        a2: selects[3].value
+                    });
+                }
+            });
+
+            let indexCanto = 0;
+            function getCantoPredeterminado(defL1, defL2, defA1, defA2) {
+                if(estadosPrevios[indexCanto]) {
+                    let ev = estadosPrevios[indexCanto];
+                    indexCanto++;
+                    return crearSelectorCantos(ev.l1, ev.l2, ev.a1, ev.a2);
+                }
+                indexCanto++;
+                return crearSelectorCantos(defL1, defL2, defA1, defA2);
+            }
+
             let html = `
                 <tr>
                     <td>Lateral Izquierdo</td>
                     <td class="medida-pieza" data-l="${alto}" data-a="${profundidad}">${alto} × ${profundidad}</td>
-                    <td>${crearSelectorCantos('G', 'G', '0', '0')}</td>
+                    <td>${getCantoPredeterminado('G', 'G', '0', '0')}</td>
                 </tr>
                 <tr>
                     <td>Lateral Derecho</td>
                     <td class="medida-pieza" data-l="${alto}" data-a="${profundidad}">${alto} × ${profundidad}</td>
-                    <td>${crearSelectorCantos('G', 'G', '0', '0')}</td>
+                    <td>${getCantoPredeterminado('G', 'G', '0', '0')}</td>
                 </tr>
                 <tr>
                     <td>Techo / Base (x2)</td>
                     <td class="medida-pieza" data-l="${ancho - (grosor * 2)}" data-a="${profundidad}" data-cant="2">${ancho - (grosor * 2)} × ${profundidad}</td>
-                    <td>${crearSelectorCantos('G', '0', '0', '0')}</td>
+                    <td>${getCantoPredeterminado('G', '0', '0', '0')}</td>
                 </tr>
             `;
 
@@ -507,7 +541,7 @@
                     <tr>
                         <td>Fondo / Trasera (MDF)</td>
                         <td class="medida-pieza-mdf" data-l="${alto - 10}" data-a="${ancho - 10}">${alto - 10} × ${ancho - 10}</td>
-                        <td><select disabled><option>Sin Canto</option></select></td>
+                        <td><span>Sin Canto</span></td>
                     </tr>
                 `;
             }
@@ -519,7 +553,7 @@
                     <tr>
                         <td>Repisa Interna</td>
                         <td class="medida-pieza" data-l="${lRep}" data-a="${aRep}">${lRep} × ${aRep}</td>
-                        <td>${crearSelectorCantos('D', '0', '0', '0')}</td>
+                        <td>${getCantoPredeterminado('D', '0', '0', '0')}</td>
                     </tr>
                 `;
             }
@@ -530,7 +564,7 @@
                         <tr>
                             <td>Puerta #${p+1}</td>
                             <td class="medida-pieza" data-l="${aP}" data-a="${anP}">${aP} × ${anP}</td>
-                            <td>${crearSelectorCantos('D', 'D', 'D', 'D')}</td>
+                            <td>${getCantoPredeterminado('D', 'D', 'D', 'D')}</td>
                         </tr>
                     `;
                 }
@@ -613,23 +647,22 @@
                 }
             });
 
-            let planchasMelamina = Math.ceil((areaMelaminaMM2 / 3800000) * 10) / 10;
+            const areaPlanchaUtil = 3450000; 
+
+            let planchasMelamina = Math.ceil((areaMelaminaMM2 / areaPlanchaUtil) * 10) / 10;
             if(planchasMelamina < 1 && areaMelaminaMM2 > 0) planchasMelamina = 1;
 
-            let planchasMdf = Math.ceil((areaMdfMM2 / 3800000) * 10) / 10;
+            let planchasMdf = Math.ceil((areaMdfMM2 / areaPlanchaUtil) * 10) / 10;
             if(planchasMdf < 1 && areaMdfMM2 > 0) planchasMdf = 1;
 
             let precioPlancha = parseFloat(document.getElementById('resPlanchas').value) || 0;
             let precioMdf = parseFloat(document.getElementById('resMdf').value) || 0;
-            let valCorte = parseFloat(document.getElementById('valCorte').value) || 0;
             let precioCantoD = parseFloat(document.getElementById('valCantoD').value) || 0;
             let precioCantoG = parseFloat(document.getElementById('valCantoG').value) || 0;
             let costoInstalacion = parseFloat(document.getElementById('costoInstalacion').value) || 0;
-            let margen = parseFloat(document.getElementById('margenUtilidad').value) || 30;
 
             let costoMelamina = planchasMelamina * precioPlancha;
             let costoMdf = planchasMdf * precioMdf;
-            let costoCortes = (planchasMelamina + planchasMdf) * valCorte;
             let costoCantos = (metrosCantoD * precioCantoD) + (metrosCantoG * precioCantoG);
 
             let costoAccesorios = 0;
@@ -639,13 +672,12 @@
                 costoAccesorios += (cant * precio);
             });
 
-            let costoBase = costoMelamina + costoMdf + costoCortes + costoCantos + costoAccesorios + costoInstalacion;
-            let precioVentaCliente = costoBase * (1 + (margen / 100));
+            let costoBase = costoMelamina + costoMdf + costoCantos + costoAccesorios + costoInstalacion;
 
-            window.precioFinalCliente = precioVentaCliente.toFixed(2);
+            window.precioFinalCliente = costoBase.toFixed(2);
 
             document.getElementById('cajaResumenCalculado').innerHTML = `
-                Costo Base: S/ ${costoBase.toFixed(2)} | Margen (${margen}%): <strong>Precio Cliente: S/ ${precioVentaCliente.toFixed(2)}</strong>
+                Inversión / Total Proyecto: <strong>S/ ${costoBase.toFixed(2)}</strong>
             `;
         }
 
@@ -729,8 +761,31 @@
         function generarReporteInterno() {
             const cliente = document.getElementById('nombreProyecto').value;
             const material = document.getElementById('nombreMaterial').value;
-            const filasTabla = document.getElementById('tablaDespieceBody').innerHTML;
             const resumenTexto = document.getElementById('cajaResumenCalculado').innerText;
+
+            let filasClonadas = '';
+            document.querySelectorAll('#tablaDespieceBody tr').forEach(tr => {
+                const tds = tr.querySelectorAll('td');
+                if(tds.length >= 3) {
+                    let pieza = tds[0].innerText;
+                    let medida = tds[1].innerText;
+                    
+                    let cantosTexto = "-";
+                    const selects = tr.querySelectorAll('select');
+                    if(selects.length > 0) {
+                        let arr = [];
+                        selects.forEach(sel => {
+                            let val = sel.value;
+                            arr.push(val === 'D' ? 'Delgado 1mm' : (val === 'G' ? 'Grueso 3mm' : '-'));
+                        });
+                        cantosTexto = arr.join(' / ');
+                    } else {
+                        cantosTexto = tds[2].innerText;
+                    }
+
+                    filasClonadas += `<tr><td>${pieza}</td><td>${medida}</td><td>${cantosTexto}</td></tr>`;
+                }
+            });
 
             const ventana = window.open('', '_blank');
             ventana.document.write(`
@@ -754,8 +809,8 @@
                     <p><strong>Material:</strong> ${material}</p>
                     <h3>Despiece y Cantos</h3>
                     <table>
-                        <tr><th>Componente</th><th>Medidas (Largo × Ancho)</th><th>Cantos</th></tr>
-                        ${filasTabla}
+                        <tr><th>Componente</th><th>Medidas (Largo × Ancho)</th><th>Cantos (L1 / L2 / A1 / A2)</th></tr>
+                        ${filasClonadas}
                     </table>
                     <div class="resumen-print">${resumenTexto}</div>
                     <button class="print-btn" onclick="window.print()">🖨️ Imprimir Hoja Interna</button>
