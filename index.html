@@ -27,20 +27,22 @@
         .footer { margin-top: 15px; font-size: 10px; color: #64748b; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 8px; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 6px; }
         .resumen-caja { background: #f1f5f9; padding: 10px; border-radius: 6px; margin-top: 10px; font-size: 12px; font-weight: bold; color: #1e293b; }
+        .cantos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+        .cantos-grid select { font-size: 9px; padding: 3px; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <h1>ProMueble CAD & Cotizador Profesional</h1>
-        <p>Sistema Inteligente de Despiece, Costos y 3D Interactivo</p>
+        <p>Sistema Inteligente con Puertas, MDF y 3D Interactivo</p>
     </div>
 
     <div class="card">
         <label>Proyecto / Cliente</label>
         <input type="text" id="nombreProyecto" value="Closet - Familia Martinez" oninput="guardarEstado()">
         
-        <label>Tipo de Melamina</label>
+        <label>Tipo de Melamina Estructural</label>
         <select id="tipoAcabado" onchange="actualizarTodo()">
             <option value="blanco">Melamina Blanco</option>
             <option value="blanco_rh">Melamina Blanco RH</option>
@@ -48,6 +50,13 @@
             <option value="amaderado_rh">Melamina Amaderado RH</option>
             <option value="color">Melamina Color</option>
             <option value="color_rh">Melamina Color RH</option>
+        </select>
+        
+        <label>Material de Fondo / Trasera (MDF)</label>
+        <select id="tipoMdf" onchange="actualizarTodo()">
+            <option value="mdf_3mm">MDF 3mm Blanco/Crudo</option>
+            <option value="mdf_6mm">MDF 6mm</option>
+            <option value="sin_mdf">Sin fondo (Estructura abierta)</option>
         </select>
         
         <label>Descripción / Detalle Comercial</label>
@@ -62,7 +71,7 @@
         <input type="number" id="ancho" value="1200" oninput="actualizarTodo()">
         <label>Profundidad (mm)</label>
         <input type="number" id="profundidad" value="500" oninput="actualizarTodo()">
-        <label>Grosor (mm)</label>
+        <label>Grosor Melamina (mm)</label>
         <input type="number" id="grosor" value="18" oninput="actualizarTodo()">
         <label>Div. Verticales</label>
         <input type="number" id="divVerticales" value="2" oninput="actualizarTodo()">
@@ -71,11 +80,11 @@
 
         <label style="margin-top: 10px;">Configuración de Puertas</label>
         <select id="llevaPuertas" onchange="togglePuertasConfig()">
-            <option value="no">No llevar puertas</option>
             <option value="si">Sí, incluir puertas</option>
+            <option value="no">No llevar puertas</option>
         </select>
 
-        <div id="panelPuertasConfig" style="margin-top: 8px; background: #f1f5f9; padding: 8px; border-radius: 6px; display: none;">
+        <div id="panelPuertasConfig" style="margin-top: 8px; background: #f1f5f9; padding: 8px; border-radius: 6px;">
             <label>Cantidad de Puertas</label>
             <input type="number" id="cantPuertas" value="2" oninput="actualizarTodo()">
             <div class="form-grid">
@@ -106,13 +115,13 @@
     </div>
 
     <div class="card">
-        <h3>2. Lista de Piezas (Despiece con Cantos)</h3>
+        <h3>2. Lista de Piezas (Despiece con Cantos y MDF)</h3>
         <table>
             <thead>
                 <tr>
                     <th>Pieza</th>
                     <th>L × A (mm)</th>
-                    <th>Canto</th>
+                    <th>Cantos (L1 / L2 / A1 / A2)</th>
                 </tr>
             </thead>
             <tbody id="tablaDespieceBody">
@@ -157,12 +166,14 @@
         <h3>4. Parámetros de Costo y Resumen (S/)</h3>
         <label>Precio Plancha Melamina</label>
         <input type="number" id="resPlanchas" value="240" oninput="calcularTotalGeneral()">
+        <label>Precio Plancha MDF</label>
+        <input type="number" id="resMdf" value="95" oninput="calcularTotalGeneral()">
         <label>Corte por Plancha</label>
         <input type="number" id="valCorte" value="18" oninput="calcularTotalGeneral()">
-        <label>Metros Canto Delgado (1mm)</label>
-        <input type="number" id="valCantoD" value="15" oninput="calcularTotalGeneral()">
-        <label>Metros Canto Grueso (3mm)</label>
-        <input type="number" id="valCantoG" value="10" oninput="calcularTotalGeneral()">
+        <label>Precio Metro Canto Delgado (1mm)</label>
+        <input type="number" id="valCantoD" value="1.50" oninput="calcularTotalGeneral()">
+        <label>Precio Metro Canto Grueso (3mm)</label>
+        <input type="number" id="valCantoG" value="3.00" oninput="calcularTotalGeneral()">
 
         <div class="resumen-caja" id="cajaResumenCalculado">
             Planchas Estimadas: 0.0 | Total Proyecto: S/ 0.00
@@ -241,7 +252,6 @@
             renderer.setSize(container.clientWidth, 220);
             container.appendChild(renderer.domElement);
 
-            // OrbitControls para rotación interactiva con mouse/tacto
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
 
@@ -257,10 +267,19 @@
             const grosor = parseFloat(document.getElementById('grosor').value) || 18;
             const divs = parseInt(document.getElementById('divVerticales').value) || 1;
             const repisas = parseInt(document.getElementById('repisas').value) || 3;
+            const tipoMdf = document.getElementById('tipoMdf').value;
+            const puertas = document.getElementById('llevaPuertas').value;
+            const cantP = parseInt(document.getElementById('cantPuertas').value) || 2;
+            const aP = parseFloat(document.getElementById('altoPuerta').value) || alto - 4;
+            const anP = parseFloat(document.getElementById('anchoPuerta').value) || ((ancho/cantP) - 2);
 
             const mat = new THREE.MeshStandardMaterial({ color: obtenerColorHex(), roughness: 0.4 });
+            const matMdf = new THREE.MeshStandardMaterial({ color: 0xd1d5db, roughness: 0.6 });
+            const matPuerta = new THREE.MeshStandardMaterial({ color: obtenerColorHex(), roughness: 0.3, transparent: true, opacity: 0.95 });
+
             muebleMesh = new THREE.Group();
 
+            // Laterales
             let latIzq = new THREE.Mesh(new THREE.BoxGeometry(grosor, alto, profundidad), mat);
             latIzq.position.set(-ancho/2 + grosor/2, 0, 0);
             muebleMesh.add(latIzq);
@@ -269,6 +288,7 @@
             latDer.position.set(ancho/2 - grosor/2, 0, 0);
             muebleMesh.add(latDer);
 
+            // Techo y Base
             let techo = new THREE.Mesh(new THREE.BoxGeometry(ancho - grosor*2, grosor, profundidad), mat);
             techo.position.set(0, alto/2 - grosor/2, 0);
             muebleMesh.add(techo);
@@ -277,15 +297,25 @@
             base.position.set(0, -alto/2 + grosor/2, 0);
             muebleMesh.add(base);
 
+            // MDF Trasero
+            if(tipoMdf !== 'sin_mdf') {
+                let mdfGrosor = tipoMdf === 'mdf_6mm' ? 6 : 3;
+                let trasera = new THREE.Mesh(new THREE.BoxGeometry(ancho - 10, alto - 10, mdfGrosor), matMdf);
+                trasera.position.set(0, 0, -profundidad/2 + mdfGrosor/2 + 5);
+                muebleMesh.add(trasera);
+            }
+
+            // Divisiones Verticales
             let anchoUtil = ancho - (grosor * 2);
             let espacioDiv = anchoUtil / (divs + 1);
             for(let i=1; i<=divs; i++) {
-                let divV = new THREE.Mesh(new THREE.BoxGeometry(grosor, alto - grosor*2, profundidad - 20), mat);
+                let divV = new THREE.Mesh(new THREE.BoxGeometry(grosor, alto - grosor*2, profundidad - 30), mat);
                 let posX = -ancho/2 + grosor + (espacioDiv * i);
                 divV.position.set(posX, 0, 0);
                 muebleMesh.add(divV);
             }
 
+            // Repisas
             let altoUtil = alto - (grosor * 2);
             let espacioRep = altoUtil / (repisas + 1);
             for(let c=0; c<=divs; c++) {
@@ -294,11 +324,24 @@
                 let colAncho = colXEnd - colXStart;
 
                 for(let r=1; r<=repisas; r++) {
-                    let repisa = new THREE.Mesh(new THREE.BoxGeometry(colAncho - 4, grosor, profundidad - 30), mat);
+                    let repisa = new THREE.Mesh(new THREE.BoxGeometry(colAncho - 4, grosor, profundidad - 40), mat);
                     let posY = -alto/2 + grosor + (espacioRep * r);
                     let posX = colXStart + colAncho/2;
                     repisa.position.set(posX, posY, 0);
                     muebleMesh.add(repisa);
+                }
+            }
+
+            // Puertas en 3D
+            if(puertas === 'si') {
+                let anchoTotalPuertas = ancho;
+                let anchoP = anP;
+                let xStart = -ancho/2 + anchoP/2;
+                for(let p=0; p<cantP; p++) {
+                    let puerta = new THREE.Mesh(new THREE.BoxGeometry(anP, aP, 18), matPuerta);
+                    let posX = xStart + (anP * p) + (p * 2);
+                    puerta.position.set(posX, 0, profundidad/2 + 9);
+                    muebleMesh.add(puerta);
                 }
             }
 
@@ -327,6 +370,8 @@
             const profundidad = parseFloat(document.getElementById('profundidad').value) || 500;
             const divs = parseInt(document.getElementById('divVerticales').value) || 1;
             const repisas = parseInt(document.getElementById('repisas').value) || 3;
+            const puertas = document.getElementById('llevaPuertas').value;
+            const cantP = parseInt(document.getElementById('cantPuertas').value) || 2;
             
             const tipo = document.getElementById('tipoAcabado').value;
             let relleno = tipo.includes('blanco') ? '#f8fafc' : (tipo.includes('color') ? '#cbd5e1' : '#d4b28c');
@@ -363,11 +408,21 @@
                     }
                 }
 
+                if (puertas === 'si') {
+                    ctx.strokeStyle = '#2563eb';
+                    ctx.setLineDash([3,3]);
+                    let anchoPVisual = wBox / cantP;
+                    for(let p=0; p<cantP; p++) {
+                        ctx.strokeRect(xBox + (anchoPVisual * p) + 2, yBox + 2, anchoPVisual - 4, hBox - 4);
+                    }
+                    ctx.setLineDash([]);
+                }
+
                 ctx.fillStyle = '#334155';
                 ctx.font = '11px sans-serif';
                 ctx.fillText(`Ancho: ${ancho} mm`, centroX - 50, yBox - 8);
                 ctx.fillText(`Alto: ${alto} mm`, xBox - 75, yBox + (hBox/2));
-                ctx.fillText(`Vista Frontal (${divs} div, ${repisas} repisas)`, 20, 195);
+                ctx.fillText(`Vista Frontal (${cantP} Puertas)`, 20, 195);
 
             } else if (vistaActual === 'Lateral') {
                 let wBox = 130, hBox = 130, xBox = centroX - (wBox / 2), yBox = 25;
@@ -399,6 +454,22 @@
             }
         }
 
+        function crearSelectorCantos(defL1 = '0', defL2 = '0', defA1 = '0', defA2 = '0') {
+            const opciones = `
+                <option value="0">-</option>
+                <option value="D">Delgado 1mm</option>
+                <option value="G">Grueso 3mm</option>
+            `;
+            return `
+                <div class="cantos-grid">
+                    <select class="canto-l1" onchange="calcularTotalGeneral()">${opciones.replace(`value="${defL1}"`, `value="${defL1}" selected`)}</select>
+                    <select class="canto-l2" onchange="calcularTotalGeneral()">${opciones.replace(`value="${defL2}"`, `value="${defL2}" selected`)}</select>
+                    <select class="canto-a1" onchange="calcularTotalGeneral()">${opciones.replace(`value="${defA1}"`, `value="${defA1}" selected`)}</select>
+                    <select class="canto-a2" onchange="calcularTotalGeneral()">${opciones.replace(`value="${defA2}"`, `value="${defA2}" selected`)}</select>
+                </div>
+            `;
+        }
+
         function transferirMedidas() {
             const alto = parseFloat(document.getElementById('alto').value) || 0;
             const ancho = parseFloat(document.getElementById('ancho').value) || 0;
@@ -406,6 +477,7 @@
             const grosor = parseFloat(document.getElementById('grosor').value) || 0;
             const repisas = parseInt(document.getElementById('repisas').value) || 0;
             const divs = parseInt(document.getElementById('divVerticales').value) || 0;
+            const tipoMdf = document.getElementById('tipoMdf').value;
             const puertas = document.getElementById('llevaPuertas').value;
             const cantP = parseInt(document.getElementById('cantPuertas').value) || 2;
             const aP = parseFloat(document.getElementById('altoPuerta').value) || 0;
@@ -417,28 +489,38 @@
                 <tr>
                     <td>Lateral Izquierdo</td>
                     <td class="medida-pieza" data-l="${alto}" data-a="${profundidad}">${alto} × ${profundidad}</td>
-                    <td><select onchange="calcularTotalGeneral()"><option value="g3">Grueso 3mm (2 lados)</option><option value="g1">Grueso 3mm (1 lado)</option><option value="d2">Delgado 1mm (2 lados)</option><option value="0">Ninguno</option></select></td>
+                    <td>${crearSelectorCantos('G', 'G', '0', '0')}</td>
                 </tr>
                 <tr>
                     <td>Lateral Derecho</td>
                     <td class="medida-pieza" data-l="${alto}" data-a="${profundidad}">${alto} × ${profundidad}</td>
-                    <td><select onchange="calcularTotalGeneral()"><option value="g3">Grueso 3mm (2 lados)</option><option value="g1">Grueso 3mm (1 lado)</option><option value="d2">Delgado 1mm (2 lados)</option><option value="0">Ninguno</option></select></td>
+                    <td>${crearSelectorCantos('G', 'G', '0', '0')}</td>
                 </tr>
                 <tr>
                     <td>Techo / Base (x2)</td>
                     <td class="medida-pieza" data-l="${ancho - (grosor * 2)}" data-a="${profundidad}" data-cant="2">${ancho - (grosor * 2)} × ${profundidad}</td>
-                    <td><select onchange="calcularTotalGeneral()"><option value="g1">Grueso 3mm (1 lado)</option><option value="d1">Delgado 1mm (1 lado)</option><option value="0">Ninguno</option></select></td>
+                    <td>${crearSelectorCantos('G', '0', '0', '0')}</td>
                 </tr>
             `;
 
+            if(tipoMdf !== 'sin_mdf') {
+                html += `
+                    <tr>
+                        <td>Fondo / Trasera (MDF)</td>
+                        <td class="medida-pieza-mdf" data-l="${alto - 10}" data-a="${ancho - 10}">${alto - 10} × ${ancho - 10}</td>
+                        <td><select disabled><option>Sin Canto</option></select></td>
+                    </tr>
+                `;
+            }
+
             for(let i=0; i<repisas * (divs + 1); i++) {
                 let lRep = Math.round((ancho - (grosor * (divs + 1))) / (divs + 1));
-                let aRep = profundidad - 20;
+                let aRep = profundidad - 30;
                 html += `
                     <tr>
                         <td>Repisa Interna</td>
                         <td class="medida-pieza" data-l="${lRep}" data-a="${aRep}">${lRep} × ${aRep}</td>
-                        <td><select onchange="calcularTotalGeneral()"><option value="d1">Delgado 1mm (1 lado)</option><option value="0">Ninguno</option></select></td>
+                        <td>${crearSelectorCantos('D', '0', '0', '0')}</td>
                     </tr>
                 `;
             }
@@ -449,7 +531,7 @@
                         <tr>
                             <td>Puerta #${p+1}</td>
                             <td class="medida-pieza" data-l="${aP}" data-a="${anP}">${aP} × ${anP}</td>
-                            <td><select onchange="calcularTotalGeneral()"><option value="d4">Delgado 1mm (4 lados)</option><option value="0">Ninguno</option></select></td>
+                            <td>${crearSelectorCantos('D', 'D', 'D', 'D')}</td>
                         </tr>
                     `;
                 }
@@ -470,7 +552,7 @@
                     <tr>
                         <td>${nombre}</td>
                         <td class="medida-pieza" data-l="${largo}" data-a="${ancho}">${largo} × ${ancho}</td>
-                        <td><select onchange="calcularTotalGeneral()"><option value="d1">Delgado 1mm (1 lado)</option><option value="0">Ninguno</option></select></td>
+                        <td>${crearSelectorCantos('D', '0', '0', '0')}</td>
                     </tr>
                 `;
                 document.getElementById('pNombre').value = '';
@@ -495,27 +577,59 @@
         }
 
         function calcularTotalGeneral() {
-            // Cálculo automático de área y planchas (Plancha estándar 2440mm x 1830mm = 4,465,200 mm2)
-            let areaTotalMM2 = 0;
-            document.querySelectorAll('.medida-pieza').forEach(td => {
-                let l = parseFloat(td.getAttribute('data-l')) || 0;
-                let a = parseFloat(td.getAttribute('data-a')) || 0;
-                let cant = parseInt(td.getAttribute('data-cant')) || 1;
-                areaTotalMM2 += (l * a * cant);
+            let areaMelaminaMM2 = 0;
+            let areaMdfMM2 = 0;
+            let metrosCantoD = 0;
+            let metrosCantoG = 0;
+
+            document.querySelectorAll('#tablaDespieceBody tr').forEach(tr => {
+                const tdMedida = tr.querySelector('.medida-pieza');
+                const tdMdf = tr.querySelector('.medida-pieza-mdf');
+
+                if(tdMedida) {
+                    let l = parseFloat(tdMedida.getAttribute('data-l')) || 0;
+                    let a = parseFloat(tdMedida.getAttribute('data-a')) || 0;
+                    let cant = parseInt(tdMedida.getAttribute('data-cant')) || 1;
+                    areaMelaminaMM2 += (l * a * cant);
+
+                    const selL1 = tr.querySelector('.canto-l1')?.value;
+                    const selL2 = tr.querySelector('.canto-l2')?.value;
+                    const selA1 = tr.querySelector('.canto-a1')?.value;
+                    const selA2 = tr.querySelector('.canto-a2')?.value;
+
+                    if(selL1 === 'D') metrosCantoD += (l / 1000);
+                    if(selL1 === 'G') metrosCantoG += (l / 1000);
+                    if(selL2 === 'D') metrosCantoD += (l / 1000);
+                    if(selL2 === 'G') metrosCantoG += (l / 1000);
+                    if(selA1 === 'D') metrosCantoD += (a / 1000);
+                    if(selA1 === 'G') metrosCantoG += (a / 1000);
+                    if(selA2 === 'D') metrosCantoD += (a / 1000);
+                    if(selA2 === 'G') metrosCantoG += (a / 1000);
+                }
+
+                if(tdMdf) {
+                    let l = parseFloat(tdMdf.getAttribute('data-l')) || 0;
+                    let a = parseFloat(tdMdf.getAttribute('data-a')) || 0;
+                    areaMdfMM2 += (l * a);
+                }
             });
 
-            // Área útil real de una plancha con 15% de merma de corte = ~3,800,000 mm2
-            let planchasEstimadas = Math.ceil((areaTotalMM2 / 3800000) * 10) / 10;
-            if(planchasEstimadas < 1 && areaTotalMM2 > 0) planchasEstimadas = 1;
+            let planchasMelamina = Math.ceil((areaMelaminaMM2 / 3800000) * 10) / 10;
+            if(planchasMelamina < 1 && areaMelaminaMM2 > 0) planchasMelamina = 1;
+
+            let planchasMdf = Math.ceil((areaMdfMM2 / 3800000) * 10) / 10;
+            if(planchasMdf < 1 && areaMdfMM2 > 0) planchasMdf = 1;
 
             let precioPlancha = parseFloat(document.getElementById('resPlanchas').value) || 0;
+            let precioMdf = parseFloat(document.getElementById('resMdf').value) || 0;
             let valCorte = parseFloat(document.getElementById('valCorte').value) || 0;
-            let metroCantoD = parseFloat(document.getElementById('valCantoD').value) || 0;
-            let metroCantoG = parseFloat(document.getElementById('valCantoG').value) || 0;
+            let precioCantoD = parseFloat(document.getElementById('valCantoD').value) || 0;
+            let precioCantoG = parseFloat(document.getElementById('valCantoG').value) || 0;
 
-            let costoMelamina = planchasEstimadas * precioPlancha;
-            let costoCortes = planchasEstimadas * valCorte;
-            let costoCantos = (parseFloat(document.getElementById('valCantoD').value || 0) * 1.5) + (parseFloat(document.getElementById('valCantoG').value || 0) * 3.0);
+            let costoMelamina = planchasMelamina * precioPlancha;
+            let costoMdf = planchasMdf * precioMdf;
+            let costoCortes = (planchasMelamina + planchasMdf) * valCorte;
+            let costoCantos = (metrosCantoD * precioCantoD) + (metrosCantoG * precioCantoG);
 
             let costoAccesorios = 0;
             document.querySelectorAll('#tablaAccesoriosBody tr').forEach(tr => {
@@ -524,10 +638,11 @@
                 costoAccesorios += (cant * precio);
             });
 
-            let totalGeneral = costoMelamina + costoCortes + costoCantos + costoAccesorios;
+            let totalGeneral = costoMelamina + costoMdf + costoCortes + costoCantos + costoAccesorios;
 
             document.getElementById('cajaResumenCalculado').innerHTML = `
-                Planchas Estimadas: ${planchasEstimadas} un. | Total Proyecto: S/ ${totalGeneral.toFixed(2)}
+                Melamina: ${planchasMelamina} un. | MDF: ${planchasMdf} un. | Cantos D: ${metrosCantoD.toFixed(1)}m | Cantos G: ${metrosCantoG.toFixed(1)}m <br>
+                <strong>Total Proyecto: S/ ${totalGeneral.toFixed(2)}</strong>
             `;
         }
 
@@ -582,7 +697,7 @@
                     <p><strong>Material / Color:</strong> ${material}</p>
                     <h3>Despiece del Mueble</h3>
                     <table>
-                        <tr><th>Componente</th><th>Medidas (Largo × Ancho)</th><th>Canto</th></tr>
+                        <tr><th>Componente</th><th>Medidas (Largo × Ancho)</th><th>Cantos</th></tr>
                         ${filasTabla}
                     </table>
                     <div class="resumen-print">${resumenTexto}</div>
@@ -594,7 +709,7 @@
         }
 
         function generarReporteInterno() {
-            generarCotizacion(); // Reutiliza el formato ejecutivo listo para taller
+            generarCotizacion();
         }
 
         window.onload = function() {
