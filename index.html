@@ -16,7 +16,7 @@
         .tabs button { flex: 1; padding: 7px; background: #e2e8f0; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 11px; }
         .tabs button.active { background: #1e293b; color: white; }
         .preview-3d { background: white; border: 1px dashed #cbd5e1; padding: 10px; text-align: center; margin-bottom: 12px; border-radius: 8px; overflow: hidden; }
-        canvas { width: 100% !important; max-width: 100%; height: 210px; background: #f1f5f9; border-radius: 4px; display: block; }
+        canvas { width: 100% !important; max-width: 100%; height: 220px; background: #f1f5f9; border-radius: 4px; display: block; }
         button.btn-action { background: #2563eb; color: white; border: none; padding: 10px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; margin-top: 5px; }
         table { width: 100%; border-collapse: collapse; margin-top: 8px; background: white; }
         th, td { border: 1px solid #cbd5e1; padding: 5px; text-align: left; font-size: 10px; }
@@ -36,14 +36,17 @@
         <label>Proyecto / Cliente</label>
         <input type="text" id="nombreProyecto" value="Closet - Familia Martinez">
         
-        <label>Tipo y Acabado de Plancha</label>
+        <label>Tipo de Melamina</label>
         <select id="tipoAcabado" onchange="actualizarTodo()">
-            <option value="madera">Madera / Texturizado (Ej: Duna / Veta)</option>
-            <option value="blanco">Color Sólido (Blanco / Negro Mate)</option>
-            <option value="gris">Color Sólido (Gris / Aluminio)</option>
+            <option value="blanco">Melamina Blanco</option>
+            <option value="blanco_rh">Melamina Blanco RH</option>
+            <option value="amaderado">Melamina Amaderado</option>
+            <option value="amaderado_rh">Melamina Amaderado RH</option>
+            <option value="color">Melamina Color</option>
+            <option value="color_rh">Melamina Color RH</option>
         </select>
         
-        <label>Descripción / Material</label>
+        <label>Descripción / Detalle Comercial</label>
         <input type="text" id="nombreMaterial" value="Pelikano Duna 18mm">
     </div>
 
@@ -192,8 +195,8 @@
 
         function obtenerColorAcabado() {
             const tipo = document.getElementById('tipoAcabado').value;
-            if (tipo === 'blanco') return { relleno: '#f8fafc', borde: '#cbd5e1', trama: false };
-            if (tipo === 'gris') return { relleno: '#94a3b8', borde: '#475569', trama: false };
+            if (tipo.includes('blanco')) return { relleno: '#f8fafc', borde: '#cbd5e1', trama: false };
+            if (tipo.includes('color')) return { relleno: '#cbd5e1', borde: '#64748b', trama: false };
             return { relleno: '#d4b28c', borde: '#8c6239', trama: true };
         }
 
@@ -202,7 +205,7 @@
             if (!canvas) return;
             
             canvas.width = canvas.parentElement.clientWidth - 20;
-            canvas.height = 200;
+            canvas.height = 210;
 
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -212,8 +215,6 @@
             const profundidad = parseFloat(document.getElementById('profundidad').value) || 500;
             const divs = parseInt(document.getElementById('divVerticales').value) || 1;
             const repisas = parseInt(document.getElementById('repisas').value) || 3;
-            const puertas = document.getElementById('llevaPuertas').value;
-            const cantP = parseInt(document.getElementById('cantPuertas').value) || 2;
             const estilo = obtenerColorAcabado();
 
             ctx.fillStyle = estilo.relleno;
@@ -224,7 +225,6 @@
 
             if (vistaActual === 'Frontal') {
                 let wBox = 220, hBox = 130, xBox = centroX - (wBox / 2), yBox = 25;
-                
                 ctx.fillRect(xBox, yBox, wBox, hBox);
                 ctx.strokeRect(xBox, yBox, wBox, hBox);
 
@@ -236,7 +236,6 @@
                     ctx.strokeStyle = estilo.borde;
                 }
 
-                // Divisiones verticales
                 let espacioX = wBox / (divs + 1);
                 for(let i=1; i<=divs; i++) {
                     ctx.beginPath();
@@ -245,7 +244,6 @@
                     ctx.stroke();
                 }
 
-                // Repisas horizontales simuladas por columna
                 let espacioY = hBox / (repisas + 1);
                 for(let c=0; c<=divs; c++) {
                     let colX = xBox + (espacioX * c);
@@ -258,22 +256,11 @@
                     }
                 }
 
-                if (puertas === 'si') {
-                    ctx.strokeStyle = '#1e293b';
-                    ctx.setLineDash([3,3]);
-                    let anchoPVisual = wBox / cantP;
-                    for(let p=0; p<cantP; p++) {
-                        ctx.strokeRect(xBox + (anchoPVisual * p) + 2, yBox + 2, anchoPVisual - 4, hBox - 4);
-                    }
-                    ctx.setLineDash([]);
-                }
-
-                // Acota tamaños
                 ctx.fillStyle = '#334155';
                 ctx.font = '11px sans-serif';
                 ctx.fillText(`Ancho: ${ancho} mm`, centroX - 50, yBox - 8);
                 ctx.fillText(`Alto: ${alto} mm`, xBox - 75, yBox + (hBox/2));
-                ctx.fillText(`Vista Frontal (${divs} div, ${repisas} repisas)`, 20, 185);
+                ctx.fillText(`Vista Frontal (${divs} div, ${repisas} repisas)`, 20, 195);
 
             } else if (vistaActual === 'Lateral') {
                 let wBox = 130, hBox = 130, xBox = centroX - (wBox / 2), yBox = 25;
@@ -291,7 +278,7 @@
                 ctx.font = '11px sans-serif';
                 ctx.fillText(`Profundidad: ${profundidad} mm`, centroX - 60, yBox - 8);
                 ctx.fillText(`Alto: ${alto} mm`, xBox - 75, yBox + (hBox/2));
-                ctx.fillText(`Vista Lateral`, 20, 185);
+                ctx.fillText(`Vista Lateral`, 20, 195);
 
             } else if (vistaActual === 'Planta') {
                 let wBox = 200, hBox = 70, xBox = centroX - (wBox / 2), yBox = 55;
@@ -301,35 +288,56 @@
                 ctx.font = '11px sans-serif';
                 ctx.fillText(`Ancho: ${ancho} mm`, centroX - 45, yBox - 8);
                 ctx.fillText(`Profundidad: ${profundidad} mm`, xBox - 95, yBox + (hBox/2));
-                ctx.fillText(`Vista en Planta (Superior)`, 20, 185);
+                ctx.fillText(`Vista en Planta (Superior)`, 20, 195);
 
             } else {
-                // Modelo 3D Isométrico con divisiones internas visibles
-                let xBox = centroX - 75, yBox = 35;
-                ctx.fillRect(xBox, yBox, 150, 115);
-                ctx.strokeRect(xBox, yBox, 150, 115);
-                
+                // Modelo 3D Isométrico Real con profundidad y divisiones internas
+                let xBox = centroX - 85, yBox = 30;
+                let w = 130, h = 110, d = 45;
+
                 // Tapa superior 3D
                 ctx.beginPath();
-                ctx.moveTo(xBox, yBox); ctx.lineTo(xBox + 40, yBox - 20); ctx.lineTo(xBox + 190, yBox - 20); ctx.lineTo(xBox + 150, yBox);
-                ctx.closePath(); ctx.fill(); ctx.stroke();
+                ctx.moveTo(xBox, yBox);
+                ctx.lineTo(xBox + d, yBox - 25);
+                ctx.lineTo(xBox + w + d, yBox - 25);
+                ctx.lineTo(xBox + w, yBox);
+                ctx.closePath();
+                ctx.fillStyle = estilo.trama ? '#e2c29c' : '#cbd5e1';
+                ctx.fill(); ctx.stroke();
+
+                // Cuerpo frontal 3D
+                ctx.fillRect(xBox, yBox, w, h);
+                ctx.strokeRect(xBox, yBox, w, h);
 
                 // Lateral derecho 3D
                 ctx.beginPath();
-                ctx.moveTo(xBox + 150, yBox); ctx.lineTo(xBox + 190, yBox - 20); ctx.lineTo(xBox + 190, yBox + 95); ctx.lineTo(xBox + 150, yBox + 115);
-                ctx.closePath(); ctx.fill(); ctx.stroke();
+                ctx.moveTo(xBox + w, yBox);
+                ctx.lineTo(xBox + w + d, yBox - 25);
+                ctx.lineTo(xBox + w + d, yBox + h - 25);
+                ctx.lineTo(xBox + w, yBox + h);
+                ctx.closePath();
+                ctx.fillStyle = estilo.trama ? '#b89772' : '#94a3b8';
+                ctx.fill(); ctx.stroke();
 
-                // División interna visible en 3D
-                if(divs >= 1) {
+                // Divisiones verticales internas en 3D
+                let espV = w / (divs + 1);
+                for(let i=1; i<=divs; i++) {
                     ctx.beginPath();
-                    ctx.moveTo(xBox + 75, yBox); ctx.lineTo(xBox + 115, yBox - 20); ctx.lineTo(xBox + 115, yBox + 95); ctx.lineTo(xBox + 75, yBox + 115);
+                    ctx.moveTo(xBox + (espV * i), yBox);
+                    ctx.lineTo(xBox + (espV * i), yBox + h);
+                    ctx.stroke();
+
+                    // Proyección superior de la división
+                    ctx.beginPath();
+                    ctx.moveTo(xBox + (espV * i), yBox);
+                    ctx.lineTo(xBox + (espV * i) + d, yBox - 25);
                     ctx.stroke();
                 }
 
                 ctx.fillStyle = '#334155';
                 ctx.font = '11px sans-serif';
-                ctx.fillText(`Dimensiones: ${ancho} × ${profundidad} × ${alto} mm`, 20, 170);
-                ctx.fillText(`Modelo 3D Isométrico (Estructura)`, 20, 188);
+                ctx.fillText(`Dimensiones: ${ancho} × ${profundidad} × ${alto} mm`, 15, 180);
+                ctx.fillText(`Modelo 3D Isométrico (Estructura y Divisiones)`, 15, 198);
             }
         }
 
@@ -353,10 +361,10 @@
                     <td>${alto} × ${profundidad}</td>
                     <td>
                         <select>
-                            <option value="g3">Grueso 3mm (2 lados)</option>
-                            <option value="g1">Grueso 3mm (1 lado)</option>
-                            <option value="d2">Delgado 1mm (2 lados)</option>
-                            <option value="d1">Delgado 1mm (1 lado)</option>
+                            <option value="grueso_2">Canto Grueso 3mm (2 lados)</option>
+                            <option value="grueso_1">Canto Grueso 3mm (1 lado)</option>
+                            <option value="delgado_2">Canto Delgado 1mm (2 lados)</option>
+                            <option value="delgado_1">Canto Delgado 1mm (1 lado)</option>
                             <option value="0">Ninguno</option>
                         </select>
                     </td>
@@ -366,10 +374,10 @@
                     <td>${alto} × ${profundidad}</td>
                     <td>
                         <select>
-                            <option value="g3">Grueso 3mm (2 lados)</option>
-                            <option value="g1">Grueso 3mm (1 lado)</option>
-                            <option value="d2">Delgado 1mm (2 lados)</option>
-                            <option value="d1">Delgado 1mm (1 lado)</option>
+                            <option value="grueso_2">Canto Grueso 3mm (2 lados)</option>
+                            <option value="grueso_1">Canto Grueso 3mm (1 lado)</option>
+                            <option value="delgado_2">Canto Delgado 1mm (2 lados)</option>
+                            <option value="delgado_1">Canto Delgado 1mm (1 lado)</option>
                             <option value="0">Ninguno</option>
                         </select>
                     </td>
@@ -379,9 +387,9 @@
                     <td>${ancho - (grosor * 2)} × ${profundidad}</td>
                     <td>
                         <select>
-                            <option value="d1">Delgado 1mm (1 lado)</option>
-                            <option value="d2">Delgado 1mm (2 lados)</option>
-                            <option value="g3">Grueso 3mm</option>
+                            <option value="grueso_1">Canto Grueso 3mm (1 lado)</option>
+                            <option value="grueso_2">Canto Grueso 3mm (2 lados)</option>
+                            <option value="delgado_1">Canto Delgado 1mm (1 lado)</option>
                             <option value="0">Ninguno</option>
                         </select>
                     </td>
@@ -395,8 +403,9 @@
                         <td>${Math.round((ancho - (grosor * (divs + 1))) / (divs + 1))} × ${profundidad - 20}</td>
                         <td>
                             <select>
-                                <option value="d1">Delgado 1mm (1 lado)</option>
-                                <option value="d2">Delgado 1mm (2 lados)</option>
+                                <option value="delgado_1">Canto Delgado 1mm (1 lado)</option>
+                                <option value="delgado_2">Canto Delgado 1mm (2 lados)</option>
+                                <option value="grueso_1">Canto Grueso 3mm (1 lado)</option>
                                 <option value="0">Ninguno</option>
                             </select>
                         </td>
@@ -412,8 +421,9 @@
                             <td>${aP} × ${anP}</td>
                             <td>
                                 <select>
-                                    <option value="d4">Delgado 1mm (4 lados)</option>
-                                    <option value="d2">Delgado 1mm (2 lados)</option>
+                                    <option value="delgado_4">Canto Delgado 1mm (4 lados)</option>
+                                    <option value="delgado_2">Canto Delgado 1mm (2 lados)</option>
+                                    <option value="grueso_4">Canto Grueso 3mm (4 lados)</option>
                                     <option value="0">Ninguno</option>
                                 </select>
                             </td>
@@ -438,9 +448,9 @@
                         <td>${largo} × ${ancho}</td>
                         <td>
                             <select>
-                                <option value="d1">Delgado 1mm (1 lado)</option>
-                                <option value="d2">Delgado 1mm (2 lados)</option>
-                                <option value="g3">Grueso 3mm</option>
+                                <option value="delgado_1">Canto Delgado 1mm (1 lado)</option>
+                                <option value="delgado_2">Canto Delgado 1mm (2 lados)</option>
+                                <option value="grueso_1">Canto Grueso 3mm (1 lado)</option>
                                 <option value="0">Ninguno</option>
                             </select>
                         </td>
