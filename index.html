@@ -16,7 +16,7 @@
         .tabs button { flex: 1; padding: 7px; background: #e2e8f0; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 11px; }
         .tabs button.active { background: #1e293b; color: white; }
         .preview-3d { background: white; border: 1px dashed #cbd5e1; padding: 10px; text-align: center; margin-bottom: 12px; border-radius: 8px; overflow: hidden; }
-        canvas { width: 100% !important; max-width: 100%; height: auto; background: #f1f5f9; border-radius: 4px; display: block; }
+        canvas { width: 100% !important; max-width: 100%; height: 200px; background: #f1f5f9; border-radius: 4px; display: block; }
         button.btn-action { background: #2563eb; color: white; border: none; padding: 10px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; margin-top: 5px; }
         table { width: 100%; border-collapse: collapse; margin-top: 8px; background: white; }
         th, td { border: 1px solid #cbd5e1; padding: 5px; text-align: left; font-size: 10px; }
@@ -36,7 +36,14 @@
         <label>Proyecto / Cliente</label>
         <input type="text" id="nombreProyecto" value="Closet - Familia Martinez">
         
-        <label>Material / Color</label>
+        <label>Tipo y Acabado de Plancha</label>
+        <select id="tipoAcabado" onchange="actualizarTodo()">
+            <option value="madera">Madera / Texturizado (Ej: Duna / Veta)</option>
+            <option value="blanco">Color Sólido (Blanco / Negro Mate)</option>
+            <option value="gris">Color Sólido (Gris / Aluminio)</option>
+        </select>
+        
+        <label>Descripción / Material</label>
         <input type="text" id="nombreMaterial" value="Pelikano Duna 18mm">
     </div>
 
@@ -55,13 +62,28 @@
         <label>Repisas (x columna)</label>
         <input type="number" id="repisas" value="3" oninput="actualizarTodo()">
 
-        <label style="margin-top: 10px;">¿Incluir Puertas?</label>
-        <select id="llevaPuertas" onchange="actualizarTodo()">
-            <option value="si">Sí, incluir puertas frontales</option>
+        <label style="margin-top: 10px;">Configuración de Puertas</label>
+        <select id="llevaPuertas" onchange="togglePuertasConfig()">
+            <option value="si">Sí, incluir puertas</option>
             <option value="no">No llevar puertas</option>
         </select>
+
+        <div id="panelPuertasConfig" style="margin-top: 8px; background: #f1f5f9; padding: 8px; border-radius: 6px;">
+            <label>Cantidad de Puertas</label>
+            <input type="number" id="cantPuertas" value="2" oninput="actualizarTodo()">
+            <div class="form-grid">
+                <div>
+                    <label>Alto Puerta (mm)</label>
+                    <input type="number" id="altoPuerta" value="1796">
+                </div>
+                <div>
+                    <label>Ancho Puerta (mm)</label>
+                    <input type="number" id="anchoPuerta" value="596">
+                </div>
+            </div>
+        </div>
         
-        <button class="btn-action" onclick="transferirMedidas()">Actualizar y Generar Despiece ↓</button>
+        <button class="btn-action" onclick="transferirMedidas()" style="margin-top:10px;">Actualizar y Generar Despiece ↓</button>
     </div>
 
     <div class="tabs">
@@ -72,7 +94,7 @@
     </div>
 
     <div class="preview-3d" id="vistaCanvas">
-        <canvas id="canvasMueble" width="320" height="180"></canvas>
+        <canvas id="canvasMueble"></canvas>
     </div>
 
     <div class="card">
@@ -82,7 +104,7 @@
                 <tr>
                     <th>Pieza</th>
                     <th>L × A</th>
-                    <th>Cantos (L1/L2/A1/A2)</th>
+                    <th>Canto (1 o 2 Lados)</th>
                 </tr>
             </thead>
             <tbody id="tablaDespieceBody">
@@ -150,14 +172,39 @@
             dibujarMueble();
         }
 
+        function togglePuertasConfig() {
+            const lleva = document.getElementById('llevaPuertas').value;
+            document.getElementById('panelPuertasConfig').style.display = lleva === 'si' ? 'block' : 'none';
+            actualizarTodo();
+        }
+
         function actualizarTodo() {
+            const ancho = parseFloat(document.getElementById('ancho').value) || 1200;
+            const alto = parseFloat(document.getElementById('alto').value) || 1800;
+            const cantP = parseInt(document.getElementById('cantPuertas').value) || 2;
+
+            // Autocalcular medidas por defecto para las puertas
+            document.getElementById('altoPuerta').value = alto - 4;
+            document.getElementById('anchoPuerta').value = Math.round((ancho / cantP) - 2);
+
             dibujarMueble();
             transferirMedidas();
+        }
+
+        function obtenerColorAcabado() {
+            const tipo = document.getElementById('tipoAcabado').value;
+            if (tipo === 'blanco') return { relleno: '#f8fafc', borde: '#cbd5e1', trama: false };
+            if (tipo === 'gris') return { relleno: '#94a3b8', borde: '#475569', trama: false };
+            return { relleno: '#d4b28c', borde: '#8c6239', trama: true };
         }
 
         function dibujarMueble() {
             const canvas = document.getElementById('canvasMueble');
             if (!canvas) return;
+            
+            canvas.width = canvas.parentElement.clientWidth - 20;
+            canvas.height = 180;
+
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -166,58 +213,89 @@
             const divs = parseInt(document.getElementById('divVerticales').value) || 1;
             const repisas = parseInt(document.getElementById('repisas').value) || 3;
             const puertas = document.getElementById('llevaPuertas').value;
+            const cantP = parseInt(document.getElementById('cantPuertas').value) || 2;
+            const estilo = obtenerColorAcabado();
 
-            ctx.strokeStyle = '#1e293b';
+            ctx.fillStyle = estilo.relleno;
+            ctx.strokeStyle = estilo.borde;
             ctx.lineWidth = 2;
-            ctx.fillStyle = '#cbd5e1';
+
+            let centroX = canvas.width / 2;
 
             if (vistaActual === 'Frontal') {
-                ctx.strokeRect(40, 15, 240, 140);
-                let espacioX = 240 / (divs + 1);
+                let wBox = 240, hBox = 140, xBox = centroX - (wBox / 2), yBox = 15;
+                
+                ctx.fillRect(xBox, yBox, wBox, hBox);
+                ctx.strokeRect(xBox, yBox, wBox, hBox);
+
+                if (estilo.trama) {
+                    ctx.strokeStyle = 'rgba(140, 98, 57, 0.15)';
+                    for (let lx = xBox + 20; lx < xBox + wBox; lx += 30) {
+                        ctx.beginPath(); ctx.moveTo(lx, yBox); ctx.lineTo(lx, yBox + hBox); ctx.stroke();
+                    }
+                    ctx.strokeStyle = estilo.borde;
+                }
+
+                let espacioX = wBox / (divs + 1);
                 for(let i=1; i<=divs; i++) {
                     ctx.beginPath();
-                    ctx.moveTo(40 + (espacioX * i), 15);
-                    ctx.lineTo(40 + (espacioX * i), 155);
+                    ctx.moveTo(xBox + (espacioX * i), yBox);
+                    ctx.lineTo(xBox + (espacioX * i), yBox + hBox);
                     ctx.stroke();
                 }
                 if (puertas === 'si') {
-                    ctx.strokeStyle = '#2563eb';
+                    ctx.strokeStyle = '#1e293b';
                     ctx.setLineDash([3,3]);
-                    ctx.strokeRect(42, 17, 116, 136);
-                    ctx.strokeRect(162, 17, 116, 136);
+                    let anchoPVisual = wBox / cantP;
+                    for(let p=0; p<cantP; p++) {
+                        ctx.strokeRect(xBox + (anchoPVisual * p) + 2, yBox + 2, anchoPVisual - 4, hBox - 4);
+                    }
                     ctx.setLineDash([]);
                 }
-                ctx.fillStyle = '#475569';
-                ctx.font = '10px sans-serif';
-                ctx.fillText(`Frente: ${ancho}mm x ${alto}mm (${puertas === 'si' ? 'Con Puertas' : 'Sin Puertas'})`, 35, 172);
+                ctx.fillStyle = '#334155';
+                ctx.font = '11px sans-serif';
+                ctx.fillText(`Frente: ${ancho}mm x ${alto}mm (${puertas === 'si' ? cantP + ' Puertas' : 'Sin Puertas'})`, 20, 172);
+
             } else if (vistaActual === 'Lateral') {
-                ctx.strokeRect(90, 15, 140, 140);
-                let espacioY = 140 / (repisas + 1);
+                let wBox = 140, hBox = 140, xBox = centroX - (wBox / 2), yBox = 15;
+                ctx.fillRect(xBox, yBox, wBox, hBox);
+                ctx.strokeRect(xBox, yBox, wBox, hBox);
+
+                let espacioY = hBox / (repisas + 1);
                 for(let i=1; i<=repisas; i++) {
                     ctx.beginPath();
-                    ctx.moveTo(90, 15 + (espacioY * i));
-                    ctx.lineTo(230, 15 + (espacioY * i));
+                    ctx.moveTo(xBox, yBox + (espacioY * i));
+                    ctx.lineTo(xBox + wBox, yBox + (espacioY * i));
                     ctx.stroke();
                 }
-                ctx.fillStyle = '#475569';
-                ctx.font = '10px sans-serif';
-                ctx.fillText(`Vista Lateral`, 110, 172);
+                ctx.fillStyle = '#334155';
+                ctx.font = '11px sans-serif';
+                ctx.fillText(`Vista Lateral (Profundidad)`, 20, 172);
+
             } else if (vistaActual === 'Planta') {
-                ctx.strokeRect(60, 50, 200, 80);
-                ctx.fillStyle = '#475569';
-                ctx.font = '10px sans-serif';
-                ctx.fillText(`Vista en Planta (Superior)`, 90, 150);
+                let wBox = 200, hBox = 70, xBox = centroX - (wBox / 2), yBox = 45;
+                ctx.fillRect(xBox, yBox, wBox, hBox);
+                ctx.strokeRect(xBox, yBox, wBox, hBox);
+                ctx.fillStyle = '#334155';
+                ctx.font = '11px sans-serif';
+                ctx.fillText(`Vista en Planta (Superior)`, 20, 172);
+
             } else {
-                ctx.strokeRect(60, 35, 150, 115);
+                let xBox = centroX - 75, yBox = 35;
+                ctx.fillRect(xBox, yBox, 150, 115);
+                ctx.strokeRect(xBox, yBox, 150, 115);
+                
                 ctx.beginPath();
-                ctx.moveTo(60, 35); ctx.lineTo(100, 15); ctx.lineTo(250, 15); ctx.lineTo(210, 35);
-                ctx.stroke();
+                ctx.moveTo(xBox, yBox); ctx.lineTo(xBox + 40, yBox - 20); ctx.lineTo(xBox + 190, yBox - 20); ctx.lineTo(xBox + 150, yBox);
+                ctx.closePath(); ctx.fill(); ctx.stroke();
+
                 ctx.beginPath();
-                ctx.moveTo(210, 35); ctx.lineTo(250, 15); ctx.lineTo(250, 130); ctx.lineTo(210, 150);
-                ctx.stroke();
-                ctx.fillStyle = '#475569';
-                ctx.font = '10px sans-serif';
-                ctx.fillText(`Modelo 3D Isométrico`, 105, 172);
+                ctx.moveTo(xBox + 150, yBox); ctx.lineTo(xBox + 190, yBox - 20); ctx.lineTo(xBox + 190, yBox + 95); ctx.lineTo(xBox + 150, yBox + 115);
+                ctx.closePath(); ctx.fill(); ctx.stroke();
+
+                ctx.fillStyle = '#334155';
+                ctx.font = '11px sans-serif';
+                ctx.fillText(`Modelo 3D Isométrico`, 20, 172);
             }
         }
 
@@ -229,22 +307,81 @@
             const repisas = parseInt(document.getElementById('repisas').value) || 0;
             const divs = parseInt(document.getElementById('divVerticales').value) || 0;
             const puertas = document.getElementById('llevaPuertas').value;
+            const cantP = parseInt(document.getElementById('cantPuertas').value) || 2;
+            const aP = parseFloat(document.getElementById('altoPuerta').value) || 0;
+            const anP = parseFloat(document.getElementById('anchoPuerta').value) || 0;
             
             const tbody = document.getElementById('tablaDespieceBody');
             
             let html = `
-                <tr><td>Lateral Izquierdo</td><td>${alto} × ${profundidad}</td><td><select><option>G3</option><option>D1</option><option>Ninguno</option></select></td></tr>
-                <tr><td>Lateral Derecho</td><td>${alto} × ${profundidad}</td><td><select><option>G3</option><option>D1</option><option>Ninguno</option></select></td></tr>
-                <tr><td>Techo / Base</td><td>${ancho - (grosor * 2)} × ${profundidad}</td><td><select><option>G3</option><option>D1</option><option>Ninguno</option></select></td></tr>
+                <tr>
+                    <td>Lateral Izquierdo</td>
+                    <td>${alto} × ${profundidad}</td>
+                    <td>
+                        <select>
+                            <option value="2">2 lados</option>
+                            <option value="1">1 lado</option>
+                            <option value="0">Ninguno</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Lateral Derecho</td>
+                    <td>${alto} × ${profundidad}</td>
+                    <td>
+                        <select>
+                            <option value="2">2 lados</option>
+                            <option value="1">1 lado</option>
+                            <option value="0">Ninguno</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Techo / Base</td>
+                    <td>${ancho - (grosor * 2)} × ${profundidad}</td>
+                    <td>
+                        <select>
+                            <option value="1">1 lado</option>
+                            <option value="2">2 lados</option>
+                            <option value="0">Ninguno</option>
+                        </select>
+                    </td>
+                </tr>
             `;
 
             for(let i=0; i<repisas; i++) {
-                html += `<tr><td>Repisa Interna</td><td>${Math.round((ancho - (grosor * (divs + 1))) / (divs + 1))} × ${profundidad - 20}</td><td><select><option>D1</option><option>Ninguno</option></select></td></tr>`;
+                html += `
+                    <tr>
+                        <td>Repisa Interna</td>
+                        <td>${Math.round((ancho - (grosor * (divs + 1))) / (divs + 1))} × ${profundidad - 20}</td>
+                        <td>
+                            <select>
+                                <option value="1">1 lado</option>
+                                <option value="2">2 lados</option>
+                                <option value="0">Ninguno</option>
+                            </select>
+                        </td>
+                    </tr>
+                `;
             }
 
             if (puertas === 'si') {
-                let anchoPuerta = Math.round(ancho / (divs + 1));
-                html += `<tr><td>Puerta Frontal</td><td>${alto - 4} × ${anchoPuerta - 4}</td><td><select><option>G3</option><option>D1</option><option>Ninguno</option></select></td></tr>`;
+                for(let p=0; p<cantP; p++) {
+                    html += `
+                        <tr>
+                            <td>Puerta #${p+1}</td>
+                            <td>${aP} × ${anP}</td>
+                            <td>
+                                <select>
+                                    <option value="4">4 lados</option>
+                                    <option value="2">2 lados</option>
+                                    <option value="1">1 lado</option>
+                                    <option value="0">Ninguno</option>
+                                </select>
+                            </td>
+                        </tr>
+                    `;
+                }
             }
 
             tbody.innerHTML = html;
@@ -257,7 +394,19 @@
 
             if (nombre && largo && ancho) {
                 const tbody = document.getElementById('tablaDespieceBody');
-                tbody.innerHTML += `<tr><td>${nombre}</td><td>${largo} × ${ancho}</td><td><select><option>Ninguno</option><option>D1</option><option>G3</option></select></td></tr>`;
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${nombre}</td>
+                        <td>${largo} × ${ancho}</td>
+                        <td>
+                            <select>
+                                <option value="1">1 lado</option>
+                                <option value="2">2 lados</option>
+                                <option value="0">Ninguno</option>
+                            </select>
+                        </td>
+                    </tr>
+                `;
                 document.getElementById('pNombre').value = '';
                 document.getElementById('pLargo').value = '';
                 document.getElementById('pAncho').value = '';
@@ -303,7 +452,7 @@
                     <p><strong>Material / Color:</strong> ${material}</p>
                     <h3>Despiece del Mueble</h3>
                     <table>
-                        <tr><th>Componente</th><th>Medidas (Largo × Ancho)</th><th>Cantos</th></tr>
+                        <tr><th>Componente</th><th>Medidas (Largo × Ancho)</th><th>Canto</th></tr>
                         ${filasTabla}
                     </table>
                     <button class="print-btn" onclick="window.print()">🖨️ Imprimir Cotización</button>
