@@ -677,6 +677,14 @@
 
             window.precioFinalCliente = costoBase.toFixed(2);
 
+            // Guardar desglose global para usarlo en la hoja interna
+            window.desgloseCostos = {
+                planchasMelamina, precioPlancha, costoMelamina,
+                planchasMdf, precioMdf, costoMdf,
+                metrosCantoD, precioCantoD, metrosCantoG, precioCantoG, costoCantos,
+                costoAccesorios, costoInstalacion, costoBase
+            };
+
             document.getElementById('cajaResumenCalculado').innerHTML = `
                 Total Proyecto: S/ ${costoBase.toFixed(2)}
             `;
@@ -762,7 +770,7 @@
         function generarReporteInterno() {
             const cliente = document.getElementById('nombreProyecto').value;
             const material = document.getElementById('nombreMaterial').value;
-            const resumenTexto = document.getElementById('cajaResumenCalculado').innerText;
+            const c = window.desgloseCostos || {};
 
             let filasClonadas = '';
             document.querySelectorAll('#tablaDespieceBody tr').forEach(tr => {
@@ -788,6 +796,16 @@
                 }
             });
 
+            // Generar filas dinámicas de accesorios para el reporte interno
+            let filasAccesoriosPrint = '';
+            document.querySelectorAll('#tablaAccesoriosBody tr').forEach(tr => {
+                let desc = tr.querySelector('td:nth-child(1) input').value;
+                let cant = tr.querySelector('td:nth-child(2) input').value;
+                let pUnit = tr.querySelector('td:nth-child(3) input').value;
+                let subTotal = (parseFloat(cant) || 0) * (parseFloat(pUnit) || 0);
+                filasAccesoriosPrint += `<tr><td>${desc}</td><td>${cant}</td><td>S/ ${parseFloat(pUnit).toFixed(2)}</td><td>S/ ${subTotal.toFixed(2)}</td></tr>`;
+            });
+
             const ventana = window.open('', '_blank');
             ventana.document.write(`
                 <!DOCTYPE html>
@@ -797,23 +815,43 @@
                     <title>Hoja de Costos Interna - ${cliente}</title>
                     <style>
                         body { font-family: sans-serif; padding: 20px; color: #0f172a; }
-                        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-                        th, td { border: 1px solid #cbd5e1; padding: 8px; text-align: left; font-size: 13px; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 20px; }
+                        th, td { border: 1px solid #cbd5e1; padding: 8px; text-align: left; font-size: 12px; }
                         th { background: #1e293b; color: white; }
-                        .resumen-print { background: #f1f5f9; padding: 12px; margin-top: 15px; font-weight: bold; border-radius: 6px; }
+                        .resumen-print { background: #f1f5f9; padding: 15px; margin-top: 15px; border-radius: 6px; }
+                        .resumen-print h4 { margin: 0 0 10px 0; color: #1e293b; }
+                        .resumen-print p { margin: 4px 0; font-size: 13px; display: flex; justify-content: space-between; }
+                        .total-line { border-top: 2px solid #1e293b; margin-top: 8px; padding-top: 8px; font-weight: bold; font-size: 15px !important; }
                         .print-btn { margin: 20px 0; background: #2563eb; color: white; border: none; padding: 10px 20px; font-size: 14px; border-radius: 6px; cursor: pointer; }
                         @media print { .print-btn { display: none; } }
                     </style>
                 </head>
                 <body>
                     <h2>Hoja de Costos Interna (Taller): ${cliente}</h2>
-                    <p><strong>Material:</strong> ${material}</p>
-                    <h3>Despiece y Cantos</h3>
+                    <p><strong>Material Estructural:</strong> ${material}</p>
+                    
+                    <h3>1. Despiece Técnico y Cantos</h3>
                     <table>
                         <tr><th>Componente</th><th>Medidas (Largo × Ancho)</th><th>Cantos (L1 / L2 / A1 / A2)</th></tr>
                         ${filasClonadas}
                     </table>
-                    <div class="resumen-print">${resumenTexto}</div>
+
+                    <h3>2. Detalle de Accesorios y Ferretería</h3>
+                    <table>
+                        <tr><th>Descripción</th><th>Cant</th><th>P. Unitario</th><th>Subtotal</th></tr>
+                        ${filasAccesoriosPrint}
+                    </table>
+
+                    <div class="resumen-print">
+                        <h4>Desglose General de Costos</h4>
+                        <p><span>Melamina Estructural (${c.planchasMelamina || 0} planchas @ S/ ${c.precioPlancha || 0}):</span> <strong>S/ ${(c.costoMelamina || 0).toFixed(2)}</strong></p>
+                        <p><span>Fondo MDF (${c.planchasMdf || 0} planchas @ S/ ${c.precioMdf || 0}):</span> <strong>S/ ${(c.costoMdf || 0).toFixed(2)}</strong></p>
+                        <p><span>Cantos (Delgado: ${(c.metrosCantoD || 0).toFixed(2)}m | Grueso: ${(c.metrosCantoG || 0).toFixed(2)}m):</span> <strong>S/ ${(c.costoCantos || 0).toFixed(2)}</strong></p>
+                        <p><span>Accesorios y Ferretería:</span> <strong>S/ ${(c.costoAccesorios || 0).toFixed(2)}</strong></p>
+                        <p><span>Mano de Obra / Instalación:</span> <strong>S/ ${(c.costoInstalacion || 0).toFixed(2)}</strong></p>
+                        <p class="total-line"><span>Costo Total del Proyecto:</span> <span>S/ ${(c.costoBase || 0).toFixed(2)}</span></p>
+                    </div>
+
                     <button class="print-btn" onclick="window.print()">🖨️ Imprimir Hoja Interna</button>
                 </body>
                 </html>
