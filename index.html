@@ -22,6 +22,9 @@
         th, td { border: 1px solid #cbd5e1; padding: 6px; text-align: left; font-size: 11px; }
         th { background: #1e293b; color: white; }
         .footer { margin-top: 15px; font-size: 10px; color: #64748b; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 8px; }
+        .form-inline { display: flex; gap: 5px; margin-top: 8px; }
+        .form-inline input { flex: 2; }
+        .form-inline button { flex: 1; background: #475569; color: white; border: none; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -48,11 +51,11 @@
         <label>Profundidad (mm)</label>
         <input type="number" id="profundidad" value="500" oninput="dibujarMueble()">
         <label>Grosor (mm)</label>
-        <input type="number" id="grosor" value="18">
+        <input type="number" id="grosor" value="18" oninput="dibujarMueble()">
         <label>Div. Verticales</label>
         <input type="number" id="divVerticales" value="1" oninput="dibujarMueble()">
         <label>Repisas (x columna)</label>
-        <input type="number" id="repisas" value="3">
+        <input type="number" id="repisas" value="3" oninput="dibujarMueble()">
         
         <button class="btn-action" onclick="transferirMedidas()">Transferir Medidas al Despiece ↓</button>
     </div>
@@ -78,7 +81,16 @@
                 <tr><td colspan="3" style="text-align: center;">No hay piezas registradas</td></tr>
             </tbody>
         </table>
-        <button class="btn-action" style="background: #475569; margin-top: 8px;" onclick="agregarPiezaManual()">+ Agregar Pieza Manual</button>
+        
+        <div style="margin-top: 10px; background: #f1f5f9; padding: 8px; border-radius: 6px;">
+            <label style="margin-top:0;">Agregar Pieza Manualmente</label>
+            <div class="form-inline">
+                <input type="text" id="nuevaPiezaNombre" placeholder="Nombre (Ej: Puerta)">
+                <input type="number" id="nuevaPiezaLargo" placeholder="Largo">
+                <input type="number" id="nuevaPiezaAncho" placeholder="Ancho">
+                <button onclick="agregarPiezaManual()">Añadir</button>
+            </div>
+        </div>
     </div>
 
     <div class="card">
@@ -89,18 +101,18 @@
             </thead>
             <tbody id="tablaAccesoriosBody">
                 <tr>
-                    <td><input type="text" value="Bisagra recta" style="border:none; width:100%; font-size:11px;"></td>
-                    <td><input type="number" value="4" style="border:none; width:40px; font-size:11px;"></td>
-                    <td><input type="number" value="5.00" style="border:none; width:50px; font-size:11px;"></td>
+                    <td><input type="text" value="Bisagra recta" style="border:none; width:100%; font-size:11px; background:transparent;"></td>
+                    <td><input type="number" value="4" style="border:none; width:35px; font-size:11px; background:transparent;"></td>
+                    <td><input type="number" value="5.00" style="border:none; width:45px; font-size:11px; background:transparent;"></td>
                 </tr>
                 <tr>
-                    <td><input type="text" value="Corredera telescópica 45cm" style="border:none; width:100%; font-size:11px;"></td>
-                    <td><input type="number" value="2" style="border:none; width:40px; font-size:11px;"></td>
-                    <td><input type="number" value="25.00" style="border:none; width:50px; font-size:11px;"></td>
+                    <td><input type="text" value="Corredera telescópica 45cm" style="border:none; width:100%; font-size:11px; background:transparent;"></td>
+                    <td><input type="number" value="2" style="border:none; width:35px; font-size:11px; background:transparent;"></td>
+                    <td><input type="number" value="25.00" style="border:none; width:45px; font-size:11px; background:transparent;"></td>
                 </tr>
             </tbody>
         </table>
-        <button class="btn-action" style="background: #475569; margin-top: 8px;" onclick="agregarFilaAccesorio()">+ Agregar Accesorio</button>
+        <button class="btn-action" style="background: #475569; margin-top: 8px;" onclick="agregarFilaAccesorio()">+ Agregar Fila de Accesorio</button>
     </div>
 
     <div class="card">
@@ -139,6 +151,7 @@
             const alto = parseFloat(document.getElementById('alto').value) || 1800;
             const ancho = parseFloat(document.getElementById('ancho').value) || 1200;
             const divs = parseInt(document.getElementById('divVerticales').value) || 1;
+            const repisas = parseInt(document.getElementById('repisas').value) || 3;
 
             ctx.strokeStyle = '#1e293b';
             ctx.lineWidth = 2;
@@ -146,12 +159,12 @@
 
             if (vistaActual === 'Frontal') {
                 ctx.strokeRect(40, 15, 240, 140);
-                // Dibujar divisiones verticales internas
-                let espacio = 240 / (divs + 1);
+                // Divisiones verticales
+                let espacioX = 240 / (divs + 1);
                 for(let i=1; i<=divs; i++) {
                     ctx.beginPath();
-                    ctx.moveTo(40 + (espacio * i), 15);
-                    ctx.lineTo(40 + (espacio * i), 155);
+                    ctx.moveTo(40 + (espacioX * i), 15);
+                    ctx.lineTo(40 + (espacioX * i), 155);
                     ctx.stroke();
                 }
                 ctx.fillStyle = '#475569';
@@ -159,16 +172,23 @@
                 ctx.fillText(`Frente: ${ancho}mm x ${alto}mm`, 40, 172);
             } else if (vistaActual === 'Lateral') {
                 ctx.strokeRect(90, 15, 140, 140);
+                // Repisas horizontales simuladas en lateral
+                let espacioY = 140 / (repisas + 1);
+                for(let i=1; i<=repisas; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(90, 15 + (espacioY * i));
+                    ctx.lineTo(230, 15 + (espacioY * i));
+                    ctx.stroke();
+                }
                 ctx.fillStyle = '#475569';
                 ctx.font = '10px sans-serif';
-                ctx.fillText(`Vista Lateral`, 110, 172);
+                ctx.fillText(`Vista Lateral (Profundidad)`, 90, 172);
             } else if (vistaActual === 'Planta') {
                 ctx.strokeRect(60, 50, 200, 80);
                 ctx.fillStyle = '#475569';
                 ctx.font = '10px sans-serif';
                 ctx.fillText(`Vista en Planta (Superior)`, 90, 150);
             } else {
-                // 3D Simulado
                 ctx.strokeRect(60, 35, 150, 115);
                 ctx.beginPath();
                 ctx.moveTo(60, 35); ctx.lineTo(100, 15); ctx.lineTo(250, 15); ctx.lineTo(210, 35);
@@ -199,12 +219,18 @@
         }
 
         function agregarPiezaManual() {
-            const pieza = prompt("Nombre de la pieza:");
-            const largo = prompt("Largo en mm:");
-            const ancho = prompt("Ancho en mm:");
-            if (pieza && largo && ancho) {
+            const nombre = document.getElementById('nuevaPiezaNombre').value;
+            const largo = document.getElementById('nuevaPiezaLargo').value;
+            const ancho = document.getElementById('nuevaPiezaAncho').value;
+
+            if (nombre && largo && ancho) {
                 const tbody = document.getElementById('tablaDespieceBody');
-                tbody.innerHTML += `<tr><td>${pieza}</td><td>${largo}</td><td>${ancho}</td></tr>`;
+                tbody.innerHTML += `<tr><td>${nombre}</td><td>${largo}</td><td>${ancho}</td></tr>`;
+                document.getElementById('nuevaPiezaNombre').value = '';
+                document.getElementById('nuevaPiezaLargo').value = '';
+                document.getElementById('nuevaPiezaAncho').value = '';
+            } else {
+                alert('Por favor complete todos los campos de la pieza manual.');
             }
         }
 
@@ -212,9 +238,9 @@
             const tbody = document.getElementById('tablaAccesoriosBody');
             tbody.innerHTML += `
                 <tr>
-                    <td><input type="text" value="Nuevo accesorio" style="border:none; width:100%; font-size:11px;"></td>
-                    <td><input type="number" value="1" style="border:none; width:40px; font-size:11px;"></td>
-                    <td><input type="number" value="10.00" style="border:none; width:50px; font-size:11px;"></td>
+                    <td><input type="text" value="Nuevo accesorio" style="border:none; width:100%; font-size:11px; background:transparent;"></td>
+                    <td><input type="number" value="1" style="border:none; width:35px; font-size:11px; background:transparent;"></td>
+                    <td><input type="number" value="10.00" style="border:none; width:45px; font-size:11px; background:transparent;"></td>
                 </tr>
             `;
         }
