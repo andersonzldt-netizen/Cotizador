@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ProMueble CAD & Cotizador Profesional</title>
+    <!-- Three.js y OrbitControls para 3D interactivo -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <style>
@@ -35,7 +36,7 @@
 
     <div class="header">
         <h1>ProMueble CAD & Cotizador Profesional</h1>
-        <p>Sistema Inteligente con Puertas, MDF y 3D Interactivo</p>
+        <p>Sistema Inteligente con Control de Instalación y 3D Interactivo</p>
     </div>
 
     <div class="card">
@@ -59,8 +60,8 @@
             <option value="sin_mdf">Sin fondo (Estructura abierta)</option>
         </select>
         
-        <label>Descripción / Detalle Comercial</label>
-        <input type="text" id="nombreMaterial" value="Pelikano Duna 18mm" oninput="guardarEstado()">
+        <label>Descripción / Detalle Comercial para el Cliente</label>
+        <input type="text" id="nombreMaterial" value="Pelikano Duna 18mm con herrajes de alta gama" oninput="guardarEstado()">
     </div>
 
     <div class="card">
@@ -115,13 +116,13 @@
     </div>
 
     <div class="card">
-        <h3>2. Lista de Piezas (Despiece con Cantos y MDF)</h3>
+        <h3>2. Lista de Piezas (Despiece Técnico)</h3>
         <table>
             <thead>
                 <tr>
                     <th>Pieza</th>
                     <th>L × A (mm)</th>
-                    <th>Cantos (L1 / L2 / A1 / A2)</th>
+                    <th>Cantos</th>
                 </tr>
             </thead>
             <tbody id="tablaDespieceBody">
@@ -174,13 +175,19 @@
         <input type="number" id="valCantoD" value="1.50" oninput="calcularTotalGeneral()">
         <label>Precio Metro Canto Grueso (3mm)</label>
         <input type="number" id="valCantoG" value="3.00" oninput="calcularTotalGeneral()">
+        
+        <label>Costo de Mano de Obra / Armado e Instalación (S/)</label>
+        <input type="number" id="costoInstalacion" value="150" oninput="calcularTotalGeneral()">
+
+        <label>Margen de Utilidad Comercial (%) para el Cliente</label>
+        <input type="number" id="margenUtilidad" value="30" oninput="calcularTotalGeneral()">
 
         <div class="resumen-caja" id="cajaResumenCalculado">
-            Planchas Estimadas: 0.0 | Total Proyecto: S/ 0.00
+            Total Proyecto: S/ 0.00
         </div>
 
-        <button class="btn-action" style="background: #059669; margin-top: 12px;" onclick="generarCotizacion()">Generar e Imprimir Cotización</button>
-        <button class="btn-action" style="background: #334155; margin-top: 6px;" onclick="generarReporteInterno()">Hoja de Costos Interna</button>
+        <button class="btn-action" style="background: #059669; margin-top: 12px;" onclick="generarCotizacionCliente()">🖨️ Generar Cotización Comercial para Cliente</button>
+        <button class="btn-action" style="background: #334155; margin-top: 6px;" onclick="generarReporteInterno()">📋 Hoja de Costos Interna (Taller)</button>
     </div>
 
     <div class="footer">Designed with ProMueble CAD — Calidad y garantía garantizadas.</div>
@@ -279,7 +286,6 @@
 
             muebleMesh = new THREE.Group();
 
-            // Laterales
             let latIzq = new THREE.Mesh(new THREE.BoxGeometry(grosor, alto, profundidad), mat);
             latIzq.position.set(-ancho/2 + grosor/2, 0, 0);
             muebleMesh.add(latIzq);
@@ -288,7 +294,6 @@
             latDer.position.set(ancho/2 - grosor/2, 0, 0);
             muebleMesh.add(latDer);
 
-            // Techo y Base
             let techo = new THREE.Mesh(new THREE.BoxGeometry(ancho - grosor*2, grosor, profundidad), mat);
             techo.position.set(0, alto/2 - grosor/2, 0);
             muebleMesh.add(techo);
@@ -297,7 +302,6 @@
             base.position.set(0, -alto/2 + grosor/2, 0);
             muebleMesh.add(base);
 
-            // MDF Trasero
             if(tipoMdf !== 'sin_mdf') {
                 let mdfGrosor = tipoMdf === 'mdf_6mm' ? 6 : 3;
                 let trasera = new THREE.Mesh(new THREE.BoxGeometry(ancho - 10, alto - 10, mdfGrosor), matMdf);
@@ -305,7 +309,6 @@
                 muebleMesh.add(trasera);
             }
 
-            // Divisiones Verticales
             let anchoUtil = ancho - (grosor * 2);
             let espacioDiv = anchoUtil / (divs + 1);
             for(let i=1; i<=divs; i++) {
@@ -315,7 +318,6 @@
                 muebleMesh.add(divV);
             }
 
-            // Repisas
             let altoUtil = alto - (grosor * 2);
             let espacioRep = altoUtil / (repisas + 1);
             for(let c=0; c<=divs; c++) {
@@ -332,11 +334,8 @@
                 }
             }
 
-            // Puertas en 3D
             if(puertas === 'si') {
-                let anchoTotalPuertas = ancho;
-                let anchoP = anP;
-                let xStart = -ancho/2 + anchoP/2;
+                let xStart = -ancho/2 + anP/2;
                 for(let p=0; p<cantP; p++) {
                     let puerta = new THREE.Mesh(new THREE.BoxGeometry(anP, aP, 18), matPuerta);
                     let posX = xStart + (anP * p) + (p * 2);
@@ -625,6 +624,8 @@
             let valCorte = parseFloat(document.getElementById('valCorte').value) || 0;
             let precioCantoD = parseFloat(document.getElementById('valCantoD').value) || 0;
             let precioCantoG = parseFloat(document.getElementById('valCantoG').value) || 0;
+            let costoInstalacion = parseFloat(document.getElementById('costoInstalacion').value) || 0;
+            let margen = parseFloat(document.getElementById('margenUtilidad').value) || 30;
 
             let costoMelamina = planchasMelamina * precioPlancha;
             let costoMdf = planchasMdf * precioMdf;
@@ -638,11 +639,13 @@
                 costoAccesorios += (cant * precio);
             });
 
-            let totalGeneral = costoMelamina + costoMdf + costoCortes + costoCantos + costoAccesorios;
+            let costoBase = costoMelamina + costoMdf + costoCortes + costoCantos + costoAccesorios + costoInstalacion;
+            let precioVentaCliente = costoBase * (1 + (margen / 100));
+
+            window.precioFinalCliente = precioVentaCliente.toFixed(2);
 
             document.getElementById('cajaResumenCalculado').innerHTML = `
-                Melamina: ${planchasMelamina} un. | MDF: ${planchasMdf} un. | Cantos D: ${metrosCantoD.toFixed(1)}m | Cantos G: ${metrosCantoG.toFixed(1)}m <br>
-                <strong>Total Proyecto: S/ ${totalGeneral.toFixed(2)}</strong>
+                Costo Base: S/ ${costoBase.toFixed(2)} | Margen (${margen}%): <strong>Precio Cliente: S/ ${precioVentaCliente.toFixed(2)}</strong>
             `;
         }
 
@@ -669,7 +672,61 @@
             }
         }
 
-        function generarCotizacion() {
+        function generarCotizacionCliente() {
+            const cliente = document.getElementById('nombreProyecto').value;
+            const material = document.getElementById('nombreMaterial').value;
+            const alto = document.getElementById('alto').value;
+            const ancho = document.getElementById('ancho').value;
+            const profundidad = document.getElementById('profundidad').value;
+            const precioVenta = window.precioFinalCliente || "0.00";
+
+            const ventana = window.open('', '_blank');
+            ventana.document.write(`
+                <!DOCTYPE html>
+                <html lang="es">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Cotización Comercial - ${cliente}</title>
+                    <style>
+                        body { font-family: sans-serif; padding: 30px; color: #0f172a; max-width: 800px; margin: auto; }
+                        .header-cot { border-bottom: 2px solid #1e293b; padding-bottom: 15px; margin-bottom: 20px; }
+                        .header-cot h2 { margin: 0; color: #1e293b; }
+                        .header-cot p { margin: 5px 0 0 0; color: #64748b; font-size: 14px; }
+                        .info-box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 6px; margin-bottom: 20px; }
+                        .info-box p { margin: 6px 0; font-size: 14px; }
+                        .total-box { background: #1e293b; color: white; padding: 20px; text-align: right; border-radius: 6px; font-size: 20px; font-weight: bold; margin-top: 20px; }
+                        .print-btn { margin: 20px 0; background: #2563eb; color: white; border: none; padding: 12px 25px; font-size: 16px; border-radius: 6px; cursor: pointer; }
+                        @media print { .print-btn { display: none; } }
+                    </style>
+                </head>
+                <body>
+                    <div class="header-cot">
+                        <h2>COTIZACIÓN COMERCIAL</h2>
+                        <p>ProMueble CAD — Diseño, Fabricación e Instalación a Medida</p>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>Proyecto / Cliente:</strong> ${cliente}</p>
+                        <p><strong>Especificación de Material:</strong> ${material}</p>
+                        <p><strong>Dimensiones Totales:</strong> Alto ${alto} mm × Ancho ${ancho} mm × Profundidad ${profundidad} mm</p>
+                        <p><strong>Incluye:</strong> Fabricación con tableros de alta calidad, herrajes metálicos y servicio completo de armado e instalación en domicilio.</p>
+                    </div>
+
+                    <h3>Detalle del Proyecto</h3>
+                    <p>Mueble fabricado a medida bajo estrictos estándares de calidad, cantos aplicados con maquinaria especializada y ajuste perfecto.</p>
+
+                    <div class="total-box">
+                        Inversión Total del Proyecto: S/ ${precioVenta}
+                    </div>
+
+                    <button class="print-btn" onclick="window.print()">🖨️ Imprimir Cotización</button>
+                </body>
+                </html>
+            `);
+            ventana.document.close();
+        }
+
+        function generarReporteInterno() {
             const cliente = document.getElementById('nombreProyecto').value;
             const material = document.getElementById('nombreMaterial').value;
             const filasTabla = document.getElementById('tablaDespieceBody').innerHTML;
@@ -681,7 +738,7 @@
                 <html lang="es">
                 <head>
                     <meta charset="UTF-8">
-                    <title>Cotización - ${cliente}</title>
+                    <title>Hoja de Costos Interna - ${cliente}</title>
                     <style>
                         body { font-family: sans-serif; padding: 20px; color: #0f172a; }
                         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
@@ -693,23 +750,19 @@
                     </style>
                 </head>
                 <body>
-                    <h2>Cotización Comercial: ${cliente}</h2>
-                    <p><strong>Material / Color:</strong> ${material}</p>
-                    <h3>Despiece del Mueble</h3>
+                    <h2>Hoja de Costos Interna (Taller): ${cliente}</h2>
+                    <p><strong>Material:</strong> ${material}</p>
+                    <h3>Despiece y Cantos</h3>
                     <table>
                         <tr><th>Componente</th><th>Medidas (Largo × Ancho)</th><th>Cantos</th></tr>
                         ${filasTabla}
                     </table>
                     <div class="resumen-print">${resumenTexto}</div>
-                    <button class="print-btn" onclick="window.print()">🖨️ Imprimir Cotización</button>
+                    <button class="print-btn" onclick="window.print()">🖨️ Imprimir Hoja Interna</button>
                 </body>
                 </html>
             `);
             ventana.document.close();
-        }
-
-        function generarReporteInterno() {
-            generarCotizacion();
         }
 
         window.onload = function() {
