@@ -729,38 +729,79 @@
                     <meta charset="UTF-8">
                     <title>Cotización Comercial - ${cliente}</title>
                     <style>
-                        body { font-family: sans-serif; padding: 30px; color: #0f172a; max-width: 800px; margin: auto; }
-                        .header-cot { border-bottom: 2px solid #1e293b; padding-bottom: 15px; margin-bottom: 20px; }
-                        .header-cot h2 { margin: 0; color: #1e293b; }
-                        .header-cot p { margin: 5px 0 0 0; color: #64748b; font-size: 14px; }
-                        .info-box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 6px; margin-bottom: 20px; }
-                        .info-box p { margin: 6px 0; font-size: 14px; }
-                        .total-box { background: #1e293b; color: white; padding: 20px; text-align: right; border-radius: 6px; font-size: 20px; font-weight: bold; margin-top: 20px; }
-                        .print-btn { margin: 20px 0; background: #2563eb; color: white; border: none; padding: 12px 25px; font-size: 16px; border-radius: 6px; cursor: pointer; }
-                        @media print { .print-btn { display: none; } }
+                        body { font-family: system-ui, -apple-system, sans-serif; padding: 25px; color: #1e293b; background: #f8fafc; margin: 0; }
+                        .sheet { max-width: 750px; margin: auto; background: white; padding: 35px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+                        .header-cot { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #1e293b; padding-bottom: 15px; margin-bottom: 25px; }
+                        .header-cot h2 { margin: 0; color: #1e293b; font-size: 22px; }
+                        .header-cot p { margin: 4px 0 0 0; color: #64748b; font-size: 13px; }
+                        .info-box { background: #f1f5f9; border-left: 4px solid #2563eb; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
+                        .info-box p { margin: 6px 0; font-size: 13.5px; }
+                        .conditions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; font-size: 13px; background: #fff; border: 1px solid #e2e8f0; padding: 12px; border-radius: 6px; }
+                        .conditions p { margin: 4px 0; color: #475569; }
+                        .detalle-texto { font-size: 13.5px; color: #334155; line-height: 1.5; margin-bottom: 25px; }
+                        .total-box { background: #1e293b; color: white; padding: 18px 20px; text-align: right; border-radius: 6px; font-size: 18px; font-weight: bold; margin-bottom: 30px; }
+                        .firmas { display: flex; justify-content: space-between; margin-top: 50px; text-align: center; font-size: 12px; color: #64748b; }
+                        .firma-linea { border-top: 1px solid #cbd5e1; width: 200px; margin: auto; padding-top: 5px; }
+                        .print-btn { display: block; width: 100%; margin-top: 20px; background: #2563eb; color: white; border: none; padding: 12px; font-size: 15px; border-radius: 6px; font-weight: bold; cursor: pointer; text-align: center; }
+                        @media print { 
+                            body { background: white; padding: 0; }
+                            .sheet { box-shadow: none; padding: 0; }
+                            .print-btn { display: none; } 
+                        }
                     </style>
                 </head>
                 <body>
-                    <div class="header-cot">
-                        <h2>COTIZACIÓN COMERCIAL</h2>
-                        <p>ProMueble CAD — Diseño, Fabricación e Instalación a Medida</p>
+                    <div class="sheet">
+                        <div class="header-cot">
+                            <div>
+                                <h2>COTIZACIÓN COMERCIAL</h2>
+                                <p>ProMueble CAD — Diseño, Fabricación e Instalación a Medida</p>
+                            </div>
+                            <div style="text-align: right;">
+                                <p><strong>Fecha:</strong> ${new Date().toLocaleDateString()}</p>
+                            </div>
+                        </div>
+
+                        <div class="info-box">
+                            <p><strong>Cliente / Proyecto:</strong> ${cliente}</p>
+                            <p><strong>Especificación de Material:</strong> ${material}</p>
+                            <p><strong>Dimensiones Totales:</strong> Alto ${alto} mm × Ancho ${ancho} mm × Profundidad ${profundidad} mm</p>
+                            <p><strong>Incluye:</strong> Fabricación con tableros de alta calidad, cantos aplicados mecánicamente, herrajes metálicos y servicio completo de armado e instalación en domicilio.</p>
+                        </div>
+
+                        <div class="conditions">
+                            <div>
+                                <p><strong>⏱️ Tiempo de Entrega:</strong> 7 a 10 días hábiles</p>
+                                <p><strong>💳 Forma de Pago:</strong> 50% adelanto, 50% al instalar</p>
+                            </div>
+                            <div>
+                                <p><strong>⏳ Validez de Oferta:</strong> 15 días</p>
+                                <p><strong>🛡️ Garantía:</strong> 1 año por estructura</p>
+                            </div>
+                        </div>
+
+                        <div class="detalle-texto">
+                            <strong>Detalle del Proyecto:</strong><br>
+                            Mueble fabricado rigurosamente a medida bajo estrictos estándares de calidad, garantizando un ensamblaje firme, escuadras perfectas y acabados profesionales listos para su uso.
+                        </div>
+
+                        <div class="total-box">
+                            Inversión Total del Proyecto: S/ ${precioVenta}
+                        </div>
+
+                        <div class="firmas">
+                            <div>
+                                <div class="firma-linea"></div>
+                                <p>Asesor / Fabricante</p>
+                            </div>
+                            <div>
+                                <div class="firma-linea"></div>
+                                <p>Aceptación del Cliente</p>
+                            </div>
+                        </div>
+
+                        <button class="print-btn" onclick="window.print()">🖨️ Imprimir o Guardar como PDF</button>
                     </div>
-
-                    <div class="info-box">
-                        <p><strong>Proyecto / Cliente:</strong> ${cliente}</p>
-                        <p><strong>Especificación de Material:</strong> ${material}</p>
-                        <p><strong>Dimensiones Totales:</strong> Alto ${alto} mm × Ancho ${ancho} mm × Profundidad ${profundidad} mm</p>
-                        <p><strong>Incluye:</strong> Fabricación con tableros de alta calidad, herrajes metálicos y servicio completo de armado e instalación en domicilio.</p>
-                    </div>
-
-                    <h3>Detalle del Proyecto</h3>
-                    <p>Mueble fabricado a medida bajo estrictos estándares de calidad, cantos aplicados con maquinaria especializada y ajuste perfecto.</p>
-
-                    <div class="total-box">
-                        Inversión Total del Proyecto: S/ ${precioVenta}
-                    </div>
-
-                    <button class="print-btn" onclick="window.print()">🖨️ Imprimir Cotización</button>
                 </body>
                 </html>
             `);
@@ -796,7 +837,6 @@
                 }
             });
 
-            // Generar filas dinámicas de accesorios para el reporte interno
             let filasAccesoriosPrint = '';
             document.querySelectorAll('#tablaAccesoriosBody tr').forEach(tr => {
                 let desc = tr.querySelector('td:nth-child(1) input').value;
