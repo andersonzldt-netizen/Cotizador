@@ -546,13 +546,14 @@
                 `;
             }
 
-            for(let i=0; i<repisas * (divs + 1); i++) {
+            let totalRepisas = repisas * (divs + 1);
+            if(totalRepisas > 0) {
                 let lRep = Math.round((ancho - (grosor * (divs + 1))) / (divs + 1));
                 let aRep = profundidad - 30;
                 html += `
                     <tr>
-                        <td>Repisa Interna</td>
-                        <td class="medida-pieza" data-l="${lRep}" data-a="${aRep}">${lRep} × ${aRep}</td>
+                        <td>Repisa Interna (x${totalRepisas})</td>
+                        <td class="medida-pieza" data-l="${lRep}" data-a="${aRep}" data-cant="${totalRepisas}">${lRep} × ${aRep}</td>
                         <td>${getCantoPredeterminado('D', '0', '0', '0')}</td>
                     </tr>
                 `;
@@ -630,14 +631,14 @@
                     const selA1 = tr.querySelector('.canto-a1')?.value;
                     const selA2 = tr.querySelector('.canto-a2')?.value;
 
-                    if(selL1 === 'D') metrosCantoD += (l / 1000);
-                    if(selL1 === 'G') metrosCantoG += (l / 1000);
-                    if(selL2 === 'D') metrosCantoD += (l / 1000);
-                    if(selL2 === 'G') metrosCantoG += (l / 1000);
-                    if(selA1 === 'D') metrosCantoD += (a / 1000);
-                    if(selA1 === 'G') metrosCantoG += (a / 1000);
-                    if(selA2 === 'D') metrosCantoD += (a / 1000);
-                    if(selA2 === 'G') metrosCantoG += (a / 1000);
+                    if(selL1 === 'D') metrosCantoD += (l / 1000) * cant;
+                    if(selL1 === 'G') metrosCantoG += (l / 1000) * cant;
+                    if(selL2 === 'D') metrosCantoD += (l / 1000) * cant;
+                    if(selL2 === 'G') metrosCantoG += (l / 1000) * cant;
+                    if(selA1 === 'D') metrosCantoD += (a / 1000) * cant;
+                    if(selA1 === 'G') metrosCantoG += (a / 1000) * cant;
+                    if(selA2 === 'D') metrosCantoD += (a / 1000) * cant;
+                    if(selA2 === 'G') metrosCantoG += (a / 1000) * cant;
                 }
 
                 if(tdMdf) {
@@ -677,7 +678,7 @@
             window.precioFinalCliente = costoBase.toFixed(2);
 
             document.getElementById('cajaResumenCalculado').innerHTML = `
-                Inversión / Total Proyecto: <strong>S/ ${costoBase.toFixed(2)}</strong>
+                Total Proyecto: S/ ${costoBase.toFixed(2)}
             `;
         }
 
