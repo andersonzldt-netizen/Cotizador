@@ -11,7 +11,7 @@
         .header p { margin: 0; color: #94a3b8; font-size: 12px; }
         .card { background: white; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .card label { display: block; font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 3px; margin-top: 6px; }
-        .card input { width: 100%; padding: 7px; box-sizing: border-box; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; }
+        .card input, .card select { width: 100%; padding: 7px; box-sizing: border-box; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; }
         .tabs { display: flex; gap: 4px; margin-bottom: 8px; }
         .tabs button { flex: 1; padding: 7px; background: #e2e8f0; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 11px; }
         .tabs button.active { background: #1e293b; color: white; }
@@ -19,12 +19,10 @@
         canvas { width: 100% !important; max-width: 100%; height: auto; background: #f1f5f9; border-radius: 4px; display: block; }
         button.btn-action { background: #2563eb; color: white; border: none; padding: 10px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; margin-top: 5px; }
         table { width: 100%; border-collapse: collapse; margin-top: 8px; background: white; }
-        th, td { border: 1px solid #cbd5e1; padding: 6px; text-align: left; font-size: 11px; }
+        th, td { border: 1px solid #cbd5e1; padding: 5px; text-align: left; font-size: 10px; }
         th { background: #1e293b; color: white; }
         .footer { margin-top: 15px; font-size: 10px; color: #64748b; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 8px; }
-        .form-inline { display: flex; gap: 5px; margin-top: 8px; }
-        .form-inline input { flex: 2; }
-        .form-inline button { flex: 1; background: #475569; color: white; border: none; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 6px; }
     </style>
 </head>
 <body>
@@ -43,21 +41,27 @@
     </div>
 
     <div class="card">
-        <h3>1. Asistente CAD: Estructura Básica</h3>
+        <h3>1. Asistente CAD: Estructura y Puertas</h3>
         <label>Alto Total (mm)</label>
-        <input type="number" id="alto" value="1800" oninput="dibujarMueble()">
+        <input type="number" id="alto" value="1800" oninput="actualizarTodo()">
         <label>Ancho Total (mm)</label>
-        <input type="number" id="ancho" value="1200" oninput="dibujarMueble()">
+        <input type="number" id="ancho" value="1200" oninput="actualizarTodo()">
         <label>Profundidad (mm)</label>
-        <input type="number" id="profundidad" value="500" oninput="dibujarMueble()">
+        <input type="number" id="profundidad" value="500" oninput="actualizarTodo()">
         <label>Grosor (mm)</label>
-        <input type="number" id="grosor" value="18" oninput="dibujarMueble()">
+        <input type="number" id="grosor" value="18" oninput="actualizarTodo()">
         <label>Div. Verticales</label>
-        <input type="number" id="divVerticales" value="1" oninput="dibujarMueble()">
+        <input type="number" id="divVerticales" value="1" oninput="actualizarTodo()">
         <label>Repisas (x columna)</label>
-        <input type="number" id="repisas" value="3" oninput="dibujarMueble()">
+        <input type="number" id="repisas" value="3" oninput="actualizarTodo()">
+
+        <label style="margin-top: 10px;">¿Incluir Puertas?</label>
+        <select id="llevaPuertas" onchange="actualizarTodo()">
+            <option value="si">Sí, incluir puertas frontales</option>
+            <option value="no">No llevar puertas</option>
+        </select>
         
-        <button class="btn-action" onclick="transferirMedidas()">Transferir Medidas al Despiece ↓</button>
+        <button class="btn-action" onclick="transferirMedidas()">Actualizar y Generar Despiece ↓</button>
     </div>
 
     <div class="tabs">
@@ -72,24 +76,28 @@
     </div>
 
     <div class="card">
-        <h3>2. Lista de Piezas (Despiece)</h3>
+        <h3>2. Lista de Piezas (Despiece con Cantos)</h3>
         <table>
             <thead>
-                <tr><th>Pieza (Ref)</th><th>Largo</th><th>Ancho</th></tr>
+                <tr>
+                    <th>Pieza</th>
+                    <th>L × A</th>
+                    <th>Cantos (L1/L2/A1/A2)</th>
+                </tr>
             </thead>
             <tbody id="tablaDespieceBody">
-                <tr><td colspan="3" style="text-align: center;">No hay piezas registradas</td></tr>
+                <tr><td colspan="3" style="text-align: center;">Presione "Actualizar y Generar Despiece"</td></tr>
             </tbody>
         </table>
         
         <div style="margin-top: 10px; background: #f1f5f9; padding: 8px; border-radius: 6px;">
-            <label style="margin-top:0;">Agregar Pieza Manualmente</label>
-            <div class="form-inline">
-                <input type="text" id="nuevaPiezaNombre" placeholder="Nombre (Ej: Puerta)">
-                <input type="number" id="nuevaPiezaLargo" placeholder="Largo">
-                <input type="number" id="nuevaPiezaAncho" placeholder="Ancho">
-                <button onclick="agregarPiezaManual()">Añadir</button>
+            <label style="margin-top:0;">Agregar Pieza Manual</label>
+            <input type="text" id="pNombre" placeholder="Nombre (Ej: Zócalo)" style="margin-bottom:4px;">
+            <div class="form-grid">
+                <input type="number" id="pLargo" placeholder="Largo (mm)">
+                <input type="number" id="pAncho" placeholder="Ancho (mm)">
             </div>
+            <button class="btn-action" style="background: #475569; margin-top: 6px;" onclick="agregarPiezaManual()">+ Añadir Pieza</button>
         </div>
     </div>
 
@@ -101,18 +109,18 @@
             </thead>
             <tbody id="tablaAccesoriosBody">
                 <tr>
-                    <td><input type="text" value="Bisagra recta" style="border:none; width:100%; font-size:11px; background:transparent;"></td>
-                    <td><input type="number" value="4" style="border:none; width:35px; font-size:11px; background:transparent;"></td>
-                    <td><input type="number" value="5.00" style="border:none; width:45px; font-size:11px; background:transparent;"></td>
+                    <td><input type="text" value="Bisagra recta" style="border:none; width:100%; font-size:10px; background:transparent;"></td>
+                    <td><input type="number" value="4" style="border:none; width:30px; font-size:10px; background:transparent;"></td>
+                    <td><input type="number" value="5.00" style="border:none; width:40px; font-size:10px; background:transparent;"></td>
                 </tr>
                 <tr>
-                    <td><input type="text" value="Corredera telescópica 45cm" style="border:none; width:100%; font-size:11px; background:transparent;"></td>
-                    <td><input type="number" value="2" style="border:none; width:35px; font-size:11px; background:transparent;"></td>
-                    <td><input type="number" value="25.00" style="border:none; width:45px; font-size:11px; background:transparent;"></td>
+                    <td><input type="text" value="Corredera telescópica 45cm" style="border:none; width:100%; font-size:10px; background:transparent;"></td>
+                    <td><input type="number" value="2" style="border:none; width:30px; font-size:10px; background:transparent;"></td>
+                    <td><input type="number" value="25.00" style="border:none; width:40px; font-size:10px; background:transparent;"></td>
                 </tr>
             </tbody>
         </table>
-        <button class="btn-action" style="background: #475569; margin-top: 8px;" onclick="agregarFilaAccesorio()">+ Agregar Fila de Accesorio</button>
+        <button class="btn-action" style="background: #475569; margin-top: 6px;" onclick="agregarFilaAccesorio()">+ Agregar Fila</button>
     </div>
 
     <div class="card">
@@ -126,7 +134,7 @@
         <label>Metros Canto Grueso (3mm)</label>
         <input type="number" id="valCantoG" value="10">
 
-        <button class="btn-action" style="background: #059669; margin-top: 12px;" onclick="generarCotizacion()">Generar Cotización Comercial</button>
+        <button class="btn-action" style="background: #059669; margin-top: 12px;" onclick="generarCotizacion()">Generar e Imprimir Cotización</button>
         <button class="btn-action" style="background: #334155; margin-top: 6px;" onclick="generarReporteInterno()">Hoja de Costos Interna</button>
     </div>
 
@@ -142,6 +150,11 @@
             dibujarMueble();
         }
 
+        function actualizarTodo() {
+            dibujarMueble();
+            transferirMedidas();
+        }
+
         function dibujarMueble() {
             const canvas = document.getElementById('canvasMueble');
             if (!canvas) return;
@@ -152,6 +165,7 @@
             const ancho = parseFloat(document.getElementById('ancho').value) || 1200;
             const divs = parseInt(document.getElementById('divVerticales').value) || 1;
             const repisas = parseInt(document.getElementById('repisas').value) || 3;
+            const puertas = document.getElementById('llevaPuertas').value;
 
             ctx.strokeStyle = '#1e293b';
             ctx.lineWidth = 2;
@@ -159,7 +173,6 @@
 
             if (vistaActual === 'Frontal') {
                 ctx.strokeRect(40, 15, 240, 140);
-                // Divisiones verticales
                 let espacioX = 240 / (divs + 1);
                 for(let i=1; i<=divs; i++) {
                     ctx.beginPath();
@@ -167,12 +180,18 @@
                     ctx.lineTo(40 + (espacioX * i), 155);
                     ctx.stroke();
                 }
+                if (puertas === 'si') {
+                    ctx.strokeStyle = '#2563eb';
+                    ctx.setLineDash([3,3]);
+                    ctx.strokeRect(42, 17, 116, 136);
+                    ctx.strokeRect(162, 17, 116, 136);
+                    ctx.setLineDash([]);
+                }
                 ctx.fillStyle = '#475569';
                 ctx.font = '10px sans-serif';
-                ctx.fillText(`Frente: ${ancho}mm x ${alto}mm`, 40, 172);
+                ctx.fillText(`Frente: ${ancho}mm x ${alto}mm (${puertas === 'si' ? 'Con Puertas' : 'Sin Puertas'})`, 35, 172);
             } else if (vistaActual === 'Lateral') {
                 ctx.strokeRect(90, 15, 140, 140);
-                // Repisas horizontales simuladas en lateral
                 let espacioY = 140 / (repisas + 1);
                 for(let i=1; i<=repisas; i++) {
                     ctx.beginPath();
@@ -182,7 +201,7 @@
                 }
                 ctx.fillStyle = '#475569';
                 ctx.font = '10px sans-serif';
-                ctx.fillText(`Vista Lateral (Profundidad)`, 90, 172);
+                ctx.fillText(`Vista Lateral`, 110, 172);
             } else if (vistaActual === 'Planta') {
                 ctx.strokeRect(60, 50, 200, 80);
                 ctx.fillStyle = '#475569';
@@ -207,30 +226,43 @@
             const ancho = parseFloat(document.getElementById('ancho').value) || 0;
             const profundidad = parseFloat(document.getElementById('profundidad').value) || 0;
             const grosor = parseFloat(document.getElementById('grosor').value) || 0;
+            const repisas = parseInt(document.getElementById('repisas').value) || 0;
+            const divs = parseInt(document.getElementById('divVerticales').value) || 0;
+            const puertas = document.getElementById('llevaPuertas').value;
             
             const tbody = document.getElementById('tablaDespieceBody');
-            tbody.innerHTML = `
-                <tr><td>Lateral Izquierdo</td><td>${alto}</td><td>${profundidad}</td></tr>
-                <tr><td>Lateral Derecho</td><td>${alto}</td><td>${profundidad}</td></tr>
-                <tr><td>Techo / Base</td><td>${ancho - (grosor * 2)}</td><td>${profundidad}</td></tr>
-                <tr><td>Repisas Internas</td><td>${ancho - (grosor * 2)}</td><td>${profundidad - 20}</td></tr>
+            
+            let html = `
+                <tr><td>Lateral Izquierdo</td><td>${alto} × ${profundidad}</td><td><select><option>G3</option><option>D1</option><option>Ninguno</option></select></td></tr>
+                <tr><td>Lateral Derecho</td><td>${alto} × ${profundidad}</td><td><select><option>G3</option><option>D1</option><option>Ninguno</option></select></td></tr>
+                <tr><td>Techo / Base</td><td>${ancho - (grosor * 2)} × ${profundidad}</td><td><select><option>G3</option><option>D1</option><option>Ninguno</option></select></td></tr>
             `;
-            alert('¡Medidas transferidas con éxito!');
+
+            for(let i=0; i<repisas; i++) {
+                html += `<tr><td>Repisa Interna</td><td>${Math.round((ancho - (grosor * (divs + 1))) / (divs + 1))} × ${profundidad - 20}</td><td><select><option>D1</option><option>Ninguno</option></select></td></tr>`;
+            }
+
+            if (puertas === 'si') {
+                let anchoPuerta = Math.round(ancho / (divs + 1));
+                html += `<tr><td>Puerta Frontal</td><td>${alto - 4} × ${anchoPuerta - 4}</td><td><select><option>G3</option><option>D1</option><option>Ninguno</option></select></td></tr>`;
+            }
+
+            tbody.innerHTML = html;
         }
 
         function agregarPiezaManual() {
-            const nombre = document.getElementById('nuevaPiezaNombre').value;
-            const largo = document.getElementById('nuevaPiezaLargo').value;
-            const ancho = document.getElementById('nuevaPiezaAncho').value;
+            const nombre = document.getElementById('pNombre').value;
+            const largo = document.getElementById('pLargo').value;
+            const ancho = document.getElementById('pAncho').value;
 
             if (nombre && largo && ancho) {
                 const tbody = document.getElementById('tablaDespieceBody');
-                tbody.innerHTML += `<tr><td>${nombre}</td><td>${largo}</td><td>${ancho}</td></tr>`;
-                document.getElementById('nuevaPiezaNombre').value = '';
-                document.getElementById('nuevaPiezaLargo').value = '';
-                document.getElementById('nuevaPiezaAncho').value = '';
+                tbody.innerHTML += `<tr><td>${nombre}</td><td>${largo} × ${ancho}</td><td><select><option>Ninguno</option><option>D1</option><option>G3</option></select></td></tr>`;
+                document.getElementById('pNombre').value = '';
+                document.getElementById('pLargo').value = '';
+                document.getElementById('pAncho').value = '';
             } else {
-                alert('Por favor complete todos los campos de la pieza manual.');
+                alert('Complete los datos de la pieza manual.');
             }
         }
 
@@ -238,9 +270,9 @@
             const tbody = document.getElementById('tablaAccesoriosBody');
             tbody.innerHTML += `
                 <tr>
-                    <td><input type="text" value="Nuevo accesorio" style="border:none; width:100%; font-size:11px; background:transparent;"></td>
-                    <td><input type="number" value="1" style="border:none; width:35px; font-size:11px; background:transparent;"></td>
-                    <td><input type="number" value="10.00" style="border:none; width:45px; font-size:11px; background:transparent;"></td>
+                    <td><input type="text" value="Accesorio" style="border:none; width:100%; font-size:10px; background:transparent;"></td>
+                    <td><input type="number" value="1" style="border:none; width:30px; font-size:10px; background:transparent;"></td>
+                    <td><input type="number" value="10.00" style="border:none; width:40px; font-size:10px; background:transparent;"></td>
                 </tr>
             `;
         }
@@ -262,17 +294,19 @@
                         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
                         th, td { border: 1px solid #cbd5e1; padding: 8px; text-align: left; font-size: 13px; }
                         th { background: #1e293b; color: white; }
+                        .print-btn { margin: 20px 0; background: #2563eb; color: white; border: none; padding: 10px 20px; font-size: 14px; border-radius: 6px; cursor: pointer; }
+                        @media print { .print-btn { display: none; } }
                     </style>
                 </head>
                 <body>
                     <h2>Cotización Comercial: ${cliente}</h2>
-                    <p><strong>Material:</strong> ${material}</p>
+                    <p><strong>Material / Color:</strong> ${material}</p>
                     <h3>Despiece del Mueble</h3>
                     <table>
-                        <tr><th>Componente</th><th>Largo (mm)</th><th>Ancho (mm)</th></tr>
+                        <tr><th>Componente</th><th>Medidas (Largo × Ancho)</th><th>Cantos</th></tr>
                         ${filasTabla}
                     </table>
-                    <script>window.onload = function() { window.print(); <\/script>
+                    <button class="print-btn" onclick="window.print()">🖨️ Imprimir Cotización</button>
                 </body>
                 </html>
             `);
@@ -297,6 +331,8 @@
                         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
                         th, td { border: 1px solid #cbd5e1; padding: 8px; text-align: left; font-size: 13px; }
                         th { background: #1e293b; color: white; }
+                        .print-btn { margin: 20px 0; background: #2563eb; color: white; border: none; padding: 10px 20px; font-size: 14px; border-radius: 6px; cursor: pointer; }
+                        @media print { .print-btn { display: none; } }
                     </style>
                 </head>
                 <body>
@@ -307,7 +343,7 @@
                         <tr><td>Canto Delgado (1mm)</td><td>${cantoD} metros</td></tr>
                         <tr><td>Canto Grueso (3mm)</td><td>${cantoG} metros</td></tr>
                     </table>
-                    <script>window.onload = function() { window.print(); <\/script>
+                    <button class="print-btn" onclick="window.print()">🖨️ Imprimir Hoja de Costos</button>
                 </body>
                 </html>
             `);
@@ -315,7 +351,7 @@
         }
 
         window.onload = function() {
-            dibujarMueble();
+            actualizarTodo();
         };
     </script>
 </body>
