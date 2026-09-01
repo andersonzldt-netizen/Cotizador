@@ -165,9 +165,9 @@
 
     <div class="card">
         <h3>4. Parámetros de Costo y Resumen (S/)</h3>
-        <label>Precio Plancha Melamina</label>
+        <label>Precio Plancha Melamina (Formato 7x8 pies)</label>
         <input type="number" id="resPlanchas" value="240" oninput="calcularTotalGeneral()">
-        <label>Precio Plancha MDF</label>
+        <label>Precio Plancha MDF (Formato 1.85m x 2.44m)</label>
         <input type="number" id="resMdf" value="95" oninput="calcularTotalGeneral()">
         <label>Precio Metro Canto Delgado (1mm)</label>
         <input type="number" id="valCantoD" value="1.50" oninput="calcularTotalGeneral()">
@@ -610,6 +610,11 @@
             calcularTotalGeneral();
         }
 
+        // Función para redondear a múltiplos de 0.5 hacia arriba (ej. 1.2 -> 1.5, 0.3 -> 0.5)
+        function redondearMediaPlancha(valor) {
+            return Math.ceil(valor * 2) / 2;
+        }
+
         function calcularTotalGeneral() {
             let areaMelaminaMM2 = 0;
             let areaMdfMM2 = 0;
@@ -648,13 +653,17 @@
                 }
             });
 
-            const areaPlanchaUtil = 3450000; 
+            // Área de plancha de melamina 7x8 pies (2.15m x 2.44m) con merma para cortes -> ~5,900,000 mm2
+            const areaPlanchaUtilMelamina = 5900000; 
+            // Área de plancha de MDF formato 1.85m x 2.44m con merma para cortes -> ~4,500,000 mm2
+            const areaPlanchaUtilMdf = 4500000; 
 
-            let planchasMelamina = Math.ceil((areaMelaminaMM2 / areaPlanchaUtil) * 10) / 10;
-            if(planchasMelamina < 1 && areaMelaminaMM2 > 0) planchasMelamina = 1;
-
-            let planchasMdf = Math.ceil((areaMdfMM2 / areaPlanchaUtil) * 10) / 10;
-            if(planchasMdf < 1 && areaMdfMM2 > 0) planchasMdf = 1;
+            // Cálculo redondeando a medias planchas (0.5, 1.0, 1.5, 2.0...)
+            let planchasMelamina = redondearMediaPlancha(areaMelaminaMM2 / areaPlanchaUtilMelamina);
+            let planchasMdf = redondearMediaPlancha(areaMdfMM2 / areaPlanchaUtilMdf);
+            
+            if(planchasMelamina < 0.5 && areaMelaminaMM2 > 0) planchasMelamina = 0.5;
+            if(planchasMdf < 0.5 && areaMdfMM2 > 0) planchasMdf = 0.5;
 
             let precioPlancha = parseFloat(document.getElementById('resPlanchas').value) || 0;
             let precioMdf = parseFloat(document.getElementById('resMdf').value) || 0;
@@ -677,7 +686,6 @@
 
             window.precioFinalCliente = costoBase.toFixed(2);
 
-            // Guardar desglose global para usarlo en la hoja interna
             window.desgloseCostos = {
                 planchasMelamina, precioPlancha, costoMelamina,
                 planchasMdf, precioMdf, costoMdf,
@@ -884,8 +892,8 @@
 
                     <div class="resumen-print">
                         <h4>Desglose General de Costos</h4>
-                        <p><span>Melamina Estructural (${c.planchasMelamina || 0} planchas @ S/ ${c.precioPlancha || 0}):</span> <strong>S/ ${(c.costoMelamina || 0).toFixed(2)}</strong></p>
-                        <p><span>Fondo MDF (${c.planchasMdf || 0} planchas @ S/ ${c.precioMdf || 0}):</span> <strong>S/ ${(c.costoMdf || 0).toFixed(2)}</strong></p>
+                        <p><span>Melamina Estructural 7x8 (${c.planchasMelamina || 0} planchas / medias planchas @ S/ ${c.precioPlancha || 0}):</span> <strong>S/ ${(c.costoMelamina || 0).toFixed(2)}</strong></p>
+                        <p><span>Fondo MDF Formato 1.85m x 2.44m (${c.planchasMdf || 0} planchas / medias planchas @ S/ ${c.precioMdf || 0}):</span> <strong>S/ ${(c.costoMdf || 0).toFixed(2)}</strong></p>
                         <p><span>Cantos (Delgado: ${(c.metrosCantoD || 0).toFixed(2)}m | Grueso: ${(c.metrosCantoG || 0).toFixed(2)}m):</span> <strong>S/ ${(c.costoCantos || 0).toFixed(2)}</strong></p>
                         <p><span>Accesorios y Ferretería:</span> <strong>S/ ${(c.costoAccesorios || 0).toFixed(2)}</strong></p>
                         <p><span>Mano de Obra / Instalación:</span> <strong>S/ ${(c.costoInstalacion || 0).toFixed(2)}</strong></p>
