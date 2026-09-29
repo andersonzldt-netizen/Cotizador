@@ -56,7 +56,7 @@ body.locked{
 }
 
 /* =====================================================
-   CONTADOR
+   CONTADOR DE PRUEBA — 10 SEGUNDOS
 ===================================================== */
 
 #countdownScreen{
@@ -318,7 +318,7 @@ body.locked{
 }
 
 /* =====================================================
-   CORAZÓN CINEMATOGRÁFICO
+   CORAZÓN
 ===================================================== */
 
 .hero-heart{
@@ -493,32 +493,10 @@ body.locked{
     animation:particleFloat 4s ease-in-out infinite;
 }
 
-.p1{
-    top:28px;
-    left:35px;
-}
-
-.p2{
-    top:45px;
-    right:28px;
-    animation-delay:1s;
-}
-
-.p3{
-    bottom:35px;
-    left:42px;
-    animation-delay:1.7s;
-}
-
-.p4{
-    bottom:52px;
-    right:40px;
-    animation-delay:2.5s;
-}
-
-/* =====================================================
-   PORTADA TEXTO
-===================================================== */
+.p1{top:28px;left:35px;}
+.p2{top:45px;right:28px;animation-delay:1s;}
+.p3{bottom:35px;left:42px;animation-delay:1.7s;}
+.p4{bottom:52px;right:40px;animation-delay:2.5s;}
 
 .cover-small{
     font-size:10px;
@@ -533,11 +511,7 @@ body.locked{
 .cover-title{
     font-family:'Cormorant Garamond',serif;
 
-    font-size:clamp(
-        62px,
-        12vw,
-        115px
-    );
+    font-size:clamp(62px,12vw,115px);
 
     line-height:.75;
 
@@ -551,11 +525,7 @@ body.locked{
 
     font-family:'Cormorant Garamond',serif;
 
-    font-size:clamp(
-        23px,
-        4vw,
-        35px
-    );
+    font-size:clamp(23px,4vw,35px);
 
     font-style:italic;
 
@@ -572,17 +542,10 @@ body.locked{
     color:rgba(248,240,229,.5);
 }
 
-/* =====================================================
-   BOTÓN PRINCIPAL
-===================================================== */
-
 .primary-button{
-
     margin-top:32px;
 
-    border:
-        1px solid
-        rgba(230,203,145,.7);
+    border:1px solid rgba(230,203,145,.7);
 
     padding:15px 28px;
 
@@ -614,11 +577,9 @@ body.locked{
 }
 
 .primary-button:hover{
-
     transform:translateY(-3px);
 
-    background:
-        rgba(201,163,91,.16);
+    background:rgba(201,163,91,.16);
 
     box-shadow:
         0 12px 35px rgba(0,0,0,.3);
@@ -635,7 +596,6 @@ body.locked{
 }
 
 .main-card{
-
     background:
         linear-gradient(
             145deg,
@@ -643,9 +603,7 @@ body.locked{
             rgba(255,255,255,.025)
         );
 
-    border:
-        1px solid
-        rgba(255,255,255,.1);
+    border:1px solid rgba(255,255,255,.1);
 
     border-radius:30px;
 
@@ -667,7 +625,6 @@ body.locked{
 }
 
 .header-kicker{
-
     font-size:10px;
     text-transform:uppercase;
     letter-spacing:4px;
@@ -678,7 +635,6 @@ body.locked{
 }
 
 .header h1{
-
     font-family:'Cormorant Garamond',serif;
 
     font-size:clamp(45px,7vw,70px);
@@ -689,7 +645,6 @@ body.locked{
 }
 
 .header p{
-
     max-width:650px;
 
     margin:20px auto 0;
@@ -698,17 +653,10 @@ body.locked{
 
     line-height:1.8;
 
-    color:
-        rgba(
-            248,
-            240,
-            229,
-            .7
-        );
+    color:rgba(248,240,229,.7);
 }
 
 .header-controls{
-
     display:flex;
 
     justify-content:center;
@@ -721,21 +669,17 @@ body.locked{
 }
 
 .control-button{
-
     min-width:45px;
 
     height:45px;
 
     padding:0 17px;
 
-    border:
-        1px solid
-        rgba(255,255,255,.15);
+    border:1px solid rgba(255,255,255,.15);
 
     border-radius:50px;
 
-    background:
-        rgba(255,255,255,.05);
+    background:rgba(255,255,255,.05);
 
     color:var(--cream);
 
@@ -749,12 +693,9 @@ body.locked{
 }
 
 .control-button:hover{
+    background:rgba(201,163,91,.14);
 
-    background:
-        rgba(201,163,91,.14);
-
-    border-color:
-        rgba(201,163,91,.4);
+    border-color:rgba(201,163,91,.4);
 }
 
 /* =====================================================
@@ -762,7 +703,6 @@ body.locked{
 ===================================================== */
 
 .chapter-nav{
-
     display:flex;
 
     justify-content:center;
@@ -773,28 +713,17 @@ body.locked{
 
     padding:20px;
 
-    border-top:
-        1px solid
-        rgba(255,255,255,.07);
+    border-top:1px solid rgba(255,255,255,.07);
 
-    border-bottom:
-        1px solid
-        rgba(255,255,255,.07);
+    border-bottom:1px solid rgba(255,255,255,.07);
 }
 
 .chapter-button{
-
     border:0;
 
     background:transparent;
 
-    color:
-        rgba(
-            248,
-            240,
-            229,
-            .55
-        );
+    color:rgba(248,240,229,.55);
 
     padding:10px 18px;
 
@@ -814,9 +743,7 @@ body.locked{
 }
 
 .chapter-button.active{
-
-    background:
-        rgba(201,163,91,.14);
+    background:rgba(201,163,91,.14);
 
     color:var(--gold-light);
 }
@@ -826,22 +753,18 @@ body.locked{
 ===================================================== */
 
 .chapter{
-
     display:none;
 
     padding:55px 8%;
 }
 
 .chapter.active{
-
     display:block;
 
-    animation:
-        chapterIn .7s ease;
+    animation:chapterIn .7s ease;
 }
 
 .chapter-number{
-
     font-size:10px;
 
     letter-spacing:4px;
@@ -854,15 +777,9 @@ body.locked{
 }
 
 .chapter h2{
-
     font-family:'Cormorant Garamond',serif;
 
-    font-size:
-        clamp(
-            38px,
-            6vw,
-            58px
-        );
+    font-size:clamp(38px,6vw,58px);
 
     font-weight:500;
 
@@ -870,20 +787,13 @@ body.locked{
 }
 
 .chapter-intro{
-
     max-width:700px;
 
     font-size:14px;
 
     line-height:1.9;
 
-    color:
-        rgba(
-            248,
-            240,
-            229,
-            .72
-        );
+    color:rgba(248,240,229,.72);
 
     margin-bottom:30px;
 }
@@ -893,7 +803,6 @@ body.locked{
 ===================================================== */
 
 .days-counter{
-
     display:inline-flex;
 
     flex-direction:column;
@@ -902,18 +811,14 @@ body.locked{
 
     margin-bottom:35px;
 
-    border:
-        1px solid
-        rgba(201,163,91,.35);
+    border:1px solid rgba(201,163,91,.35);
 
     border-radius:15px;
 
-    background:
-        rgba(255,255,255,.035);
+    background:rgba(255,255,255,.035);
 }
 
 .days-number{
-
     font-family:'Cormorant Garamond',serif;
 
     font-size:58px;
@@ -924,7 +829,6 @@ body.locked{
 }
 
 .days-label{
-
     margin-top:6px;
 
     font-size:9px;
@@ -933,13 +837,7 @@ body.locked{
 
     text-transform:uppercase;
 
-    color:
-        rgba(
-            248,
-            240,
-            229,
-            .5
-        );
+    color:rgba(248,240,229,.5);
 }
 
 /* =====================================================
@@ -951,7 +849,6 @@ body.locked{
 }
 
 .music-title{
-
     font-family:'Cormorant Garamond',serif;
 
     font-size:30px;
@@ -960,7 +857,6 @@ body.locked{
 }
 
 .youtube-wrapper{
-
     position:relative;
 
     width:100%;
@@ -975,9 +871,7 @@ body.locked{
 
     border-radius:18px;
 
-    border:
-        1px solid
-        rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.12);
 
     background:#090306;
 
@@ -986,7 +880,6 @@ body.locked{
 }
 
 .youtube-wrapper iframe{
-
     width:100%;
     height:100%;
 
@@ -998,7 +891,6 @@ body.locked{
 ===================================================== */
 
 .carousel{
-
     position:relative;
 
     max-width:850px;
@@ -1007,7 +899,6 @@ body.locked{
 }
 
 .photo-frame{
-
     position:relative;
 
     width:100%;
@@ -1020,16 +911,13 @@ body.locked{
 
     background:#1c0d12;
 
-    border:
-        1px solid
-        rgba(255,255,255,.1);
+    border:1px solid rgba(255,255,255,.1);
 
     box-shadow:
         0 30px 70px rgba(0,0,0,.3);
 }
 
 .photo-frame img{
-
     width:100%;
     height:100%;
 
@@ -1043,14 +931,12 @@ body.locked{
 }
 
 .photo-frame.changing img{
-
     opacity:.15;
 
     transform:scale(1.03);
 }
 
 .carousel-arrow{
-
     position:absolute;
 
     top:50%;
@@ -1060,14 +946,11 @@ body.locked{
     width:48px;
     height:48px;
 
-    border:
-        1px solid
-        rgba(255,255,255,.35);
+    border:1px solid rgba(255,255,255,.35);
 
     border-radius:50%;
 
-    background:
-        rgba(20,5,10,.65);
+    background:rgba(20,5,10,.65);
 
     backdrop-filter:blur(8px);
 
@@ -1083,24 +966,15 @@ body.locked{
 }
 
 .carousel-arrow:hover{
+    background:rgba(91,24,40,.9);
 
-    background:
-        rgba(91,24,40,.9);
-
-    border-color:
-        var(--gold);
+    border-color:var(--gold);
 }
 
-.carousel-arrow.left{
-    left:18px;
-}
-
-.carousel-arrow.right{
-    right:18px;
-}
+.carousel-arrow.left{left:18px;}
+.carousel-arrow.right{right:18px;}
 
 .photo-caption{
-
     position:relative;
 
     text-align:center;
@@ -1109,7 +983,6 @@ body.locked{
 }
 
 .caption-line{
-
     width:45px;
 
     height:1px;
@@ -1120,15 +993,9 @@ body.locked{
 }
 
 .photo-caption p{
-
     font-family:'Cormorant Garamond',serif;
 
-    font-size:
-        clamp(
-            24px,
-            4vw,
-            35px
-        );
+    font-size:clamp(24px,4vw,35px);
 
     line-height:1.15;
 
@@ -1138,25 +1005,17 @@ body.locked{
 
     margin:auto;
 
-    animation:
-        captionIn .5s ease;
+    animation:captionIn .5s ease;
 }
 
 .photo-counter{
-
     margin-top:20px;
 
     font-size:10px;
 
     letter-spacing:3px;
 
-    color:
-        rgba(
-            248,
-            240,
-            229,
-            .45
-        );
+    color:rgba(248,240,229,.45);
 }
 
 /* =====================================================
@@ -1164,7 +1023,6 @@ body.locked{
 ===================================================== */
 
 .reason-box{
-
     max-width:700px;
 
     margin:40px auto;
@@ -1183,9 +1041,7 @@ body.locked{
 
     padding:40px;
 
-    border:
-        1px solid
-        rgba(201,163,91,.3);
+    border:1px solid rgba(201,163,91,.3);
 
     border-radius:25px;
 
@@ -1200,7 +1056,6 @@ body.locked{
 }
 
 .reason-number{
-
     font-size:10px;
 
     letter-spacing:3px;
@@ -1213,41 +1068,26 @@ body.locked{
 }
 
 .reason-text{
-
     font-family:'Cormorant Garamond',serif;
 
-    font-size:
-        clamp(
-            28px,
-            5vw,
-            45px
-        );
+    font-size:clamp(28px,5vw,45px);
 
     line-height:1.15;
 
-    animation:
-        captionIn .5s ease;
+    animation:captionIn .5s ease;
 }
 
 .reason-hint{
-
     margin-top:25px;
 
     font-size:10px;
 
     letter-spacing:1px;
 
-    color:
-        rgba(
-            248,
-            240,
-            229,
-            .4
-        );
+    color:rgba(248,240,229,.4);
 }
 
 .letter-button{
-
     display:block;
 
     margin:35px auto 0;
@@ -1258,7 +1098,6 @@ body.locked{
 ===================================================== */
 
 .letter-modal{
-
     position:fixed;
 
     inset:0;
@@ -1273,8 +1112,7 @@ body.locked{
 
     padding:20px;
 
-    background:
-        rgba(8,3,6,.82);
+    background:rgba(8,3,6,.82);
 
     backdrop-filter:blur(10px);
 
@@ -1288,14 +1126,12 @@ body.locked{
 }
 
 .letter-modal.open{
-
     opacity:1;
 
     visibility:visible;
 }
 
 .letter-card{
-
     position:relative;
 
     width:min(800px,100%);
@@ -1331,7 +1167,6 @@ body.locked{
 }
 
 .letter-close{
-
     position:absolute;
 
     right:20px;
@@ -1344,8 +1179,7 @@ body.locked{
 
     border-radius:50%;
 
-    background:
-        rgba(91,24,40,.08);
+    background:rgba(91,24,40,.08);
 
     color:var(--wine);
 
@@ -1355,7 +1189,6 @@ body.locked{
 }
 
 .letter-kicker{
-
     text-align:center;
 
     text-transform:uppercase;
@@ -1370,7 +1203,6 @@ body.locked{
 }
 
 .letter-card h2{
-
     text-align:center;
 
     font-family:'Cormorant Garamond',serif;
@@ -1385,7 +1217,6 @@ body.locked{
 }
 
 .letter-card p{
-
     font-family:'Cormorant Garamond',serif;
 
     font-size:21px;
@@ -1396,7 +1227,6 @@ body.locked{
 }
 
 .letter-signature{
-
     margin-top:35px;
 
     text-align:center;
@@ -1411,29 +1241,21 @@ body.locked{
 }
 
 /* =====================================================
-   CORAZONES DE FONDO
+   CORAZONES
 ===================================================== */
 
 .heart-bg{
-
     position:fixed;
 
     bottom:-30px;
 
     z-index:-1;
 
-    color:
-        rgba(
-            230,
-            162,
-            173,
-            .22
-        );
+    color:rgba(230,162,173,.22);
 
     pointer-events:none;
 
-    animation:
-        floatHeart linear forwards;
+    animation:floatHeart linear forwards;
 }
 
 /* =====================================================
@@ -1441,7 +1263,6 @@ body.locked{
 ===================================================== */
 
 body.light-mode{
-
     background:
         linear-gradient(
             135deg,
@@ -1453,58 +1274,28 @@ body.light-mode{
 }
 
 body.light-mode .main-card{
+    background:rgba(255,250,245,.72);
 
-    background:
-        rgba(
-            255,
-            250,
-            245,
-            .72
-        );
-
-    border-color:
-        rgba(91,24,40,.12);
+    border-color:rgba(91,24,40,.12);
 }
 
 body.light-mode .chapter-intro,
 body.light-mode .header p{
-
-    color:
-        rgba(
-            43,
-            23,
-            28,
-            .68
-        );
+    color:rgba(43,23,28,.68);
 }
 
 body.light-mode .chapter-button{
-
-    color:
-        rgba(
-            43,
-            23,
-            28,
-            .55
-        );
+    color:rgba(43,23,28,.55);
 }
 
 body.light-mode .chapter-button.active{
-
     color:var(--wine);
 }
 
 body.light-mode .control-button{
-
     color:var(--wine);
 
-    border-color:
-        rgba(
-            91,
-            24,
-            40,
-            .2
-        );
+    border-color:rgba(91,24,40,.2);
 }
 
 /* =====================================================
@@ -1512,158 +1303,77 @@ body.light-mode .control-button{
 ===================================================== */
 
 @keyframes heartBeat{
-
-    0%,100%{
-        transform:
-            rotate(-45deg)
-            scale(1);
-    }
-
-    12%{
-        transform:
-            rotate(-45deg)
-            scale(1.08);
-    }
-
-    24%{
-        transform:
-            rotate(-45deg)
-            scale(1);
-    }
-
-    36%{
-        transform:
-            rotate(-45deg)
-            scale(1.045);
-    }
-
-    50%{
-        transform:
-            rotate(-45deg)
-            scale(1);
-    }
+    0%,100%{transform:rotate(-45deg) scale(1);}
+    12%{transform:rotate(-45deg) scale(1.08);}
+    24%{transform:rotate(-45deg) scale(1);}
+    36%{transform:rotate(-45deg) scale(1.045);}
+    50%{transform:rotate(-45deg) scale(1);}
 }
 
 @keyframes auraPulse{
-
-    0%,100%{
-        transform:scale(.88);
-        opacity:.65;
-    }
-
-    50%{
-        transform:scale(1.12);
-        opacity:1;
-    }
+    0%,100%{transform:scale(.88);opacity:.65;}
+    50%{transform:scale(1.12);opacity:1;}
 }
 
 @keyframes ringRotate{
-
-    from{
-        transform:rotate(0deg);
-    }
-
-    to{
-        transform:rotate(360deg);
-    }
+    from{transform:rotate(0deg);}
+    to{transform:rotate(360deg);}
 }
 
 @keyframes ringRotateReverse{
-
-    from{
-        transform:rotate(360deg);
-    }
-
-    to{
-        transform:rotate(0deg);
-    }
+    from{transform:rotate(360deg);}
+    to{transform:rotate(0deg);}
 }
 
 @keyframes shineMove{
-
     0%,100%{
         opacity:.25;
-        transform:
-            rotate(-45deg)
-            translate(-4px,-2px);
+        transform:rotate(-45deg) translate(-4px,-2px);
     }
 
     50%{
         opacity:.8;
-        transform:
-            rotate(-45deg)
-            translate(7px,5px);
+        transform:rotate(-45deg) translate(7px,5px);
     }
 }
 
 @keyframes particleFloat{
-
     0%,100%{
-        transform:
-            translateY(0)
-            scale(.7);
-
+        transform:translateY(0) scale(.7);
         opacity:.25;
     }
 
     50%{
-        transform:
-            translateY(-15px)
-            scale(1.2);
-
+        transform:translateY(-15px) scale(1.2);
         opacity:1;
     }
 }
 
 @keyframes starsMove{
-
-    from{
-        transform:translate(0,0);
-    }
-
-    to{
-        transform:translate(35px,35px);
-    }
+    from{transform:translate(0,0);}
+    to{transform:translate(35px,35px);}
 }
 
 @keyframes unlockPulse{
-
-    0%,100%{
-        transform:scale(1);
-    }
-
-    50%{
-        transform:scale(1.12);
-    }
+    0%,100%{transform:scale(1);}
+    50%{transform:scale(1.12);}
 }
 
 @keyframes floatHeart{
-
     0%{
-        transform:
-            translateY(0)
-            rotate(0deg)
-            scale(.7);
-
+        transform:translateY(0) rotate(0deg) scale(.7);
         opacity:0;
     }
 
-    10%{
-        opacity:1;
-    }
+    10%{opacity:1;}
 
     100%{
-        transform:
-            translateY(-110vh)
-            rotate(360deg)
-            scale(1.3);
-
+        transform:translateY(-110vh) rotate(360deg) scale(1.3);
         opacity:0;
     }
 }
 
 @keyframes chapterIn{
-
     from{
         opacity:0;
         transform:translateY(15px);
@@ -1676,7 +1386,6 @@ body.light-mode .control-button{
 }
 
 @keyframes captionIn{
-
     from{
         opacity:0;
         transform:translateY(10px);
@@ -1695,7 +1404,6 @@ body.light-mode .control-button{
 @media(max-width:650px){
 
     .hero-heart{
-
         width:190px;
         height:190px;
     }
@@ -1711,14 +1419,12 @@ body.light-mode .control-button{
     }
 
     .heart-core{
-
         width:76px;
         height:76px;
     }
 
     .heart-core::before,
     .heart-core::after{
-
         width:76px;
         height:76px;
     }
@@ -1732,67 +1438,51 @@ body.light-mode .control-button{
     }
 
     .time-box{
-
         min-width:72px;
-
         padding:14px 7px;
     }
 
     .time-number{
-
         font-size:42px;
     }
 
     .time-label{
-
         font-size:7px;
-
         letter-spacing:1px;
     }
 
     .time-separator{
-
         font-size:25px;
-
         margin-top:-12px;
     }
 
     .countdown-clock{
-
         gap:4px;
     }
 
     .countdown-subtitle{
-
         font-size:12px;
-
         padding:0 10px;
     }
 
     .page{
-
         width:94%;
-
         padding-top:25px;
     }
 
     .main-card{
-
         border-radius:22px;
     }
 
     .header{
-
         padding:45px 20px 30px;
     }
 
     .chapter{
-
         padding:45px 6%;
     }
 
     .carousel-arrow{
-
         width:42px;
         height:42px;
     }
@@ -1806,23 +1496,19 @@ body.light-mode .control-button{
     }
 
     .photo-caption{
-
         padding-left:10px;
         padding-right:10px;
     }
 
     .letter-card{
-
         padding:45px 25px;
     }
 
     .letter-card p{
-
         font-size:19px;
     }
 
     .letter-card h2{
-
         font-size:40px;
     }
 }
@@ -1830,20 +1516,15 @@ body.light-mode .control-button{
 </style>
 </head>
 
-
 <body class="locked">
 
-
 <!-- =====================================================
-     CONTADOR 30 SEGUNDOS
+     CONTADOR DE PRUEBA — 10 SEGUNDOS
 ===================================================== -->
 
 <section id="countdownScreen">
 
-    <div
-        class="countdown-content"
-        id="countdownContent"
-    >
+    <div class="countdown-content" id="countdownContent">
 
         <div class="countdown-kicker">
             Una pequeña sorpresa para ti
@@ -1861,69 +1542,29 @@ body.light-mode .control-button{
         <div class="countdown-clock">
 
             <div class="time-box">
-
-                <span
-                    class="time-number"
-                    id="days"
-                >
-                    00
-                </span>
-
-                <span class="time-label">
-                    días
-                </span>
-
+                <span class="time-number" id="days">00</span>
+                <span class="time-label">días</span>
             </div>
 
             <div class="time-separator">:</div>
 
             <div class="time-box">
-
-                <span
-                    class="time-number"
-                    id="hours"
-                >
-                    00
-                </span>
-
-                <span class="time-label">
-                    horas
-                </span>
-
+                <span class="time-number" id="hours">00</span>
+                <span class="time-label">horas</span>
             </div>
 
             <div class="time-separator">:</div>
 
             <div class="time-box">
-
-                <span
-                    class="time-number"
-                    id="minutes"
-                >
-                    00
-                </span>
-
-                <span class="time-label">
-                    minutos
-                </span>
-
+                <span class="time-number" id="minutes">00</span>
+                <span class="time-label">minutos</span>
             </div>
 
             <div class="time-separator">:</div>
 
             <div class="time-box">
-
-                <span
-                    class="time-number"
-                    id="seconds"
-                >
-                    30
-                </span>
-
-                <span class="time-label">
-                    segundos
-                </span>
-
+                <span class="time-number" id="seconds">10</span>
+                <span class="time-label">segundos</span>
             </div>
 
         </div>
@@ -1934,11 +1575,7 @@ body.light-mode .control-button{
 
     </div>
 
-
-    <div
-        class="unlock-message"
-        id="unlockMessage"
-    >
+    <div class="unlock-message" id="unlockMessage">
 
         <div class="unlock-heart">
             ♥
@@ -1961,26 +1598,16 @@ body.light-mode .control-button{
      PORTADA
 ===================================================== -->
 
-<section
-    class="cover"
-    id="cover"
->
+<section class="cover" id="cover">
 
     <div class="cover-content">
-
-
-        <!-- CORAZÓN CINEMATOGRÁFICO -->
 
         <div class="hero-heart">
 
             <div class="heart-aura"></div>
-
             <div class="heart-ring"></div>
-
             <div class="heart-ring second"></div>
-
             <div class="heart-core"></div>
-
             <div class="heart-highlight"></div>
 
             <div class="heart-particle p1"></div>
@@ -1989,7 +1616,6 @@ body.light-mode .control-button{
             <div class="heart-particle p4"></div>
 
         </div>
-
 
         <div class="cover-small">
             Para nosotros
@@ -2006,7 +1632,6 @@ body.light-mode .control-button{
         <div class="cover-date">
             29 · 03 · 2026
         </div>
-
 
         <button
             class="primary-button"
@@ -2028,9 +1653,6 @@ body.light-mode .control-button{
 <main class="page">
 
 <section class="main-card">
-
-
-<!-- HEADER -->
 
 <header class="header">
 
@@ -2059,20 +1681,10 @@ body.light-mode .control-button{
             🌙 Tema
         </button>
 
-        <button
-            class="control-button"
-            id="musicButton"
-            type="button"
-        >
-            🎵 Música
-        </button>
-
     </div>
 
 </header>
 
-
-<!-- NAVEGACIÓN -->
 
 <nav class="chapter-nav">
 
@@ -2103,14 +1715,9 @@ body.light-mode .control-button{
 </nav>
 
 
-<!-- =====================================================
-     CAPÍTULO 1
-===================================================== -->
+<!-- CAPÍTULO 1 -->
 
-<section
-    class="chapter active"
-    id="chapter1"
->
+<section class="chapter active" id="chapter1">
 
     <div class="chapter-number">
         Capítulo 01
@@ -2127,7 +1734,6 @@ body.light-mode .control-button{
         de una historia que quiero seguir escribiendo.
     </p>
 
-
     <div class="days-counter">
 
         <span
@@ -2143,7 +1749,6 @@ body.light-mode .control-button{
 
     </div>
 
-
     <div class="music-section">
 
         <div class="music-title">
@@ -2154,13 +1759,6 @@ body.light-mode .control-button{
             Porque hay canciones que simplemente
             terminan teniendo un significado especial.
         </p>
-
-
-        <!--
-            YOUTUBE OFICIAL
-
-            Risk It All — Bruno Mars
-        -->
 
         <div class="youtube-wrapper">
 
@@ -2179,14 +1777,9 @@ body.light-mode .control-button{
 </section>
 
 
-<!-- =====================================================
-     CAPÍTULO 2
-===================================================== -->
+<!-- CAPÍTULO 2 -->
 
-<section
-    class="chapter"
-    id="chapter2"
->
+<section class="chapter" id="chapter2">
 
     <div class="chapter-number">
         Capítulo 02
@@ -2203,7 +1796,6 @@ body.light-mode .control-button{
         volver a vivir.
     </p>
 
-
     <div class="carousel">
 
         <div
@@ -2219,7 +1811,6 @@ body.light-mode .control-button{
 
         </div>
 
-
         <button
             class="carousel-arrow left"
             id="prevPhoto"
@@ -2229,7 +1820,6 @@ body.light-mode .control-button{
             ‹
         </button>
 
-
         <button
             class="carousel-arrow right"
             id="nextPhoto"
@@ -2238,7 +1828,6 @@ body.light-mode .control-button{
         >
             ›
         </button>
-
 
         <div class="photo-caption">
 
@@ -2263,14 +1852,9 @@ body.light-mode .control-button{
 </section>
 
 
-<!-- =====================================================
-     CAPÍTULO 3
-===================================================== -->
+<!-- CAPÍTULO 3 -->
 
-<section
-    class="chapter"
-    id="chapter3"
->
+<section class="chapter" id="chapter3">
 
     <div class="chapter-number">
         Capítulo 03
@@ -2285,7 +1869,6 @@ body.light-mode .control-button{
         pero hay algunas que siempre vuelven
         a mi mente cuando pienso en ti.
     </p>
-
 
     <div
         class="reason-box"
@@ -2312,7 +1895,6 @@ body.light-mode .control-button{
 
     </div>
 
-
     <button
         class="primary-button letter-button"
         id="letterButton"
@@ -2323,15 +1905,12 @@ body.light-mode .control-button{
 
 </section>
 
-
 </section>
 
 </main>
 
 
-<!-- =====================================================
-     CARTA
-===================================================== -->
+<!-- CARTA -->
 
 <div
     class="letter-modal"
@@ -2349,16 +1928,13 @@ body.light-mode .control-button{
             ×
         </button>
 
-
         <div class="letter-kicker">
             Una carta para ti
         </div>
 
-
         <h2>
             Para mi Princesa ❤️
         </h2>
-
 
         <p>
             Hoy no es un día cualquiera, es algo muy
@@ -2366,14 +1942,12 @@ body.light-mode .control-button{
             hace mucho.
         </p>
 
-
         <p>
             No hay un solo día en el que no estés en mi
             mente, solo espero el momento de poder tenerte
             a mi lado, estar juntos y olvidarnos de todo
             y que solo seamos tú y yo.
         </p>
-
 
         <p>
             Gracias por todos estos días que hemos pasado
@@ -2383,13 +1957,11 @@ body.light-mode .control-button{
             y por ser mi lugar seguro en el mundo.
         </p>
 
-
         <p>
             Prometo seguir cuidando de ti y de lo nuestro,
             y en verdad deseo poder seguir celebrando cada
             momento contigo mes a mes.
         </p>
-
 
         <p>
             No sabes lo feliz que me haces y de todo lo que
@@ -2398,19 +1970,16 @@ body.light-mode .control-button{
             planes, y en verdad deseo un futuro contigo.
         </p>
 
-
         <p>
             Te amo mucho mi vida, ¡feliz 6 meses juntos,
             mi amor! ❤️
         </p>
-
 
         <p>
             Espero esta pequeña sorpresa te guste porque
             es un pequeño recuerdo de tanto que hemos
             vivido y aún nos queda mucho más...
         </p>
-
 
         <div class="letter-signature">
             Siempre tú. ❤️
@@ -2421,22 +1990,17 @@ body.light-mode .control-button{
 </div>
 
 
-<!-- =====================================================
-     JAVASCRIPT
-===================================================== -->
-
 <script>
 
 /* =====================================================
-   CONTADOR 30 SEGUNDOS
+   CONTADOR DE PRUEBA — 10 SEGUNDOS
+   SE REINICIA AL RECARGAR LA PÁGINA
 ===================================================== */
 
-const TEST_DURATION = 30;
+const TEST_DURATION = 10;
 
 let remainingSeconds = TEST_DURATION;
-
 let countdownTimer = null;
-
 
 const countdownScreen =
     document.getElementById("countdownScreen");
@@ -2463,23 +2027,16 @@ const secondsElement =
 function updateCountdown(){
 
     const days =
-        Math.floor(
-            remainingSeconds / 86400
-        );
+        Math.floor(remainingSeconds / 86400);
 
     const hours =
-        Math.floor(
-            (remainingSeconds % 86400) / 3600
-        );
+        Math.floor((remainingSeconds % 86400) / 3600);
 
     const minutes =
-        Math.floor(
-            (remainingSeconds % 3600) / 60
-        );
+        Math.floor((remainingSeconds % 3600) / 60);
 
     const seconds =
         remainingSeconds % 60;
-
 
     daysElement.textContent =
         String(days).padStart(2,"0");
@@ -2493,14 +2050,12 @@ function updateCountdown(){
     secondsElement.textContent =
         String(seconds).padStart(2,"0");
 
-
     if(remainingSeconds <= 0){
 
         unlockPage();
 
         return;
     }
-
 
     remainingSeconds--;
 }
@@ -2510,17 +2065,13 @@ function unlockPage(){
 
     clearInterval(countdownTimer);
 
-
     daysElement.textContent = "00";
     hoursElement.textContent = "00";
     minutesElement.textContent = "00";
     secondsElement.textContent = "00";
 
-
     countdownContent.classList.add("fade");
-
     unlockMessage.classList.add("show");
-
 
     setTimeout(() => {
 
@@ -2546,7 +2097,6 @@ countdownTimer =
 ===================================================== */
 
 let youtubePlayer = null;
-
 let youtubeReady = false;
 
 
@@ -2566,48 +2116,32 @@ function onYouTubeIframeAPIReady(){
 }
 
 
-/* Cargar API de YouTube */
-
 const youtubeScript =
     document.createElement("script");
 
 youtubeScript.src =
     "https://www.youtube.com/iframe_api";
 
-document.head.appendChild(
-    youtubeScript
-);
+document.head.appendChild(youtubeScript);
 
 
 /* =====================================================
-   PORTADA + MÚSICA
+   COMENZAR HISTORIA
+   EL BOTÓN TAMBIÉN INTENTA INICIAR LA MÚSICA
 ===================================================== */
 
 const startButton =
-    document.getElementById(
-        "startButton"
-    );
+    document.getElementById("startButton");
 
 const cover =
-    document.getElementById(
-        "cover"
-    );
+    document.getElementById("cover");
 
 
 startButton.addEventListener(
     "click",
     () => {
 
-        cover.classList.add(
-            "hidden"
-        );
-
-
-        /*
-            Intentar iniciar la canción
-            después de la interacción
-            del usuario.
-        */
+        cover.classList.add("hidden");
 
         if(
             youtubeReady &&
@@ -2627,14 +2161,10 @@ startButton.addEventListener(
 ===================================================== */
 
 const chapterButtons =
-    document.querySelectorAll(
-        ".chapter-button"
-    );
+    document.querySelectorAll(".chapter-button");
 
 const chapters =
-    document.querySelectorAll(
-        ".chapter"
-    );
+    document.querySelectorAll(".chapter");
 
 
 chapterButtons.forEach(
@@ -2647,39 +2177,23 @@ chapterButtons.forEach(
                 const target =
                     button.dataset.chapter;
 
-
                 chapterButtons.forEach(
                     item => {
-
-                        item.classList.remove(
-                            "active"
-                        );
-
+                        item.classList.remove("active");
                     }
                 );
-
 
                 chapters.forEach(
                     chapter => {
-
-                        chapter.classList.remove(
-                            "active"
-                        );
-
+                        chapter.classList.remove("active");
                     }
                 );
 
-
-                button.classList.add(
-                    "active"
-                );
-
+                button.classList.add("active");
 
                 document
                     .getElementById(target)
-                    .classList.add(
-                        "active"
-                    );
+                    .classList.add("active");
 
             }
         );
@@ -2705,14 +2219,11 @@ const startDate =
 
 function updateDaysTogether(){
 
-    const now =
-        new Date();
-
+    const now = new Date();
 
     const difference =
         now.getTime() -
         startDate.getTime();
-
 
     const days =
         Math.max(
@@ -2722,13 +2233,9 @@ function updateDaysTogether(){
             )
         );
 
-
     document
-        .getElementById(
-            "daysTogether"
-        )
-        .textContent =
-            days;
+        .getElementById("daysTogether")
+        .textContent = days;
 }
 
 
@@ -2740,14 +2247,12 @@ updateDaysTogether();
 ===================================================== */
 
 const photos = [
-
     "foto1.jpg",
     "foto2.jpg",
     "foto3.jpg",
     "foto4.jpg",
     "foto5.jpg",
     "foto6.jpg"
-
 ];
 
 
@@ -2772,24 +2277,16 @@ let currentPhoto = 0;
 
 
 const photo =
-    document.getElementById(
-        "photo"
-    );
+    document.getElementById("photo");
 
 const photoCaption =
-    document.getElementById(
-        "photoCaption"
-    );
+    document.getElementById("photoCaption");
 
 const photoCounter =
-    document.getElementById(
-        "photoCounter"
-    );
+    document.getElementById("photoCounter");
 
 const photoFrame =
-    document.getElementById(
-        "photoFrame"
-    );
+    document.getElementById("photoFrame");
 
 
 function showPhoto(index){
@@ -2798,11 +2295,7 @@ function showPhoto(index){
         (index + photos.length) %
         photos.length;
 
-
-    photoFrame.classList.add(
-        "changing"
-    );
-
+    photoFrame.classList.add("changing");
 
     setTimeout(
         () => {
@@ -2813,18 +2306,13 @@ function showPhoto(index){
             photo.alt =
                 `Nuestro recuerdo ${currentPhoto + 1}`;
 
-
             photoCaption.textContent =
                 captions[currentPhoto];
-
 
             photoCounter.textContent =
                 `${String(currentPhoto + 1).padStart(2,"0")} / 06`;
 
-
-            photoFrame.classList.remove(
-                "changing"
-            );
+            photoFrame.classList.remove("changing");
 
         },
         180
@@ -2837,11 +2325,7 @@ document
     .addEventListener(
         "click",
         () => {
-
-            showPhoto(
-                currentPhoto - 1
-            );
-
+            showPhoto(currentPhoto - 1);
         }
     );
 
@@ -2851,11 +2335,7 @@ document
     .addEventListener(
         "click",
         () => {
-
-            showPhoto(
-                currentPhoto + 1
-            );
-
+            showPhoto(currentPhoto + 1);
         }
     );
 
@@ -2892,27 +2372,17 @@ photoFrame.addEventListener(
             touchEndX -
             touchStartX;
 
-
-        if(
-            Math.abs(difference) < 45
-        ){
+        if(Math.abs(difference) < 45){
             return;
         }
 
+        if(difference < 0){
 
-        if(
-            difference < 0
-        ){
-
-            showPhoto(
-                currentPhoto + 1
-            );
+            showPhoto(currentPhoto + 1);
 
         }else{
 
-            showPhoto(
-                currentPhoto - 1
-            );
+            showPhoto(currentPhoto - 1);
 
         }
 
@@ -2945,19 +2415,13 @@ let currentReason = 0;
 
 
 const reasonBox =
-    document.getElementById(
-        "reasonBox"
-    );
+    document.getElementById("reasonBox");
 
 const reasonNumber =
-    document.getElementById(
-        "reasonNumber"
-    );
+    document.getElementById("reasonNumber");
 
 const reasonText =
-    document.getElementById(
-        "reasonText"
-    );
+    document.getElementById("reasonText");
 
 
 function showReason(index){
@@ -2966,21 +2430,15 @@ function showReason(index){
         (index + reasons.length) %
         reasons.length;
 
-
     reasonNumber.textContent =
         `Razón ${String(currentReason + 1).padStart(2,"0")}`;
-
 
     reasonText.textContent =
         reasons[currentReason];
 
-
-    reasonText.style.animation =
-        "none";
-
+    reasonText.style.animation = "none";
 
     void reasonText.offsetWidth;
-
 
     reasonText.style.animation =
         "captionIn .5s ease";
@@ -2990,11 +2448,7 @@ function showReason(index){
 reasonBox.addEventListener(
     "click",
     () => {
-
-        showReason(
-            currentReason + 1
-        );
-
+        showReason(currentReason + 1);
     }
 );
 
@@ -3004,28 +2458,20 @@ reasonBox.addEventListener(
 ===================================================== */
 
 const letterButton =
-    document.getElementById(
-        "letterButton"
-    );
+    document.getElementById("letterButton");
 
 const letterModal =
-    document.getElementById(
-        "letterModal"
-    );
+    document.getElementById("letterModal");
 
 const letterClose =
-    document.getElementById(
-        "letterClose"
-    );
+    document.getElementById("letterClose");
 
 
 letterButton.addEventListener(
     "click",
     () => {
 
-        letterModal.classList.add(
-            "open"
-        );
+        letterModal.classList.add("open");
 
         document.body.style.overflow =
             "hidden";
@@ -3044,13 +2490,8 @@ letterModal.addEventListener(
     "click",
     event => {
 
-        if(
-            event.target ===
-            letterModal
-        ){
-
+        if(event.target === letterModal){
             closeLetter();
-
         }
 
     }
@@ -3059,12 +2500,9 @@ letterModal.addEventListener(
 
 function closeLetter(){
 
-    letterModal.classList.remove(
-        "open"
-    );
+    letterModal.classList.remove("open");
 
-    document.body.style.overflow =
-        "";
+    document.body.style.overflow = "";
 }
 
 
@@ -3073,24 +2511,17 @@ function closeLetter(){
 ===================================================== */
 
 const themeButton =
-    document.getElementById(
-        "themeButton"
-    );
+    document.getElementById("themeButton");
 
 
 themeButton.addEventListener(
     "click",
     () => {
 
-        document.body.classList.toggle(
-            "light-mode"
-        );
-
+        document.body.classList.toggle("light-mode");
 
         if(
-            document.body.classList.contains(
-                "light-mode"
-            )
+            document.body.classList.contains("light-mode")
         ){
 
             themeButton.textContent =
@@ -3108,88 +2539,34 @@ themeButton.addEventListener(
 
 
 /* =====================================================
-   BOTÓN MÚSICA
-===================================================== */
-
-const musicButton =
-    document.getElementById(
-        "musicButton"
-    );
-
-
-musicButton.addEventListener(
-    "click",
-    () => {
-
-        const player =
-            document.getElementById(
-                "youtubePlayer"
-            );
-
-
-        player.scrollIntoView({
-            behavior:"smooth",
-            block:"center"
-        });
-
-
-        if(
-            youtubeReady &&
-            youtubePlayer
-        ){
-
-            youtubePlayer.playVideo();
-
-        }
-
-    }
-);
-
-
-/* =====================================================
    CORAZONES FLOTANTES
 ===================================================== */
 
 function createHeart(){
 
     const heart =
-        document.createElement(
-            "div"
-        );
-
+        document.createElement("div");
 
     heart.className =
         "heart-bg";
 
-
     heart.textContent =
         "♥";
-
 
     heart.style.left =
         Math.random() * 100 + "%";
 
-
     heart.style.fontSize =
-        (10 + Math.random() * 18) +
-        "px";
-
+        (10 + Math.random() * 18) + "px";
 
     heart.style.animationDuration =
-        (8 + Math.random() * 8) +
-        "s";
+        (8 + Math.random() * 8) + "s";
 
-
-    document.body.appendChild(
-        heart
-    );
-
+    document.body.appendChild(heart);
 
     setTimeout(
         () => {
-
             heart.remove();
-
         },
         17000
     );
@@ -3217,6 +2594,13 @@ photos.forEach(
 
     }
 );
+
+
+/* =====================================================
+   MOSTRAR FOTO 1 AL INICIAR
+===================================================== */
+
+showPhoto(0);
 
 </script>
 
