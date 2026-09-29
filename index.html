@@ -3,914 +3,492 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProMueble CAD & Cotizador Profesional</title>
-    <!-- Three.js y OrbitControls para 3D interactivo -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <title id="pageTitle">Sorpresa Especial ❤️ - 6 Meses</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Playfair+Display:ital,wght@0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: system-ui, -apple-system, sans-serif; padding: 12px; color: #0f172a; background: #f8fafc; margin: 0; }
-        .header { background: #1e293b; color: white; padding: 15px; border-radius: 8px; margin-bottom: 12px; }
-        .header h1 { margin: 0 0 5px 0; font-size: 18px; }
-        .header p { margin: 0; color: #94a3b8; font-size: 12px; }
-        .card { background: white; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .card label { display: block; font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 3px; margin-top: 6px; }
-        .card input, .card select { width: 100%; padding: 7px; box-sizing: border-box; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; }
-        .tabs { display: flex; gap: 4px; margin-bottom: 8px; }
-        .tabs button { flex: 1; padding: 7px; background: #e2e8f0; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 11px; }
-        .tabs button.active { background: #1e293b; color: white; }
-        .preview-3d { background: white; border: 1px dashed #cbd5e1; padding: 10px; text-align: center; margin-bottom: 12px; border-radius: 8px; overflow: hidden; position: relative; }
-        canvas { width: 100% !important; max-width: 100%; height: 220px; background: #f1f5f9; border-radius: 4px; display: block; }
-        #canvas3DContainer { width: 100%; height: 220px; display: none; }
-        button.btn-action { background: #2563eb; color: white; border: none; padding: 10px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; margin-top: 5px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 8px; background: white; }
-        th, td { border: 1px solid #cbd5e1; padding: 5px; text-align: left; font-size: 10px; }
-        th { background: #1e293b; color: white; }
-        .footer { margin-top: 15px; font-size: 10px; color: #64748b; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 8px; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 6px; }
-        .resumen-caja { background: #f1f5f9; padding: 10px; border-radius: 6px; margin-top: 10px; font-size: 12px; font-weight: bold; color: #1e293b; }
-        .cantos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
-        .cantos-grid select { font-size: 9px; padding: 3px; }
+        :root {
+            --primary: #e11d48;
+            --bg-gradient: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 50%, #fce7f3 100%);
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #4b5563;
+            --border-color: rgba(244, 114, 182, 0.25);
+            --shadow: 0 20px 40px -15px rgba(225, 29, 72, 0.15);
+        }
+
+        [data-theme="dark"] {
+            --primary: #f43f5e;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #2c0b1a 100%);
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(244, 114, 182, 0.15);
+            --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; transition: background 0.3s ease, color 0.3s ease; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            overflow-x: hidden;
+        }
+
+        .hearts-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        .floating-heart { position: absolute; color: var(--primary); opacity: 0.2; animation: floatUp 7s linear infinite; }
+
+        @keyframes floatUp {
+            0% { transform: translateY(110vh) rotate(0deg) scale(0.5); opacity: 0; }
+            50% { opacity: 0.4; }
+            100% { transform: translateY(-10vh) rotate(360deg) scale(1.2); opacity: 0; }
+        }
+
+        .container {
+            max-width: 420px;
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 28px 22px;
+            border-radius: 30px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .top-actions { 
+            display: flex; 
+            justify-content: flex-end; 
+            gap: 8px; 
+            margin-bottom: 6px;
+        }
+        
+        .icon-btn {
+            background: var(--border-color);
+            border: none;
+            color: var(--text-main);
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+        }
+        .icon-btn:hover { background: var(--primary); color: white; transform: scale(1.05); }
+
+        .heart-main {
+            width: 50px; height: 50px; margin: 0 auto 10px;
+            fill: var(--primary);
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+        h1 { font-family: 'Cinzel', serif; font-size: 1.4rem; letter-spacing: 1px; margin-bottom: 6px; color: var(--primary); }
+        .subtitle { font-size: 0.82rem; margin-bottom: 20px; opacity: 0.8; font-weight: 500; }
+
+        /* PANTALLA DE ACCESO / BLOQUEO INICIAL */
+        #lockScreen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 0;
+        }
+        .lock-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            background: var(--border-color);
+            color: var(--text-main);
+            font-size: 0.95rem;
+            text-align: center;
+            margin-bottom: 12px;
+            outline: none;
+        }
+        .lock-input:focus { border-color: var(--primary); }
+        .lock-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 14px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
+        }
+        .error-msg { color: var(--primary); font-size: 0.8rem; margin-top: 8px; display: none; }
+
+        /* CONTENIDO PRINCIPAL OCULTO HASTA DESBLOQUEAR */
+        #mainContent { display: none; }
+
+        /* NAVEGADOR DE CAPÍTULOS */
+        .chapters-nav {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 18px;
+        }
+        .chap-dot {
+            font-size: 0.75rem;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: var(--border-color);
+            color: var(--text-muted);
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .chap-dot.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .chapter-section { display: none; }
+        .chapter-section.active { display: block; animation: fadeIn 0.5s ease; }
+
+        /* CARRUSEL */
+        .carousel-container {
+            background: #ffffff;
+            padding: 10px 10px 22px 10px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .carousel-view {
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            border-radius: 8px;
+            position: relative;
+            touch-action: pan-y;
+            background: #e2e8f0;
+        }
+        .carousel-track { display: flex; width: 300%; height: 100%; }
+        .carousel-slide { width: 33.3333%; height: 100%; flex-shrink: 0; }
+        .carousel-slide img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+        .nav-btn {
+            position: absolute; top: 44%; transform: translateY(-50%);
+            background: rgba(0,0,0,0.5); color: white; border: none;
+            width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
+            z-index: 5; font-size: 0.8rem; display: flex; align-items: center; justify-content: center;
+        }
+        .prev { left: 14px; } .next { right: 14px; }
+        .dots { display: flex; justify-content: center; gap: 6px; margin-top: 10px; }
+        .dot { width: 6px; height: 6px; background: #cbd5e1; border-radius: 50%; cursor: pointer; }
+        .dot.active { background: var(--primary); width: 16px; border-radius: 6px; }
+
+        /* CONTADOR */
+        .counter-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+        .counter-box { background: var(--border-color); padding: 10px 2px; border-radius: 12px; }
+        .num { font-family: 'Cinzel', serif; font-size: 1.15rem; font-weight: 700; color: var(--primary); display: block; }
+        .lab { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; opacity: 0.8; }
+
+        /* RAZONES */
+        .reasons-card {
+            background: var(--border-color);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 14px;
+            cursor: pointer;
+            border: 1px dashed var(--primary);
+        }
+        .reasons-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
+        .reasons-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.9rem; color: var(--text-main); line-height: 1.4; }
+
+        .next-chap-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        /* MODAL CARTA FINAL */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 100; opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal.active { opacity: 1; pointer-events: auto; }
+        .modal-content {
+            background: var(--card-bg); width: 90%; max-width: 340px;
+            padding: 24px 20px; border-radius: 24px; position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+        .modal.active .modal-content { transform: translateY(0); }
+        .modal h2 { font-family: 'Cinzel', serif; color: var(--primary); margin-bottom: 10px; font-size: 1.1rem; }
+        .modal p { line-height: 1.6; font-size: 0.88rem; margin-bottom: 16px; text-align: left; color: var(--text-main); }
+        .close-btn { background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 12px; font-weight: 600; cursor: pointer; width: 100%; font-size: 0.9rem; }
     </style>
 </head>
-<body>
+<body data-theme="light">
 
-    <div class="header">
-        <h1>ProMueble CAD & Cotizador Profesional</h1>
-        <p>Sistema Inteligente con Control de Instalación y 3D Interactivo</p>
-    </div>
+    <div class="hearts-bg" id="heartsBg"></div>
 
-    <div class="card">
-        <label>Proyecto / Cliente</label>
-        <input type="text" id="nombreProyecto" value="Closet - Familia Martinez" oninput="guardarEstado()">
-        
-        <label>Tipo de Melamina Estructural</label>
-        <select id="tipoAcabado" onchange="actualizarTodo()">
-            <option value="blanco">Melamina Blanco</option>
-            <option value="blanco_rh">Melamina Blanco RH</option>
-            <option value="amaderado">Melamina Amaderado</option>
-            <option value="amaderado_rh">Melamina Amaderado RH</option>
-            <option value="color">Melamina Color</option>
-            <option value="color_rh">Melamina Color RH</option>
-        </select>
-        
-        <label>Material de Fondo / Trasera (MDF)</label>
-        <select id="tipoMdf" onchange="actualizarTodo()">
-            <option value="mdf_3mm">MDF 3mm Blanco/Crudo</option>
-            <option value="mdf_6mm">MDF 6mm</option>
-            <option value="sin_mdf">Sin fondo (Estructura abierta)</option>
-        </select>
-        
-        <label>Descripción / Detalle Comercial para el Cliente</label>
-        <input type="text" id="nombreMaterial" value="Pelikano Duna 18mm con herrajes de alta gama" oninput="guardarEstado()">
-    </div>
+    <div class="container">
+        <!-- PANTALLA DE BLOQUEO INICIAL CON "AMOCHITO" -->
+        <div id="lockScreen">
+            <svg class="heart-main" viewBox="0 0 32 29.6">
+                <path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2
+                c6.3-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z"/>
+            </svg>
+            <h1>Hola, Amochito ❤️</h1>
+            <p class="subtitle">Escribe tu apodo o fecha especial para ver tu sorpresa de 6 meses:</p>
+            <input type="text" id="passInput" class="lock-input" placeholder="Ej: amochito, bri o 2903">
+            <button class="lock-btn" onclick="unlockSurprise()">Desbloquear Sorpresa ✨</button>
+            <div class="error-msg" id="errorMsg">¡Inténtalo de nuevo, mi amochito! (Pista: amochito o bri)</div>
+        </div>
 
-    <div class="card">
-        <h3>1. Asistente CAD: Estructura y Puertas</h3>
-        <label>Alto Total (mm)</label>
-        <input type="number" id="alto" value="1800" oninput="actualizarTodo()">
-        <label>Ancho Total (mm)</label>
-        <input type="number" id="ancho" value="1200" oninput="actualizarTodo()">
-        <label>Profundidad (mm)</label>
-        <input type="number" id="profundidad" value="500" oninput="actualizarTodo()">
-        <label>Grosor Melamina (mm)</label>
-        <input type="number" id="grosor" value="18" oninput="actualizarTodo()">
-        <label>Div. Verticales</label>
-        <input type="number" id="divVerticales" value="2" oninput="actualizarTodo()">
-        <label>Repisas (x columna)</label>
-        <input type="number" id="repisas" value="3" oninput="actualizarTodo()">
+        <!-- CONTENIDO PRINCIPAL -->
+        <div id="mainContent">
+            <div class="top-actions">
+                <button class="icon-btn" onclick="openLetter()" title="Abrir carta especial">✉️</button>
+                <button class="icon-btn" onclick="toggleAudio()" id="audioBtn" title="Música">⏸️</button>
+                <button class="icon-btn" onclick="toggleTheme()" title="Tema">🌙</button>
+            </div>
 
-        <label style="margin-top: 10px;">Configuración de Puertas</label>
-        <select id="llevaPuertas" onchange="togglePuertasConfig()">
-            <option value="si">Sí, incluir puertas</option>
-            <option value="no">No llevar puertas</option>
-        </select>
+            <svg class="heart-main" viewBox="0 0 32 29.6">
+                <path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2
+                c6.3-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z"/>
+            </svg>
 
-        <div id="panelPuertasConfig" style="margin-top: 8px; background: #f1f5f9; padding: 8px; border-radius: 6px;">
-            <label>Cantidad de Puertas</label>
-            <input type="number" id="cantPuertas" value="2" oninput="actualizarTodo()">
-            <div class="form-grid">
-                <div>
-                    <label>Alto Puerta (mm)</label>
-                    <input type="number" id="altoPuerta" value="1796" oninput="guardarEstado()">
+            <h1>¡Felices 6 Meses, Amochito!</h1>
+            <p class="subtitle">Nuestra historia capítulo a capítulo</p>
+
+            <!-- NAVEGADOR DE CAPÍTULOS -->
+            <div class="chapters-nav">
+                <div class="chap-dot active" onclick="switchChap(1)">1. Tiempo</div>
+                <div class="chap-dot" onclick="switchChap(2)">2. Momentos</div>
+                <div class="chap-dot" onclick="switchChap(3)">3. Razones</div>
+            </div>
+
+            <!-- CAPÍTULO 1: TIEMPO -->
+            <div class="chapter-section active" id="chap1">
+                <div class="counter-grid">
+                    <div class="counter-box"><span class="num" id="anos">0</span><span class="lab">Años</span></div>
+                    <div class="counter-box"><span class="num" id="meses">0</span><span class="lab">Meses</span></div>
+                    <div class="counter-box"><span class="num" id="dias">0</span><span class="lab">Días</span></div>
+                    <div class="counter-box"><span class="num" id="horas">0</span><span class="lab">Horas</span></div>
+                    <div class="counter-box"><span class="num" id="minutos">0</span><span class="lab">Mins</span></div>
+                    <div class="counter-box"><span class="num" id="segundos">0</span><span class="lab">Segs</span></div>
                 </div>
-                <div>
-                    <label>Ancho Puerta (mm)</label>
-                    <input type="number" id="anchoPuerta" value="596" oninput="guardarEstado()">
+                <p style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Te amo mucho con demasiado desde el 29 de marzo...</p>
+                <button class="next-chap-btn" onclick="switchChap(2)">Siguiente capítulo ➔</button>
+            </div>
+
+            <!-- CAPÍTULO 2: MOMENTOS (CARRUSEL) -->
+            <div class="chapter-section" id="chap2">
+                <div class="carousel-container">
+                    <button class="nav-btn prev" onclick="moveSlide(-1)">❮</button>
+                    <button class="nav-btn next" onclick="moveSlide(1)">❯</button>
+                    <div class="carousel-view" id="carouselView">
+                        <div class="carousel-track" id="track">
+                            <div class="carousel-slide"><img src="foto1.jpg" alt="Momento 1"></div>
+                            <div class="carousel-slide"><img src="foto2.jpg" alt="Momento 2"></div>
+                            <div class="carousel-slide"><img src="foto3.jpg" alt="Momento 3"></div>
+                        </div>
+                    </div>
+                    <div class="dots" id="dotsContainer">
+                        <div class="dot active" onclick="currentSlide(0)"></div>
+                        <div class="dot" onclick="currentSlide(1)"></div>
+                        <div class="dot" onclick="currentSlide(2)"></div>
+                    </div>
                 </div>
+                <button class="next-chap-btn" onclick="switchChap(3)">Siguiente capítulo ➔</button>
+            </div>
+
+            <!-- CAPÍTULO 3: RAZONES -->
+            <div class="chapter-section" id="chap3">
+                <div class="reasons-card" onclick="changeReason()">
+                    <div class="reasons-title" id="reasonHeader">💡 Razón 1 de 6 (Toca para ver otra)</div>
+                    <div class="reasons-text" id="reasonText">"Por la forma en que tu sonrisa ilumina incluso mis días más grises." 💕</div>
+                </div>
+                <button class="next-chap-btn" onclick="openLetter()">Abrir Carta Final 💌</button>
             </div>
         </div>
-        
-        <button class="btn-action" onclick="transferirMedidas()" style="margin-top:10px;">Actualizar y Calcular Materiales ↓</button>
     </div>
 
-    <div class="tabs">
-        <button class="active" onclick="cambiarVista('Frontal', event)">Frontal</button>
-        <button onclick="cambiarVista('Lateral', event)">Lateral</button>
-        <button onclick="cambiarVista('Planta', event)">Planta</button>
-        <button onclick="cambiarVista('3D', event)">3D Interactivo</button>
-    </div>
-
-    <div class="preview-3d" id="vistaCanvas">
-        <canvas id="canvasMueble"></canvas>
-        <div id="canvas3DContainer"></div>
-    </div>
-
-    <div class="card">
-        <h3>2. Lista de Piezas (Despiece Técnico)</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Pieza</th>
-                    <th>L × A (mm)</th>
-                    <th>Cantos (L1 / L2 / A1 / A2)</th>
-                </tr>
-            </thead>
-            <tbody id="tablaDespieceBody">
-                <tr><td colspan="3" style="text-align: center;">Presione actualizar medidas</td></tr>
-            </tbody>
-        </table>
-        
-        <div style="margin-top: 10px; background: #f1f5f9; padding: 8px; border-radius: 6px;">
-            <label style="margin-top:0;">Agregar Pieza Manual</label>
-            <input type="text" id="pNombre" placeholder="Nombre (Ej: Zócalo)" style="margin-bottom:4px;">
-            <div class="form-grid">
-                <input type="number" id="pLargo" placeholder="Largo (mm)">
-                <input type="number" id="pAncho" placeholder="Ancho (mm)">
-            </div>
-            <button class="btn-action" style="background: #475569; margin-top: 6px;" onclick="agregarPiezaManual()">+ Añadir Pieza</button>
+    <!-- CARTA FINAL -->
+    <div class="modal" id="letterModal">
+        <div class="modal-content">
+            <h2>¡Felices 6 Meses, Amochito! ❤️</h2>
+            <p>No hay un solo día en que no agradezca tenerte a mi lado. ¡Te amo mucho con demasiado! Cada segundo contigo se vuelve inolvidable, y no importa el lugar, mientras sea junto a ti. Gracias por ser esa hermosa casualidad que le da sentido a todo.<br><br>Me encanta cada risa que compartimos y la paz que me das con solo sonreír. Prometo seguir cuidando de lo nuestro y celebrando cada momento a tu lado. Te amo hoy, mañana y siempre.</p>
+            <button class="close-btn" onclick="closeLetter()">Cerrar con amor 💋</button>
         </div>
     </div>
 
-    <div class="card">
-        <h3>3. Accesorios y Ferretería</h3>
-        <table>
-            <thead>
-                <tr><th>Descripción</th><th>Cant</th><th>P. Unit (S/)</th></tr>
-            </thead>
-            <tbody id="tablaAccesoriosBody">
-                <tr>
-                    <td><input type="text" value="Bisagra recta" style="border:none; width:100%; font-size:10px; background:transparent;"></td>
-                    <td><input type="number" value="4" style="border:none; width:30px; font-size:10px; background:transparent;" oninput="calcularTotalGeneral()"></td>
-                    <td><input type="number" value="5.00" style="border:none; width:40px; font-size:10px; background:transparent;" oninput="calcularTotalGeneral()"></td>
-                </tr>
-                <tr>
-                    <td><input type="text" value="Corredera telescópica 45cm" style="border:none; width:100%; font-size:10px; background:transparent;"></td>
-                    <td><input type="number" value="2" style="border:none; width:30px; font-size:10px; background:transparent;" oninput="calcularTotalGeneral()"></td>
-                    <td><input type="number" value="25.00" style="border:none; width:40px; font-size:10px; background:transparent;" oninput="calcularTotalGeneral()"></td>
-                </tr>
-            </tbody>
-        </table>
-        <button class="btn-action" style="background: #475569; margin-top: 6px;" onclick="agregarFilaAccesorio()">+ Agregar Fila</button>
-    </div>
-
-    <div class="card">
-        <h3>4. Parámetros de Costo y Resumen (S/)</h3>
-        <label>Precio Plancha Melamina (Formato 7x8 pies)</label>
-        <input type="number" id="resPlanchas" value="240" oninput="calcularTotalGeneral()">
-        <label>Precio Plancha MDF (Formato 1.85m x 2.44m)</label>
-        <input type="number" id="resMdf" value="95" oninput="calcularTotalGeneral()">
-        <label>Precio Metro Canto Delgado (1mm)</label>
-        <input type="number" id="valCantoD" value="1.50" oninput="calcularTotalGeneral()">
-        <label>Precio Metro Canto Grueso (3mm)</label>
-        <input type="number" id="valCantoG" value="3.00" oninput="calcularTotalGeneral()">
-        
-        <label>Costo de Mano de Obra / Armado e Instalación (S/)</label>
-        <input type="number" id="costoInstalacion" value="150" oninput="calcularTotalGeneral()">
-
-        <div class="resumen-caja" id="cajaResumenCalculado">
-            Total Proyecto: S/ 0.00
-        </div>
-
-        <button class="btn-action" style="background: #059669; margin-top: 12px;" onclick="generarCotizacionCliente()">🖨️ Generar Cotización Comercial para Cliente</button>
-        <button class="btn-action" style="background: #334155; margin-top: 6px;" onclick="generarReporteInterno()">📋 Hoja de Costos Interna (Taller)</button>
-    </div>
-
-    <div class="footer">Designed with ProMueble CAD — Calidad y garantía garantizadas.</div>
+    <audio id="bgMusic" loop>
+        <source src="https://www.bensound.com/bensound-music/bensound-tenderness.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
-        let vistaActual = 'Frontal';
-        let scene, camera, renderer, controls, muebleMesh;
-
-        function cambiarVista(vista, event) {
-            document.querySelectorAll('.tabs button').forEach(btn => btn.classList.remove('active'));
-            if(event) event.target.classList.add('active');
-            vistaActual = vista;
-
-            const canvas2D = document.getElementById('canvasMueble');
-            const container3D = document.getElementById('canvas3DContainer');
-
-            if (vista === '3D') {
-                canvas2D.style.display = 'none';
-                container3D.style.display = 'block';
-                init3D();
+        // DESBLOQUEO DE SORPRESA CON "AMOCHITO"
+        function unlockSurprise() {
+            const val = document.getElementById('passInput').value.trim().toLowerCase();
+            if(val === 'amochito' || val === '2903' || val === 'bri' || val === '29 de marzo' || val === '6 meses') {
+                document.getElementById('lockScreen').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                const audio = document.getElementById('bgMusic');
+                audio.play().catch(e => console.log("Audio bloqueado"));
+                for(let i=0; i<20; i++) { setTimeout(spawnHeart, i * 100); }
             } else {
-                canvas2D.style.display = 'block';
-                container3D.style.display = 'none';
-                dibujarMueble();
+                const err = document.getElementById('errorMsg');
+                err.style.display = 'block';
+                setTimeout(() => err.style.display = 'none', 3000);
             }
         }
 
-        function togglePuertasConfig() {
-            const lleva = document.getElementById('llevaPuertas').value;
-            document.getElementById('panelPuertasConfig').style.display = lleva === 'si' ? 'block' : 'none';
-            actualizarTodo();
+        // CONTROL DE CAPÍTULOS
+        function switchChap(n) {
+            document.querySelectorAll('.chapter-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.chap-dot').forEach(el => el.classList.remove('active'));
+            document.getElementById('chap' + n).classList.add('active');
+            document.querySelectorAll('.chap-dot')[n-1].classList.add('active');
         }
 
-        function actualizarTodo() {
-            const ancho = parseFloat(document.getElementById('ancho').value) || 1200;
-            const alto = parseFloat(document.getElementById('alto').value) || 1800;
-            const cantP = parseInt(document.getElementById('cantPuertas').value) || 2;
+        // CARRUSEL
+        const track = document.getElementById('track');
+        const view = document.getElementById('carouselView');
+        const dots = document.getElementsByClassName('dot');
+        let slideIndex = 0;
+        const totalSlides = 3;
+        let startX = 0, prevTranslate = 0, isDragging = false;
 
-            document.getElementById('altoPuerta').value = alto - 4;
-            document.getElementById('anchoPuerta').value = Math.round((ancho / cantP) - 2);
-
-            if (vistaActual === '3D') {
-                init3D();
-            } else {
-                dibujarMueble();
-            }
-            transferirMedidas();
-            guardarEstado();
+        function updateCarousel() {
+            track.style.transition = "transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)";
+            track.style.transform = `translateX(-${slideIndex * (100 / totalSlides)}%)`;
+            prevTranslate = -slideIndex * view.clientWidth;
+            for (let dot of dots) dot.classList.remove('active');
+            if(dots[slideIndex]) dots[slideIndex].classList.add('active');
         }
 
-        function obtenerColorHex() {
-            const tipo = document.getElementById('tipoAcabado').value;
-            if (tipo.includes('blanco')) return 0xf8fafc;
-            if (tipo.includes('color')) return 0x94a3b8;
-            return 0xd4b28c;
+        function moveSlide(n) {
+            slideIndex = (slideIndex + n + totalSlides) % totalSlides;
+            updateCarousel();
         }
 
-        function init3D() {
-            const container = document.getElementById('canvas3DContainer');
-            container.innerHTML = '';
-
-            scene = new THREE.Scene();
-            scene.background = new THREE.Color(0xf1f5f9);
-
-            camera = new THREE.PerspectiveCamera(45, container.clientWidth / 220, 0.1, 10000);
-            camera.position.set(0, 400, 2000);
-
-            renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setSize(container.clientWidth, 220);
-            container.appendChild(renderer.domElement);
-
-            controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-            scene.add(ambientLight);
-            const pointLight = new THREE.PointLight(0xffffff, 0.8);
-            pointLight.position.set(500, 1000, 1000);
-            scene.add(pointLight);
-
-            const alto = parseFloat(document.getElementById('alto').value) || 1800;
-            const ancho = parseFloat(document.getElementById('ancho').value) || 1200;
-            const profundidad = parseFloat(document.getElementById('profundidad').value) || 500;
-            const grosor = parseFloat(document.getElementById('grosor').value) || 18;
-            const divs = parseInt(document.getElementById('divVerticales').value) || 1;
-            const repisas = parseInt(document.getElementById('repisas').value) || 3;
-            const tipoMdf = document.getElementById('tipoMdf').value;
-            const puertas = document.getElementById('llevaPuertas').value;
-            const cantP = parseInt(document.getElementById('cantPuertas').value) || 2;
-            const aP = parseFloat(document.getElementById('altoPuerta').value) || alto - 4;
-            const anP = parseFloat(document.getElementById('anchoPuerta').value) || ((ancho/cantP) - 2);
-
-            const mat = new THREE.MeshStandardMaterial({ color: obtenerColorHex(), roughness: 0.4 });
-            const matMdf = new THREE.MeshStandardMaterial({ color: 0xd1d5db, roughness: 0.6 });
-            const matPuerta = new THREE.MeshStandardMaterial({ color: obtenerColorHex(), roughness: 0.3, transparent: true, opacity: 0.95 });
-
-            muebleMesh = new THREE.Group();
-
-            let latIzq = new THREE.Mesh(new THREE.BoxGeometry(grosor, alto, profundidad), mat);
-            latIzq.position.set(-ancho/2 + grosor/2, 0, 0);
-            muebleMesh.add(latIzq);
-
-            let latDer = new THREE.Mesh(new THREE.BoxGeometry(grosor, alto, profundidad), mat);
-            latDer.position.set(ancho/2 - grosor/2, 0, 0);
-            muebleMesh.add(latDer);
-
-            let techo = new THREE.Mesh(new THREE.BoxGeometry(ancho - grosor*2, grosor, profundidad), mat);
-            techo.position.set(0, alto/2 - grosor/2, 0);
-            muebleMesh.add(techo);
-
-            let base = new THREE.Mesh(new THREE.BoxGeometry(ancho - grosor*2, grosor, profundidad), mat);
-            base.position.set(0, -alto/2 + grosor/2, 0);
-            muebleMesh.add(base);
-
-            if(tipoMdf !== 'sin_mdf') {
-                let mdfGrosor = tipoMdf === 'mdf_6mm' ? 6 : 3;
-                let trasera = new THREE.Mesh(new THREE.BoxGeometry(ancho - 10, alto - 10, mdfGrosor), matMdf);
-                trasera.position.set(0, 0, -profundidad/2 + mdfGrosor/2 + 5);
-                muebleMesh.add(trasera);
-            }
-
-            let anchoUtil = ancho - (grosor * 2);
-            let espacioDiv = anchoUtil / (divs + 1);
-            for(let i=1; i<=divs; i++) {
-                let divV = new THREE.Mesh(new THREE.BoxGeometry(grosor, alto - grosor*2, profundidad - 30), mat);
-                let posX = -ancho/2 + grosor + (espacioDiv * i);
-                divV.position.set(posX, 0, 0);
-                muebleMesh.add(divV);
-            }
-
-            let altoUtil = alto - (grosor * 2);
-            let espacioRep = altoUtil / (repisas + 1);
-            for(let c=0; c<=divs; c++) {
-                let colXStart = -ancho/2 + grosor + (espacioDiv * c);
-                let colXEnd = -ancho/2 + grosor + (espacioDiv * (c + 1));
-                let colAncho = colXEnd - colXStart;
-
-                for(let r=1; r<=repisas; r++) {
-                    let repisa = new THREE.Mesh(new THREE.BoxGeometry(colAncho - 4, grosor, profundidad - 40), mat);
-                    let posY = -alto/2 + grosor + (espacioRep * r);
-                    let posX = colXStart + colAncho/2;
-                    repisa.position.set(posX, posY, 0);
-                    muebleMesh.add(repisa);
-                }
-            }
-
-            if(puertas === 'si') {
-                let xStart = -ancho/2 + anP/2;
-                for(let p=0; p<cantP; p++) {
-                    let puerta = new THREE.Mesh(new THREE.BoxGeometry(anP, aP, 18), matPuerta);
-                    let posX = xStart + (anP * p) + (p * 2);
-                    puerta.position.set(posX, 0, profundidad/2 + 9);
-                    muebleMesh.add(puerta);
-                }
-            }
-
-            scene.add(muebleMesh);
-
-            function animate() {
-                requestAnimationFrame(animate);
-                controls.update();
-                renderer.render(scene, camera);
-            }
-            animate();
+        function currentSlide(n) {
+            slideIndex = n;
+            updateCarousel();
         }
 
-        function dibujarMueble() {
-            const canvas = document.getElementById('canvasMueble');
-            if (!canvas) return;
+        view.addEventListener('touchstart', touchStart);
+        view.addEventListener('touchend', touchEnd);
+        view.addEventListener('touchmove', touchMove);
+        view.addEventListener('mousedown', touchStart);
+        view.addEventListener('mouseup', touchEnd);
+        view.addEventListener('mouseleave', touchEnd);
+        view.addEventListener('mousemove', touchMove);
+
+        function getPositionX(e) { return e.type.includes('mouse') ? e.pageX : e.touches[0].clientX; }
+        function touchStart(e) { startX = getPositionX(e); isDragging = true; track.style.transition = "none"; }
+        function touchMove(e) {
+            if (!isDragging) return;
+            const currentDiff = getPositionX(e) - startX;
+            track.style.transform = `translateX(${prevTranslate + currentDiff}px)`;
+        }
+        function touchEnd(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            const movedBy = getPositionX(e) - startX;
+            if (movedBy < -50 && slideIndex < totalSlides - 1) slideIndex++;
+            else if (movedBy > 50 && slideIndex > 0) slideIndex--;
+            updateCarousel();
+        }
+
+        // RAZONES
+        const reasons = [
+            "\"Por la forma en que tu sonrisa ilumina incluso mis días más grises.\" 💕",
+            "\"Porque a tu lado aprendí lo que significa sentir paz y hogar al mismo tiempo.\" ✨",
+            "\"Por tus ocurrencias, tus abrazos y cada risa que compartimos.\" 🌹",
+            "\"Porque cada detalle tuyo hace que me enamore un poquito más cada día.\" 🌸",
+            "\"Porque me inspiras a ser mejor persona y apoyas mis sueños con todo tu cariño.\" 🌟",
+            "\"Porque eres mi refugio favorito y te amo mucho con demasiado.\" 💖"
+        ];
+        let rIdx = 0;
+        function changeReason() {
+            rIdx = (rIdx + 1) % reasons.length;
+            document.getElementById('reasonHeader').innerText = `💡 Razón ${rIdx + 1} de 6 (Toca para ver otra)`;
+            document.getElementById('reasonText').innerText = reasons[rIdx];
+        }
+
+        // CARTA Y CORAZONES
+        function openLetter() { 
+            document.getElementById('letterModal').classList.add('active'); 
+            for(let i=0; i<20; i++) { setTimeout(spawnHeart, i * 80); }
+        }
+        function closeLetter() { document.getElementById('letterModal').classList.remove('active'); }
+
+        function spawnHeart() {
+            const h = document.createElement('div');
+            h.classList.add('floating-heart');
+            h.innerHTML = '❤️';
+            h.style.left = Math.random() * 100 + 'vw';
+            h.style.fontSize = (Math.random() * 22 + 12) + 'px';
+            h.style.animationDuration = (Math.random() * 3 + 4) + 's';
+            document.getElementById('heartsBg').appendChild(h);
+            setTimeout(() => h.remove(), 7000);
+        }
+        setInterval(spawnHeart, 700);
+
+        // CONTADOR
+        const start = new Date(2026, 2, 29, 0, 0, 0);
+        function updateCounter() {
+            const now = new Date();
+            let diff = now - start;
+            if (diff < 0) diff = 0;
+            const s = Math.floor(diff/1000)%60;
+            const m = Math.floor(diff/1000/60)%60;
+            const h = Math.floor(diff/1000/60/60)%24;
+            const dTot = Math.floor(diff/1000/60/60/24);
             
-            canvas.width = canvas.parentElement.clientWidth - 20;
-            canvas.height = 210;
+            let y = now.getFullYear() - start.getFullYear();
+            let mon = now.getMonth() - start.getMonth();
+            let d = now.getDate() - start.getDate();
+            if (d < 0) { mon--; d += new Date(now.getFullYear(), now.getMonth(), 0).getDate(); }
+            if (mon < 0) { y--; mon += 12; }
 
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            const alto = parseFloat(document.getElementById('alto').value) || 1800;
-            const ancho = parseFloat(document.getElementById('ancho').value) || 1200;
-            const profundidad = parseFloat(document.getElementById('profundidad').value) || 500;
-            const divs = parseInt(document.getElementById('divVerticales').value) || 1;
-            const repisas = parseInt(document.getElementById('repisas').value) || 3;
-            const puertas = document.getElementById('llevaPuertas').value;
-            const cantP = parseInt(document.getElementById('cantPuertas').value) || 2;
-            
-            const tipo = document.getElementById('tipoAcabado').value;
-            let relleno = tipo.includes('blanco') ? '#f8fafc' : (tipo.includes('color') ? '#cbd5e1' : '#d4b28c');
-            let borde = tipo.includes('blanco') ? '#cbd5e1' : (tipo.includes('color') ? '#64748b' : '#8c6239');
-
-            ctx.fillStyle = relleno;
-            ctx.strokeStyle = borde;
-            ctx.lineWidth = 2;
-
-            let centroX = canvas.width / 2;
-
-            if (vistaActual === 'Frontal') {
-                let wBox = 220, hBox = 130, xBox = centroX - (wBox / 2), yBox = 25;
-                ctx.fillRect(xBox, yBox, wBox, hBox);
-                ctx.strokeRect(xBox, yBox, wBox, hBox);
-
-                let espacioX = wBox / (divs + 1);
-                for(let i=1; i<=divs; i++) {
-                    ctx.beginPath();
-                    ctx.moveTo(xBox + (espacioX * i), yBox);
-                    ctx.lineTo(xBox + (espacioX * i), yBox + hBox);
-                    ctx.stroke();
-                }
-
-                let espacioY = hBox / (repisas + 1);
-                for(let c=0; c<=divs; c++) {
-                    let colX = xBox + (espacioX * c);
-                    let colW = espacioX;
-                    for(let r=1; r<=repisas; r++) {
-                        ctx.beginPath();
-                        ctx.moveTo(colX + 4, yBox + (espacioY * r));
-                        ctx.lineTo(colX + colW - 4, yBox + (espacioY * r));
-                        ctx.stroke();
-                    }
-                }
-
-                if (puertas === 'si') {
-                    ctx.strokeStyle = '#2563eb';
-                    ctx.setLineDash([3,3]);
-                    let anchoPVisual = wBox / cantP;
-                    for(let p=0; p<cantP; p++) {
-                        ctx.strokeRect(xBox + (anchoPVisual * p) + 2, yBox + 2, anchoPVisual - 4, hBox - 4);
-                    }
-                    ctx.setLineDash([]);
-                }
-
-                ctx.fillStyle = '#334155';
-                ctx.font = '11px sans-serif';
-                ctx.fillText(`Ancho: ${ancho} mm`, centroX - 50, yBox - 8);
-                ctx.fillText(`Alto: ${alto} mm`, xBox - 75, yBox + (hBox/2));
-                ctx.fillText(`Vista Frontal (${cantP} Puertas)`, 20, 195);
-
-            } else if (vistaActual === 'Lateral') {
-                let wBox = 130, hBox = 130, xBox = centroX - (wBox / 2), yBox = 25;
-                ctx.fillRect(xBox, yBox, wBox, hBox);
-                ctx.strokeRect(xBox, yBox, wBox, hBox);
-
-                let espacioY = hBox / (repisas + 1);
-                for(let i=1; i<=repisas; i++) {
-                    ctx.beginPath();
-                    ctx.moveTo(xBox, yBox + (espacioY * i));
-                    ctx.lineTo(xBox + wBox, yBox + (espacioY * i));
-                    ctx.stroke();
-                }
-                ctx.fillStyle = '#334155';
-                ctx.font = '11px sans-serif';
-                ctx.fillText(`Profundidad: ${profundidad} mm`, centroX - 60, yBox - 8);
-                ctx.fillText(`Alto: ${alto} mm`, xBox - 75, yBox + (hBox/2));
-                ctx.fillText(`Vista Lateral`, 20, 195);
-
-            } else if (vistaActual === 'Planta') {
-                let wBox = 200, hBox = 70, xBox = centroX - (wBox / 2), yBox = 55;
-                ctx.fillRect(xBox, yBox, wBox, hBox);
-                ctx.strokeRect(xBox, yBox, wBox, hBox);
-                ctx.fillStyle = '#334155';
-                ctx.font = '11px sans-serif';
-                ctx.fillText(`Ancho: ${ancho} mm`, centroX - 45, yBox - 8);
-                ctx.fillText(`Profundidad: ${profundidad} mm`, xBox - 95, yBox + (hBox/2));
-                ctx.fillText(`Vista en Planta (Superior)`, 20, 195);
-            }
+            document.getElementById('anos').innerText = y;
+            document.getElementById('meses').innerText = mon;
+            document.getElementById('dias').innerText = d;
+            document.getElementById('horas').innerText = h;
+            document.getElementById('minutos').innerText = m;
+            document.getElementById('segundos').innerText = s;
+            document.getElementById('pageTitle').innerText = `❤️ ${dTot} Días | 6 Meses Juntos`;
         }
+        setInterval(updateCounter, 1000);
 
-        function crearSelectorCantos(defL1 = '0', defL2 = '0', defA1 = '0', defA2 = '0') {
-            const opciones = `
-                <option value="0" ${defL1==='0'?'selected':''}>-</option>
-                <option value="D" ${defL1==='D'?'selected':''}>Delgado 1mm</option>
-                <option value="G" ${defL1==='G'?'selected':''}>Grueso 3mm</option>
-            `;
-            const opcionesL2 = `
-                <option value="0" ${defL2==='0'?'selected':''}>-</option>
-                <option value="D" ${defL2==='D'?'selected':''}>Delgado 1mm</option>
-                <option value="G" ${defL2==='G'?'selected':''}>Grueso 3mm</option>
-            `;
-            const opcionesA1 = `
-                <option value="0" ${defA1==='0'?'selected':''}>-</option>
-                <option value="D" ${defA1==='D'?'selected':''}>Delgado 1mm</option>
-                <option value="G" ${defA1==='G'?'selected':''}>Grueso 3mm</option>
-            `;
-            const opcionesA2 = `
-                <option value="0" ${defA2==='0'?'selected':''}>-</option>
-                <option value="D" ${defA2==='D'?'selected':''}>Delgado 1mm</option>
-                <option value="G" ${defA2==='G'?'selected':''}>Grueso 3mm</option>
-            `;
-            return `
-                <div class="cantos-grid">
-                    <select class="canto-l1" onchange="calcularTotalGeneral()">${opciones}</select>
-                    <select class="canto-l2" onchange="calcularTotalGeneral()">${opcionesL2}</select>
-                    <select class="canto-a1" onchange="calcularTotalGeneral()">${opcionesA1}</select>
-                    <select class="canto-a2" onchange="calcularTotalGeneral()">${opcionesA2}</select>
-                </div>
-            `;
+        let playing = true;
+        const audio = document.getElementById('bgMusic');
+        function toggleAudio() { 
+            playing ? audio.pause() : audio.play(); 
+            playing = !playing; 
+            document.getElementById('audioBtn').innerText = playing ? '⏸️' : '🎵';
         }
-
-        function transferirMedidas() {
-            const alto = parseFloat(document.getElementById('alto').value) || 0;
-            const ancho = parseFloat(document.getElementById('ancho').value) || 0;
-            const profundidad = parseFloat(document.getElementById('profundidad').value) || 0;
-            const grosor = parseFloat(document.getElementById('grosor').value) || 0;
-            const repisas = parseInt(document.getElementById('repisas').value) || 0;
-            const divs = parseInt(document.getElementById('divVerticales').value) || 0;
-            const tipoMdf = document.getElementById('tipoMdf').value;
-            const puertas = document.getElementById('llevaPuertas').value;
-            const cantP = parseInt(document.getElementById('cantPuertas').value) || 2;
-            const aP = parseFloat(document.getElementById('altoPuerta').value) || 0;
-            const anP = parseFloat(document.getElementById('anchoPuerta').value) || 0;
-            
-            const tbody = document.getElementById('tablaDespieceBody');
-            
-            let estadosPrevios = [];
-            tbody.querySelectorAll('tr').forEach(tr => {
-                const selects = tr.querySelectorAll('select');
-                if(selects.length === 4) {
-                    estadosPrevios.push({
-                        l1: selects[0].value,
-                        l2: selects[1].value,
-                        a1: selects[2].value,
-                        a2: selects[3].value
-                    });
-                }
-            });
-
-            let indexCanto = 0;
-            function getCantoPredeterminado(defL1, defL2, defA1, defA2) {
-                if(estadosPrevios[indexCanto]) {
-                    let ev = estadosPrevios[indexCanto];
-                    indexCanto++;
-                    return crearSelectorCantos(ev.l1, ev.l2, ev.a1, ev.a2);
-                }
-                indexCanto++;
-                return crearSelectorCantos(defL1, defL2, defA1, defA2);
-            }
-
-            let html = `
-                <tr>
-                    <td>Lateral Izquierdo</td>
-                    <td class="medida-pieza" data-l="${alto}" data-a="${profundidad}">${alto} × ${profundidad}</td>
-                    <td>${getCantoPredeterminado('G', 'G', '0', '0')}</td>
-                </tr>
-                <tr>
-                    <td>Lateral Derecho</td>
-                    <td class="medida-pieza" data-l="${alto}" data-a="${profundidad}">${alto} × ${profundidad}</td>
-                    <td>${getCantoPredeterminado('G', 'G', '0', '0')}</td>
-                </tr>
-                <tr>
-                    <td>Techo / Base (x2)</td>
-                    <td class="medida-pieza" data-l="${ancho - (grosor * 2)}" data-a="${profundidad}" data-cant="2">${ancho - (grosor * 2)} × ${profundidad}</td>
-                    <td>${getCantoPredeterminado('G', '0', '0', '0')}</td>
-                </tr>
-            `;
-
-            if(tipoMdf !== 'sin_mdf') {
-                html += `
-                    <tr>
-                        <td>Fondo / Trasera (MDF)</td>
-                        <td class="medida-pieza-mdf" data-l="${alto - 10}" data-a="${ancho - 10}">${alto - 10} × ${ancho - 10}</td>
-                        <td><span>Sin Canto</span></td>
-                    </tr>
-                `;
-            }
-
-            let totalRepisas = repisas * (divs + 1);
-            if(totalRepisas > 0) {
-                let lRep = Math.round((ancho - (grosor * (divs + 1))) / (divs + 1));
-                let aRep = profundidad - 30;
-                html += `
-                    <tr>
-                        <td>Repisa Interna (x${totalRepisas})</td>
-                        <td class="medida-pieza" data-l="${lRep}" data-a="${aRep}" data-cant="${totalRepisas}">${lRep} × ${aRep}</td>
-                        <td>${getCantoPredeterminado('D', '0', '0', '0')}</td>
-                    </tr>
-                `;
-            }
-
-            if (puertas === 'si') {
-                for(let p=0; p<cantP; p++) {
-                    html += `
-                        <tr>
-                            <td>Puerta #${p+1}</td>
-                            <td class="medida-pieza" data-l="${aP}" data-a="${anP}">${aP} × ${anP}</td>
-                            <td>${getCantoPredeterminado('D', 'D', 'D', 'D')}</td>
-                        </tr>
-                    `;
-                }
-            }
-
-            tbody.innerHTML = html;
-            calcularTotalGeneral();
-        }
-
-        function agregarPiezaManual() {
-            const nombre = document.getElementById('pNombre').value;
-            const largo = parseFloat(document.getElementById('pLargo').value);
-            const ancho = parseFloat(document.getElementById('pAncho').value);
-
-            if (nombre && largo && ancho) {
-                const tbody = document.getElementById('tablaDespieceBody');
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${nombre}</td>
-                        <td class="medida-pieza" data-l="${largo}" data-a="${ancho}">${largo} × ${ancho}</td>
-                        <td>${crearSelectorCantos('D', '0', '0', '0')}</td>
-                    </tr>
-                `;
-                document.getElementById('pNombre').value = '';
-                document.getElementById('pLargo').value = '';
-                document.getElementById('pAncho').value = '';
-                calcularTotalGeneral();
-            } else {
-                alert('Complete los datos de la pieza manual.');
-            }
-        }
-
-        function agregarFilaAccesorio() {
-            const tbody = document.getElementById('tablaAccesoriosBody');
-            tbody.innerHTML += `
-                <tr>
-                    <td><input type="text" value="Accesorio" style="border:none; width:100%; font-size:10px; background:transparent;"></td>
-                    <td><input type="number" value="1" style="border:none; width:30px; font-size:10px; background:transparent;" oninput="calcularTotalGeneral()"></td>
-                    <td><input type="number" value="10.00" style="border:none; width:40px; font-size:10px; background:transparent;" oninput="calcularTotalGeneral()"></td>
-                </tr>
-            `;
-            calcularTotalGeneral();
-        }
-
-        // Función para redondear a múltiplos de 0.5 hacia arriba (ej. 1.2 -> 1.5, 0.3 -> 0.5)
-        function redondearMediaPlancha(valor) {
-            return Math.ceil(valor * 2) / 2;
-        }
-
-        function calcularTotalGeneral() {
-            let areaMelaminaMM2 = 0;
-            let areaMdfMM2 = 0;
-            let metrosCantoD = 0;
-            let metrosCantoG = 0;
-
-            document.querySelectorAll('#tablaDespieceBody tr').forEach(tr => {
-                const tdMedida = tr.querySelector('.medida-pieza');
-                const tdMdf = tr.querySelector('.medida-pieza-mdf');
-
-                if(tdMedida) {
-                    let l = parseFloat(tdMedida.getAttribute('data-l')) || 0;
-                    let a = parseFloat(tdMedida.getAttribute('data-a')) || 0;
-                    let cant = parseInt(tdMedida.getAttribute('data-cant')) || 1;
-                    areaMelaminaMM2 += (l * a * cant);
-
-                    const selL1 = tr.querySelector('.canto-l1')?.value;
-                    const selL2 = tr.querySelector('.canto-l2')?.value;
-                    const selA1 = tr.querySelector('.canto-a1')?.value;
-                    const selA2 = tr.querySelector('.canto-a2')?.value;
-
-                    if(selL1 === 'D') metrosCantoD += (l / 1000) * cant;
-                    if(selL1 === 'G') metrosCantoG += (l / 1000) * cant;
-                    if(selL2 === 'D') metrosCantoD += (l / 1000) * cant;
-                    if(selL2 === 'G') metrosCantoG += (l / 1000) * cant;
-                    if(selA1 === 'D') metrosCantoD += (a / 1000) * cant;
-                    if(selA1 === 'G') metrosCantoG += (a / 1000) * cant;
-                    if(selA2 === 'D') metrosCantoD += (a / 1000) * cant;
-                    if(selA2 === 'G') metrosCantoG += (a / 1000) * cant;
-                }
-
-                if(tdMdf) {
-                    let l = parseFloat(tdMdf.getAttribute('data-l')) || 0;
-                    let a = parseFloat(tdMdf.getAttribute('data-a')) || 0;
-                    areaMdfMM2 += (l * a);
-                }
-            });
-
-            // Área de plancha de melamina 7x8 pies (2.15m x 2.44m) con merma para cortes -> ~5,900,000 mm2
-            const areaPlanchaUtilMelamina = 5900000; 
-            // Área de plancha de MDF formato 1.85m x 2.44m con merma para cortes -> ~4,500,000 mm2
-            const areaPlanchaUtilMdf = 4500000; 
-
-            // Cálculo redondeando a medias planchas (0.5, 1.0, 1.5, 2.0...)
-            let planchasMelamina = redondearMediaPlancha(areaMelaminaMM2 / areaPlanchaUtilMelamina);
-            let planchasMdf = redondearMediaPlancha(areaMdfMM2 / areaPlanchaUtilMdf);
-            
-            if(planchasMelamina < 0.5 && areaMelaminaMM2 > 0) planchasMelamina = 0.5;
-            if(planchasMdf < 0.5 && areaMdfMM2 > 0) planchasMdf = 0.5;
-
-            let precioPlancha = parseFloat(document.getElementById('resPlanchas').value) || 0;
-            let precioMdf = parseFloat(document.getElementById('resMdf').value) || 0;
-            let precioCantoD = parseFloat(document.getElementById('valCantoD').value) || 0;
-            let precioCantoG = parseFloat(document.getElementById('valCantoG').value) || 0;
-            let costoInstalacion = parseFloat(document.getElementById('costoInstalacion').value) || 0;
-
-            let costoMelamina = planchasMelamina * precioPlancha;
-            let costoMdf = planchasMdf * precioMdf;
-            let costoCantos = (metrosCantoD * precioCantoD) + (metrosCantoG * precioCantoG);
-
-            let costoAccesorios = 0;
-            document.querySelectorAll('#tablaAccesoriosBody tr').forEach(tr => {
-                let cant = parseFloat(tr.querySelector('td:nth-child(2) input').value) || 0;
-                let precio = parseFloat(tr.querySelector('td:nth-child(3) input').value) || 0;
-                costoAccesorios += (cant * precio);
-            });
-
-            let costoBase = costoMelamina + costoMdf + costoCantos + costoAccesorios + costoInstalacion;
-
-            window.precioFinalCliente = costoBase.toFixed(2);
-
-            window.desgloseCostos = {
-                planchasMelamina, precioPlancha, costoMelamina,
-                planchasMdf, precioMdf, costoMdf,
-                metrosCantoD, precioCantoD, metrosCantoG, precioCantoG, costoCantos,
-                costoAccesorios, costoInstalacion, costoBase
-            };
-
-            document.getElementById('cajaResumenCalculado').innerHTML = `
-                Total Proyecto: S/ ${costoBase.toFixed(2)}
-            `;
-        }
-
-        function guardarEstado() {
-            const estado = {
-                proyecto: document.getElementById('nombreProyecto').value,
-                material: document.getElementById('nombreMaterial').value,
-                alto: document.getElementById('alto').value,
-                ancho: document.getElementById('ancho').value,
-                profundidad: document.getElementById('profundidad').value
-            };
-            localStorage.setItem('promueble_estado', JSON.stringify(estado));
-        }
-
-        function cargarEstado() {
-            const guardado = localStorage.getItem('promueble_estado');
-            if(guardado) {
-                const est = JSON.parse(guardado);
-                document.getElementById('nombreProyecto').value = est.proyecto || '';
-                document.getElementById('nombreMaterial').value = est.material || '';
-                document.getElementById('alto').value = est.alto || 1800;
-                document.getElementById('ancho').value = est.ancho || 1200;
-                document.getElementById('profundidad').value = est.profundidad || 500;
-            }
-        }
-
-        function generarCotizacionCliente() {
-            const cliente = document.getElementById('nombreProyecto').value;
-            const material = document.getElementById('nombreMaterial').value;
-            const alto = document.getElementById('alto').value;
-            const ancho = document.getElementById('ancho').value;
-            const profundidad = document.getElementById('profundidad').value;
-            const precioVenta = window.precioFinalCliente || "0.00";
-
-            const ventana = window.open('', '_blank');
-            ventana.document.write(`
-                <!DOCTYPE html>
-                <html lang="es">
-                <head>
-                    <meta charset="UTF-8">
-                    <title>Cotización Comercial - ${cliente}</title>
-                    <style>
-                        body { font-family: system-ui, -apple-system, sans-serif; padding: 25px; color: #1e293b; background: #f8fafc; margin: 0; }
-                        .sheet { max-width: 750px; margin: auto; background: white; padding: 35px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-                        .header-cot { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #1e293b; padding-bottom: 15px; margin-bottom: 25px; }
-                        .header-cot h2 { margin: 0; color: #1e293b; font-size: 22px; }
-                        .header-cot p { margin: 4px 0 0 0; color: #64748b; font-size: 13px; }
-                        .info-box { background: #f1f5f9; border-left: 4px solid #2563eb; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
-                        .info-box p { margin: 6px 0; font-size: 13.5px; }
-                        .conditions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; font-size: 13px; background: #fff; border: 1px solid #e2e8f0; padding: 12px; border-radius: 6px; }
-                        .conditions p { margin: 4px 0; color: #475569; }
-                        .detalle-texto { font-size: 13.5px; color: #334155; line-height: 1.5; margin-bottom: 25px; }
-                        .total-box { background: #1e293b; color: white; padding: 18px 20px; text-align: right; border-radius: 6px; font-size: 18px; font-weight: bold; margin-bottom: 30px; }
-                        .firmas { display: flex; justify-content: space-between; margin-top: 50px; text-align: center; font-size: 12px; color: #64748b; }
-                        .firma-linea { border-top: 1px solid #cbd5e1; width: 200px; margin: auto; padding-top: 5px; }
-                        .print-btn { display: block; width: 100%; margin-top: 20px; background: #2563eb; color: white; border: none; padding: 12px; font-size: 15px; border-radius: 6px; font-weight: bold; cursor: pointer; text-align: center; }
-                        @media print { 
-                            body { background: white; padding: 0; }
-                            .sheet { box-shadow: none; padding: 0; }
-                            .print-btn { display: none; } 
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="sheet">
-                        <div class="header-cot">
-                            <div>
-                                <h2>COTIZACIÓN COMERCIAL</h2>
-                                <p>ProMueble CAD — Diseño, Fabricación e Instalación a Medida</p>
-                            </div>
-                            <div style="text-align: right;">
-                                <p><strong>Fecha:</strong> ${new Date().toLocaleDateString()}</p>
-                            </div>
-                        </div>
-
-                        <div class="info-box">
-                            <p><strong>Cliente / Proyecto:</strong> ${cliente}</p>
-                            <p><strong>Especificación de Material:</strong> ${material}</p>
-                            <p><strong>Dimensiones Totales:</strong> Alto ${alto} mm × Ancho ${ancho} mm × Profundidad ${profundidad} mm</p>
-                            <p><strong>Incluye:</strong> Fabricación con tableros de alta calidad, cantos aplicados mecánicamente, herrajes metálicos y servicio completo de armado e instalación en domicilio.</p>
-                        </div>
-
-                        <div class="conditions">
-                            <div>
-                                <p><strong>⏱️ Tiempo de Entrega:</strong> 7 a 10 días hábiles</p>
-                                <p><strong>💳 Forma de Pago:</strong> 50% adelanto, 50% al instalar</p>
-                            </div>
-                            <div>
-                                <p><strong>⏳ Validez de Oferta:</strong> 15 días</p>
-                                <p><strong>🛡️ Garantía:</strong> 1 año por estructura</p>
-                            </div>
-                        </div>
-
-                        <div class="detalle-texto">
-                            <strong>Detalle del Proyecto:</strong><br>
-                            Mueble fabricado rigurosamente a medida bajo estrictos estándares de calidad, garantizando un ensamblaje firme, escuadras perfectas y acabados profesionales listos para su uso.
-                        </div>
-
-                        <div class="total-box">
-                            Inversión Total del Proyecto: S/ ${precioVenta}
-                        </div>
-
-                        <div class="firmas">
-                            <div>
-                                <div class="firma-linea"></div>
-                                <p>Asesor / Fabricante</p>
-                            </div>
-                            <div>
-                                <div class="firma-linea"></div>
-                                <p>Aceptación del Cliente</p>
-                            </div>
-                        </div>
-
-                        <button class="print-btn" onclick="window.print()">🖨️ Imprimir o Guardar como PDF</button>
-                    </div>
-                </body>
-                </html>
-            `);
-            ventana.document.close();
-        }
-
-        function generarReporteInterno() {
-            const cliente = document.getElementById('nombreProyecto').value;
-            const material = document.getElementById('nombreMaterial').value;
-            const c = window.desgloseCostos || {};
-
-            let filasClonadas = '';
-            document.querySelectorAll('#tablaDespieceBody tr').forEach(tr => {
-                const tds = tr.querySelectorAll('td');
-                if(tds.length >= 3) {
-                    let pieza = tds[0].innerText;
-                    let medida = tds[1].innerText;
-                    
-                    let cantosTexto = "-";
-                    const selects = tr.querySelectorAll('select');
-                    if(selects.length > 0) {
-                        let arr = [];
-                        selects.forEach(sel => {
-                            let val = sel.value;
-                            arr.push(val === 'D' ? 'Delgado 1mm' : (val === 'G' ? 'Grueso 3mm' : '-'));
-                        });
-                        cantosTexto = arr.join(' / ');
-                    } else {
-                        cantosTexto = tds[2].innerText;
-                    }
-
-                    filasClonadas += `<tr><td>${pieza}</td><td>${medida}</td><td>${cantosTexto}</td></tr>`;
-                }
-            });
-
-            let filasAccesoriosPrint = '';
-            document.querySelectorAll('#tablaAccesoriosBody tr').forEach(tr => {
-                let desc = tr.querySelector('td:nth-child(1) input').value;
-                let cant = tr.querySelector('td:nth-child(2) input').value;
-                let pUnit = tr.querySelector('td:nth-child(3) input').value;
-                let subTotal = (parseFloat(cant) || 0) * (parseFloat(pUnit) || 0);
-                filasAccesoriosPrint += `<tr><td>${desc}</td><td>${cant}</td><td>S/ ${parseFloat(pUnit).toFixed(2)}</td><td>S/ ${subTotal.toFixed(2)}</td></tr>`;
-            });
-
-            const ventana = window.open('', '_blank');
-            ventana.document.write(`
-                <!DOCTYPE html>
-                <html lang="es">
-                <head>
-                    <meta charset="UTF-8">
-                    <title>Hoja de Costos Interna - ${cliente}</title>
-                    <style>
-                        body { font-family: sans-serif; padding: 20px; color: #0f172a; }
-                        table { width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 20px; }
-                        th, td { border: 1px solid #cbd5e1; padding: 8px; text-align: left; font-size: 12px; }
-                        th { background: #1e293b; color: white; }
-                        .resumen-print { background: #f1f5f9; padding: 15px; margin-top: 15px; border-radius: 6px; }
-                        .resumen-print h4 { margin: 0 0 10px 0; color: #1e293b; }
-                        .resumen-print p { margin: 4px 0; font-size: 13px; display: flex; justify-content: space-between; }
-                        .total-line { border-top: 2px solid #1e293b; margin-top: 8px; padding-top: 8px; font-weight: bold; font-size: 15px !important; }
-                        .print-btn { margin: 20px 0; background: #2563eb; color: white; border: none; padding: 10px 20px; font-size: 14px; border-radius: 6px; cursor: pointer; }
-                        @media print { .print-btn { display: none; } }
-                    </style>
-                </head>
-                <body>
-                    <h2>Hoja de Costos Interna (Taller): ${cliente}</h2>
-                    <p><strong>Material Estructural:</strong> ${material}</p>
-                    
-                    <h3>1. Despiece Técnico y Cantos</h3>
-                    <table>
-                        <tr><th>Componente</th><th>Medidas (Largo × Ancho)</th><th>Cantos (L1 / L2 / A1 / A2)</th></tr>
-                        ${filasClonadas}
-                    </table>
-
-                    <h3>2. Detalle de Accesorios y Ferretería</h3>
-                    <table>
-                        <tr><th>Descripción</th><th>Cant</th><th>P. Unitario</th><th>Subtotal</th></tr>
-                        ${filasAccesoriosPrint}
-                    </table>
-
-                    <div class="resumen-print">
-                        <h4>Desglose General de Costos</h4>
-                        <p><span>Melamina Estructural 7x8 (${c.planchasMelamina || 0} planchas / medias planchas @ S/ ${c.precioPlancha || 0}):</span> <strong>S/ ${(c.costoMelamina || 0).toFixed(2)}</strong></p>
-                        <p><span>Fondo MDF Formato 1.85m x 2.44m (${c.planchasMdf || 0} planchas / medias planchas @ S/ ${c.precioMdf || 0}):</span> <strong>S/ ${(c.costoMdf || 0).toFixed(2)}</strong></p>
-                        <p><span>Cantos (Delgado: ${(c.metrosCantoD || 0).toFixed(2)}m | Grueso: ${(c.metrosCantoG || 0).toFixed(2)}m):</span> <strong>S/ ${(c.costoCantos || 0).toFixed(2)}</strong></p>
-                        <p><span>Accesorios y Ferretería:</span> <strong>S/ ${(c.costoAccesorios || 0).toFixed(2)}</strong></p>
-                        <p><span>Mano de Obra / Instalación:</span> <strong>S/ ${(c.costoInstalacion || 0).toFixed(2)}</strong></p>
-                        <p class="total-line"><span>Costo Total del Proyecto:</span> <span>S/ ${(c.costoBase || 0).toFixed(2)}</span></p>
-                    </div>
-
-                    <button class="print-btn" onclick="window.print()">🖨️ Imprimir Hoja Interna</button>
-                </body>
-                </html>
-            `);
-            ventana.document.close();
-        }
-
-        window.onload = function() {
-            cargarEstado();
-            actualizarTodo();
-        };
+        function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
     </script>
 </body>
 </html>
