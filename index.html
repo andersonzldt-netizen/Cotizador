@@ -1,13 +1,2442 @@
-<script>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Seis meses ❤️</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
 /* =====================================================
-   CONTADOR DE PRUEBA — 5 MINUTOS
-   Se reinicia cada vez que se abre o recarga la página
+   VARIABLES
 ===================================================== */
 
-const TEST_DURATION = 5 * 60; // 5 minutos
+:root{
+    --wine:#5b1828;
+    --wine-dark:#250b14;
+    --wine-soft:#7a3044;
+    --cream:#f8f0e5;
+    --gold:#c9a35b;
+    --gold-light:#e6cb91;
+    --black:#090306;
+    --text:#2b171c;
+}
+
+/* =====================================================
+   RESET
+===================================================== */
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:'Montserrat',sans-serif;
+    background:
+        radial-gradient(circle at top,#7a3044 0%,#3b101d 40%,#12090d 100%);
+    color:var(--cream);
+    min-height:100vh;
+    overflow-x:hidden;
+}
+
+body.locked{
+    overflow:hidden;
+}
+
+/* =====================================================
+   CONTADOR
+===================================================== */
+
+#countdownScreen{
+    position:fixed;
+    inset:0;
+    z-index:99999;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:
+        radial-gradient(
+            circle at 50% 35%,
+            rgba(122,48,68,.5),
+            transparent 34%
+        ),
+        radial-gradient(
+            circle at 50% 70%,
+            rgba(201,163,91,.08),
+            transparent 35%
+        ),
+        linear-gradient(
+            135deg,
+            #070204,
+            #210b14 55%,
+            #050103
+        );
+
+    transition:
+        opacity 1.2s ease,
+        visibility 1.2s ease;
+}
+
+#countdownScreen.hidden{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+}
+
+.countdown-content{
+    width:min(92%,700px);
+    text-align:center;
+
+    transition:
+        opacity 1s ease,
+        transform 1s ease;
+}
+
+.countdown-content.fade{
+    opacity:0;
+    transform:scale(.96);
+}
+
+.countdown-kicker{
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:5px;
+    color:var(--gold-light);
+    margin-bottom:20px;
+}
+
+.countdown-title{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(43px,7vw,72px);
+    font-weight:500;
+    line-height:.95;
+    margin-bottom:20px;
+}
+
+.countdown-subtitle{
+    max-width:580px;
+    margin:0 auto 35px;
+
+    font-size:13px;
+    line-height:1.8;
+
+    color:rgba(248,240,229,.75);
+}
+
+.countdown-clock{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+}
+
+.time-box{
+    min-width:100px;
+    padding:16px 10px;
+
+    border:1px solid rgba(201,163,91,.45);
+    border-radius:15px;
+
+    background:rgba(255,255,255,.045);
+
+    backdrop-filter:blur(15px);
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.25),
+        inset 0 0 20px rgba(255,255,255,.025);
+}
+
+.time-number{
+    display:block;
+
+    font-family:'Cormorant Garamond',serif;
+    font-size:55px;
+    line-height:1;
+
+    color:var(--gold-light);
+}
+
+.time-label{
+    display:block;
+
+    margin-top:8px;
+
+    font-size:8px;
+    text-transform:uppercase;
+    letter-spacing:2px;
+
+    color:rgba(248,240,229,.5);
+}
+
+.time-separator{
+    font-family:'Cormorant Garamond',serif;
+    font-size:32px;
+    color:var(--gold);
+    margin-top:-18px;
+}
+
+.countdown-date{
+    margin-top:28px;
+
+    font-size:9px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+
+    color:rgba(248,240,229,.35);
+}
+
+.unlock-message{
+    position:absolute;
+    inset:0;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    opacity:0;
+    transform:scale(.9);
+
+    transition:
+        opacity 1s ease,
+        transform 1s ease;
+}
+
+.unlock-message.show{
+    opacity:1;
+    transform:scale(1);
+}
+
+.unlock-heart{
+    font-size:80px;
+
+    color:#e6a2ad;
+
+    text-shadow:
+        0 0 15px rgba(230,162,173,.9),
+        0 0 50px rgba(230,162,173,.5);
+
+    animation:unlockPulse 1.2s infinite;
+}
+
+.unlock-title{
+    margin-top:15px;
+
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(40px,7vw,65px);
+}
+
+.unlock-subtitle{
+    margin-top:5px;
+}
+
+/* =====================================================
+   PORTADA
+===================================================== */
+
+.cover{
+    position:fixed;
+    inset:0;
+    z-index:1000;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    text-align:center;
+
+    overflow:hidden;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(120,37,61,.48),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 50% 50%,
+            rgba(201,163,91,.08),
+            transparent 50%
+        ),
+        linear-gradient(
+            135deg,
+            #080305,
+            #32101c 52%,
+            #090305
+        );
+
+    transition:
+        opacity 1s ease,
+        visibility 1s ease;
+}
+
+.cover.hidden{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+}
+
+.cover::before{
+    content:"";
+
+    position:absolute;
+    inset:-20%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,255,255,.04) 1px,
+            transparent 1px
+        );
+
+    background-size:35px 35px;
+
+    opacity:.35;
+
+    animation:starsMove 30s linear infinite;
+}
+
+.cover-content{
+    position:relative;
+    z-index:2;
+
+    width:min(90%,750px);
+}
+
+/* =====================================================
+   CORAZÓN CINEMATOGRÁFICO
+===================================================== */
+
+.hero-heart{
+    position:relative;
+
+    width:220px;
+    height:220px;
+
+    margin:0 auto 25px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.heart-aura{
+    position:absolute;
+    width:190px;
+    height:190px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(210,91,118,.24),
+            transparent 65%
+        );
+
+    filter:blur(10px);
+
+    animation:auraPulse 3s ease-in-out infinite;
+}
+
+.heart-ring{
+    position:absolute;
+
+    width:175px;
+    height:175px;
+
+    border-radius:50%;
+
+    border:1px solid rgba(201,163,91,.25);
+
+    box-shadow:
+        inset 0 0 30px rgba(201,163,91,.05);
+
+    animation:ringRotate 14s linear infinite;
+}
+
+.heart-ring::before{
+    content:"";
+
+    position:absolute;
+
+    width:6px;
+    height:6px;
+
+    top:14px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    border-radius:50%;
+
+    background:var(--gold-light);
+
+    box-shadow:
+        0 0 10px var(--gold-light);
+}
+
+.heart-ring.second{
+    width:145px;
+    height:145px;
+
+    border-color:rgba(230,162,173,.22);
+
+    animation:
+        ringRotateReverse 10s linear infinite;
+}
+
+.heart-core{
+    position:relative;
+
+    width:88px;
+    height:88px;
+
+    transform:rotate(-45deg);
+
+    background:
+        linear-gradient(
+            145deg,
+            #e19aaa 0%,
+            #a9445d 42%,
+            #671c34 100%
+        );
+
+    border-radius:15px 8px 12px 12px;
+
+    box-shadow:
+        0 0 20px rgba(218,111,137,.8),
+        0 0 60px rgba(170,54,83,.55),
+        0 0 110px rgba(170,54,83,.25);
+
+    animation:
+        heartBeat 2.2s ease-in-out infinite;
+
+    z-index:3;
+}
+
+.heart-core::before,
+.heart-core::after{
+    content:"";
+
+    position:absolute;
+
+    width:88px;
+    height:88px;
+
+    border-radius:50%;
+
+    background:inherit;
+}
+
+.heart-core::before{
+    top:-44px;
+    left:0;
+}
+
+.heart-core::after{
+    top:0;
+    left:44px;
+}
+
+.heart-highlight{
+    position:absolute;
+
+    width:24px;
+    height:13px;
+
+    top:28px;
+    left:30px;
+
+    border-radius:50%;
+
+    background:
+        rgba(255,255,255,.42);
+
+    filter:blur(4px);
+
+    transform:rotate(-45deg);
+
+    z-index:5;
+
+    animation:
+        shineMove 3s ease-in-out infinite;
+}
+
+.heart-particle{
+    position:absolute;
+
+    width:3px;
+    height:3px;
+
+    border-radius:50%;
+
+    background:var(--gold-light);
+
+    box-shadow:
+        0 0 8px var(--gold-light);
+
+    animation:particleFloat 4s ease-in-out infinite;
+}
+
+.p1{
+    top:28px;
+    left:35px;
+}
+
+.p2{
+    top:45px;
+    right:28px;
+    animation-delay:1s;
+}
+
+.p3{
+    bottom:35px;
+    left:42px;
+    animation-delay:1.7s;
+}
+
+.p4{
+    bottom:52px;
+    right:40px;
+    animation-delay:2.5s;
+}
+
+/* =====================================================
+   PORTADA TEXTO
+===================================================== */
+
+.cover-small{
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:6px;
+
+    color:var(--gold-light);
+
+    margin-bottom:18px;
+}
+
+.cover-title{
+    font-family:'Cormorant Garamond',serif;
+
+    font-size:clamp(
+        62px,
+        12vw,
+        115px
+    );
+
+    line-height:.75;
+
+    font-weight:500;
+
+    letter-spacing:-2px;
+}
+
+.cover-subtitle{
+    margin-top:25px;
+
+    font-family:'Cormorant Garamond',serif;
+
+    font-size:clamp(
+        23px,
+        4vw,
+        35px
+    );
+
+    font-style:italic;
+
+    color:#f1d7dc;
+}
+
+.cover-date{
+    margin-top:23px;
+
+    font-size:10px;
+
+    letter-spacing:5px;
+
+    color:rgba(248,240,229,.5);
+}
+
+/* =====================================================
+   BOTÓN PRINCIPAL
+===================================================== */
+
+.primary-button{
+
+    margin-top:32px;
+
+    border:
+        1px solid
+        rgba(230,203,145,.7);
+
+    padding:15px 28px;
+
+    border-radius:50px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,.09),
+            rgba(201,163,91,.08)
+        );
+
+    color:var(--cream);
+
+    font-family:'Montserrat',sans-serif;
+
+    font-size:10px;
+
+    text-transform:uppercase;
+
+    letter-spacing:2px;
+
+    cursor:pointer;
+
+    transition:
+        transform .3s ease,
+        background .3s ease,
+        box-shadow .3s ease;
+}
+
+.primary-button:hover{
+
+    transform:translateY(-3px);
+
+    background:
+        rgba(201,163,91,.16);
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,.3);
+}
+
+/* =====================================================
+   PÁGINA
+===================================================== */
+
+.page{
+    width:min(1100px,94%);
+    margin:0 auto;
+    padding:60px 0 100px;
+}
+
+.main-card{
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.08),
+            rgba(255,255,255,.025)
+        );
+
+    border:
+        1px solid
+        rgba(255,255,255,.1);
+
+    border-radius:30px;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 40px 100px rgba(0,0,0,.35);
+
+    backdrop-filter:blur(20px);
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.header{
+    padding:60px 30px 40px;
+    text-align:center;
+}
+
+.header-kicker{
+
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:4px;
+
+    color:var(--gold-light);
+
+    margin-bottom:15px;
+}
+
+.header h1{
+
+    font-family:'Cormorant Garamond',serif;
+
+    font-size:clamp(45px,7vw,70px);
+
+    font-weight:500;
+
+    line-height:1;
+}
+
+.header p{
+
+    max-width:650px;
+
+    margin:20px auto 0;
+
+    font-size:14px;
+
+    line-height:1.8;
+
+    color:
+        rgba(
+            248,
+            240,
+            229,
+            .7
+        );
+}
+
+.header-controls{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:10px;
+
+    margin-top:25px;
+
+    flex-wrap:wrap;
+}
+
+.control-button{
+
+    min-width:45px;
+
+    height:45px;
+
+    padding:0 17px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.15);
+
+    border-radius:50px;
+
+    background:
+        rgba(255,255,255,.05);
+
+    color:var(--cream);
+
+    cursor:pointer;
+
+    font-family:'Montserrat',sans-serif;
+
+    font-size:10px;
+
+    transition:.3s ease;
+}
+
+.control-button:hover{
+
+    background:
+        rgba(201,163,91,.14);
+
+    border-color:
+        rgba(201,163,91,.4);
+}
+
+/* =====================================================
+   NAVEGACIÓN
+===================================================== */
+
+.chapter-nav{
+
+    display:flex;
+
+    justify-content:center;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+
+    padding:20px;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,.07);
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.07);
+}
+
+.chapter-button{
+
+    border:0;
+
+    background:transparent;
+
+    color:
+        rgba(
+            248,
+            240,
+            229,
+            .55
+        );
+
+    padding:10px 18px;
+
+    border-radius:30px;
+
+    font-family:'Montserrat',sans-serif;
+
+    font-size:10px;
+
+    text-transform:uppercase;
+
+    letter-spacing:1.5px;
+
+    cursor:pointer;
+
+    transition:.3s ease;
+}
+
+.chapter-button.active{
+
+    background:
+        rgba(201,163,91,.14);
+
+    color:var(--gold-light);
+}
+
+/* =====================================================
+   CAPÍTULOS
+===================================================== */
+
+.chapter{
+
+    display:none;
+
+    padding:55px 8%;
+}
+
+.chapter.active{
+
+    display:block;
+
+    animation:
+        chapterIn .7s ease;
+}
+
+.chapter-number{
+
+    font-size:10px;
+
+    letter-spacing:4px;
+
+    text-transform:uppercase;
+
+    color:var(--gold-light);
+
+    margin-bottom:10px;
+}
+
+.chapter h2{
+
+    font-family:'Cormorant Garamond',serif;
+
+    font-size:
+        clamp(
+            38px,
+            6vw,
+            58px
+        );
+
+    font-weight:500;
+
+    margin-bottom:20px;
+}
+
+.chapter-intro{
+
+    max-width:700px;
+
+    font-size:14px;
+
+    line-height:1.9;
+
+    color:
+        rgba(
+            248,
+            240,
+            229,
+            .72
+        );
+
+    margin-bottom:30px;
+}
+
+/* =====================================================
+   DÍAS
+===================================================== */
+
+.days-counter{
+
+    display:inline-flex;
+
+    flex-direction:column;
+
+    padding:20px 30px;
+
+    margin-bottom:35px;
+
+    border:
+        1px solid
+        rgba(201,163,91,.35);
+
+    border-radius:15px;
+
+    background:
+        rgba(255,255,255,.035);
+}
+
+.days-number{
+
+    font-family:'Cormorant Garamond',serif;
+
+    font-size:58px;
+
+    color:var(--gold-light);
+
+    line-height:1;
+}
+
+.days-label{
+
+    margin-top:6px;
+
+    font-size:9px;
+
+    letter-spacing:2px;
+
+    text-transform:uppercase;
+
+    color:
+        rgba(
+            248,
+            240,
+            229,
+            .5
+        );
+}
+
+/* =====================================================
+   YOUTUBE
+===================================================== */
+
+.music-section{
+    margin-top:35px;
+}
+
+.music-title{
+
+    font-family:'Cormorant Garamond',serif;
+
+    font-size:30px;
+
+    margin-bottom:15px;
+}
+
+.youtube-wrapper{
+
+    position:relative;
+
+    width:100%;
+
+    max-width:700px;
+
+    aspect-ratio:16/9;
+
+    margin-top:20px;
+
+    overflow:hidden;
+
+    border-radius:18px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.12);
+
+    background:#090306;
+
+    box-shadow:
+        0 25px 60px rgba(0,0,0,.35);
+}
+
+.youtube-wrapper iframe{
+
+    width:100%;
+    height:100%;
+
+    border:0;
+}
+
+/* =====================================================
+   CARRUSEL
+===================================================== */
+
+.carousel{
+
+    position:relative;
+
+    max-width:850px;
+
+    margin:35px auto 0;
+}
+
+.photo-frame{
+
+    position:relative;
+
+    width:100%;
+
+    aspect-ratio:4/3;
+
+    overflow:hidden;
+
+    border-radius:22px;
+
+    background:#1c0d12;
+
+    border:
+        1px solid
+        rgba(255,255,255,.1);
+
+    box-shadow:
+        0 30px 70px rgba(0,0,0,.3);
+}
+
+.photo-frame img{
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    display:block;
+
+    transition:
+        opacity .45s ease,
+        transform .7s ease;
+}
+
+.photo-frame.changing img{
+
+    opacity:.15;
+
+    transform:scale(1.03);
+}
+
+.carousel-arrow{
+
+    position:absolute;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    width:48px;
+    height:48px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.35);
+
+    border-radius:50%;
+
+    background:
+        rgba(20,5,10,.65);
+
+    backdrop-filter:blur(8px);
+
+    color:white;
+
+    font-size:22px;
+
+    cursor:pointer;
+
+    z-index:5;
+
+    transition:.3s ease;
+}
+
+.carousel-arrow:hover{
+
+    background:
+        rgba(91,24,40,.9);
+
+    border-color:
+        var(--gold);
+}
+
+.carousel-arrow.left{
+    left:18px;
+}
+
+.carousel-arrow.right{
+    right:18px;
+}
+
+.photo-caption{
+
+    position:relative;
+
+    text-align:center;
+
+    padding:28px 30px 10px;
+}
+
+.caption-line{
+
+    width:45px;
+
+    height:1px;
+
+    background:var(--gold);
+
+    margin:0 auto 18px;
+}
+
+.photo-caption p{
+
+    font-family:'Cormorant Garamond',serif;
+
+    font-size:
+        clamp(
+            24px,
+            4vw,
+            35px
+        );
+
+    line-height:1.15;
+
+    color:var(--cream);
+
+    max-width:750px;
+
+    margin:auto;
+
+    animation:
+        captionIn .5s ease;
+}
+
+.photo-counter{
+
+    margin-top:20px;
+
+    font-size:10px;
+
+    letter-spacing:3px;
+
+    color:
+        rgba(
+            248,
+            240,
+            229,
+            .45
+        );
+}
+
+/* =====================================================
+   RAZONES
+===================================================== */
+
+.reason-box{
+
+    max-width:700px;
+
+    margin:40px auto;
+
+    min-height:250px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    padding:40px;
+
+    border:
+        1px solid
+        rgba(201,163,91,.3);
+
+    border-radius:25px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.06),
+            rgba(255,255,255,.02)
+        );
+
+    cursor:pointer;
+}
+
+.reason-number{
+
+    font-size:10px;
+
+    letter-spacing:3px;
+
+    color:var(--gold-light);
+
+    text-transform:uppercase;
+
+    margin-bottom:20px;
+}
+
+.reason-text{
+
+    font-family:'Cormorant Garamond',serif;
+
+    font-size:
+        clamp(
+            28px,
+            5vw,
+            45px
+        );
+
+    line-height:1.15;
+
+    animation:
+        captionIn .5s ease;
+}
+
+.reason-hint{
+
+    margin-top:25px;
+
+    font-size:10px;
+
+    letter-spacing:1px;
+
+    color:
+        rgba(
+            248,
+            240,
+            229,
+            .4
+        );
+}
+
+.letter-button{
+
+    display:block;
+
+    margin:35px auto 0;
+}
+
+/* =====================================================
+   CARTA
+===================================================== */
+
+.letter-modal{
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:5000;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:20px;
+
+    background:
+        rgba(8,3,6,.82);
+
+    backdrop-filter:blur(10px);
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transition:
+        opacity .5s ease,
+        visibility .5s ease;
+}
+
+.letter-modal.open{
+
+    opacity:1;
+
+    visibility:visible;
+}
+
+.letter-card{
+
+    position:relative;
+
+    width:min(800px,100%);
+
+    max-height:90vh;
+
+    overflow:auto;
+
+    padding:55px 8%;
+
+    border-radius:25px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #fffaf2,
+            #f1e4d3
+        );
+
+    color:var(--text);
+
+    box-shadow:
+        0 40px 100px rgba(0,0,0,.55);
+
+    transform:translateY(25px);
+
+    transition:
+        transform .6s ease;
+}
+
+.letter-modal.open .letter-card{
+    transform:translateY(0);
+}
+
+.letter-close{
+
+    position:absolute;
+
+    right:20px;
+    top:18px;
+
+    width:42px;
+    height:42px;
+
+    border:0;
+
+    border-radius:50%;
+
+    background:
+        rgba(91,24,40,.08);
+
+    color:var(--wine);
+
+    cursor:pointer;
+
+    font-size:20px;
+}
+
+.letter-kicker{
+
+    text-align:center;
+
+    text-transform:uppercase;
+
+    letter-spacing:4px;
+
+    font-size:9px;
+
+    color:var(--wine-soft);
+
+    margin-bottom:20px;
+}
+
+.letter-card h2{
+
+    text-align:center;
+
+    font-family:'Cormorant Garamond',serif;
+
+    font-size:48px;
+
+    font-weight:500;
+
+    color:var(--wine);
+
+    margin-bottom:30px;
+}
+
+.letter-card p{
+
+    font-family:'Cormorant Garamond',serif;
+
+    font-size:21px;
+
+    line-height:1.65;
+
+    margin-bottom:20px;
+}
+
+.letter-signature{
+
+    margin-top:35px;
+
+    text-align:center;
+
+    font-family:'Cormorant Garamond',serif;
+
+    font-size:28px;
+
+    font-style:italic;
+
+    color:var(--wine);
+}
+
+/* =====================================================
+   CORAZONES DE FONDO
+===================================================== */
+
+.heart-bg{
+
+    position:fixed;
+
+    bottom:-30px;
+
+    z-index:-1;
+
+    color:
+        rgba(
+            230,
+            162,
+            173,
+            .22
+        );
+
+    pointer-events:none;
+
+    animation:
+        floatHeart linear forwards;
+}
+
+/* =====================================================
+   MODO CLARO
+===================================================== */
+
+body.light-mode{
+
+    background:
+        linear-gradient(
+            135deg,
+            #f4e9df,
+            #ead6d0
+        );
+
+    color:var(--text);
+}
+
+body.light-mode .main-card{
+
+    background:
+        rgba(
+            255,
+            250,
+            245,
+            .72
+        );
+
+    border-color:
+        rgba(91,24,40,.12);
+}
+
+body.light-mode .chapter-intro,
+body.light-mode .header p{
+
+    color:
+        rgba(
+            43,
+            23,
+            28,
+            .68
+        );
+}
+
+body.light-mode .chapter-button{
+
+    color:
+        rgba(
+            43,
+            23,
+            28,
+            .55
+        );
+}
+
+body.light-mode .chapter-button.active{
+
+    color:var(--wine);
+}
+
+body.light-mode .control-button{
+
+    color:var(--wine);
+
+    border-color:
+        rgba(
+            91,
+            24,
+            40,
+            .2
+        );
+}
+
+/* =====================================================
+   ANIMACIONES
+===================================================== */
+
+@keyframes heartBeat{
+
+    0%,100%{
+        transform:
+            rotate(-45deg)
+            scale(1);
+    }
+
+    12%{
+        transform:
+            rotate(-45deg)
+            scale(1.08);
+    }
+
+    24%{
+        transform:
+            rotate(-45deg)
+            scale(1);
+    }
+
+    36%{
+        transform:
+            rotate(-45deg)
+            scale(1.045);
+    }
+
+    50%{
+        transform:
+            rotate(-45deg)
+            scale(1);
+    }
+}
+
+@keyframes auraPulse{
+
+    0%,100%{
+        transform:scale(.88);
+        opacity:.65;
+    }
+
+    50%{
+        transform:scale(1.12);
+        opacity:1;
+    }
+}
+
+@keyframes ringRotate{
+
+    from{
+        transform:rotate(0deg);
+    }
+
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+@keyframes ringRotateReverse{
+
+    from{
+        transform:rotate(360deg);
+    }
+
+    to{
+        transform:rotate(0deg);
+    }
+}
+
+@keyframes shineMove{
+
+    0%,100%{
+        opacity:.25;
+        transform:
+            rotate(-45deg)
+            translate(-4px,-2px);
+    }
+
+    50%{
+        opacity:.8;
+        transform:
+            rotate(-45deg)
+            translate(7px,5px);
+    }
+}
+
+@keyframes particleFloat{
+
+    0%,100%{
+        transform:
+            translateY(0)
+            scale(.7);
+
+        opacity:.25;
+    }
+
+    50%{
+        transform:
+            translateY(-15px)
+            scale(1.2);
+
+        opacity:1;
+    }
+}
+
+@keyframes starsMove{
+
+    from{
+        transform:translate(0,0);
+    }
+
+    to{
+        transform:translate(35px,35px);
+    }
+}
+
+@keyframes unlockPulse{
+
+    0%,100%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.12);
+    }
+}
+
+@keyframes floatHeart{
+
+    0%{
+        transform:
+            translateY(0)
+            rotate(0deg)
+            scale(.7);
+
+        opacity:0;
+    }
+
+    10%{
+        opacity:1;
+    }
+
+    100%{
+        transform:
+            translateY(-110vh)
+            rotate(360deg)
+            scale(1.3);
+
+        opacity:0;
+    }
+}
+
+@keyframes chapterIn{
+
+    from{
+        opacity:0;
+        transform:translateY(15px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes captionIn{
+
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width:650px){
+
+    .hero-heart{
+
+        width:190px;
+        height:190px;
+    }
+
+    .heart-ring{
+        width:155px;
+        height:155px;
+    }
+
+    .heart-ring.second{
+        width:130px;
+        height:130px;
+    }
+
+    .heart-core{
+
+        width:76px;
+        height:76px;
+    }
+
+    .heart-core::before,
+    .heart-core::after{
+
+        width:76px;
+        height:76px;
+    }
+
+    .heart-core::before{
+        top:-38px;
+    }
+
+    .heart-core::after{
+        left:38px;
+    }
+
+    .time-box{
+
+        min-width:72px;
+
+        padding:14px 7px;
+    }
+
+    .time-number{
+
+        font-size:42px;
+    }
+
+    .time-label{
+
+        font-size:7px;
+
+        letter-spacing:1px;
+    }
+
+    .time-separator{
+
+        font-size:25px;
+
+        margin-top:-12px;
+    }
+
+    .countdown-clock{
+
+        gap:4px;
+    }
+
+    .countdown-subtitle{
+
+        font-size:12px;
+
+        padding:0 10px;
+    }
+
+    .page{
+
+        width:94%;
+
+        padding-top:25px;
+    }
+
+    .main-card{
+
+        border-radius:22px;
+    }
+
+    .header{
+
+        padding:45px 20px 30px;
+    }
+
+    .chapter{
+
+        padding:45px 6%;
+    }
+
+    .carousel-arrow{
+
+        width:42px;
+        height:42px;
+    }
+
+    .carousel-arrow.left{
+        left:10px;
+    }
+
+    .carousel-arrow.right{
+        right:10px;
+    }
+
+    .photo-caption{
+
+        padding-left:10px;
+        padding-right:10px;
+    }
+
+    .letter-card{
+
+        padding:45px 25px;
+    }
+
+    .letter-card p{
+
+        font-size:19px;
+    }
+
+    .letter-card h2{
+
+        font-size:40px;
+    }
+}
+
+</style>
+</head>
+
+
+<body class="locked">
+
+
+<!-- =====================================================
+     CONTADOR 30 SEGUNDOS
+===================================================== -->
+
+<section id="countdownScreen">
+
+    <div
+        class="countdown-content"
+        id="countdownContent"
+    >
+
+        <div class="countdown-kicker">
+            Una pequeña sorpresa para ti
+        </div>
+
+        <h1 class="countdown-title">
+            Nuestra historia está esperando...
+        </h1>
+
+        <p class="countdown-subtitle">
+            Falta muy poquito para abrir este pequeño
+            recuerdo de nosotros. ❤️
+        </p>
+
+        <div class="countdown-clock">
+
+            <div class="time-box">
+
+                <span
+                    class="time-number"
+                    id="days"
+                >
+                    00
+                </span>
+
+                <span class="time-label">
+                    días
+                </span>
+
+            </div>
+
+            <div class="time-separator">:</div>
+
+            <div class="time-box">
+
+                <span
+                    class="time-number"
+                    id="hours"
+                >
+                    00
+                </span>
+
+                <span class="time-label">
+                    horas
+                </span>
+
+            </div>
+
+            <div class="time-separator">:</div>
+
+            <div class="time-box">
+
+                <span
+                    class="time-number"
+                    id="minutes"
+                >
+                    00
+                </span>
+
+                <span class="time-label">
+                    minutos
+                </span>
+
+            </div>
+
+            <div class="time-separator">:</div>
+
+            <div class="time-box">
+
+                <span
+                    class="time-number"
+                    id="seconds"
+                >
+                    30
+                </span>
+
+                <span class="time-label">
+                    segundos
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="countdown-date">
+            Un pequeño momento para nosotros ❤️
+        </div>
+
+    </div>
+
+
+    <div
+        class="unlock-message"
+        id="unlockMessage"
+    >
+
+        <div class="unlock-heart">
+            ♥
+        </div>
+
+        <div class="unlock-title">
+            Ya llegó el momento...
+        </div>
+
+        <div class="unlock-subtitle">
+            ❤️
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     PORTADA
+===================================================== -->
+
+<section
+    class="cover"
+    id="cover"
+>
+
+    <div class="cover-content">
+
+
+        <!-- CORAZÓN CINEMATOGRÁFICO -->
+
+        <div class="hero-heart">
+
+            <div class="heart-aura"></div>
+
+            <div class="heart-ring"></div>
+
+            <div class="heart-ring second"></div>
+
+            <div class="heart-core"></div>
+
+            <div class="heart-highlight"></div>
+
+            <div class="heart-particle p1"></div>
+            <div class="heart-particle p2"></div>
+            <div class="heart-particle p3"></div>
+            <div class="heart-particle p4"></div>
+
+        </div>
+
+
+        <div class="cover-small">
+            Para nosotros
+        </div>
+
+        <div class="cover-title">
+            Seis meses
+        </div>
+
+        <div class="cover-subtitle">
+            infinitos recuerdos...
+        </div>
+
+        <div class="cover-date">
+            29 · 03 · 2026
+        </div>
+
+
+        <button
+            class="primary-button"
+            id="startButton"
+            type="button"
+        >
+            Comenzar nuestra historia ❤️
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     CONTENIDO PRINCIPAL
+===================================================== -->
+
+<main class="page">
+
+<section class="main-card">
+
+
+<!-- HEADER -->
+
+<header class="header">
+
+    <div class="header-kicker">
+        Nuestro pequeño universo
+    </div>
+
+    <h1>
+        ¡Felices 6 meses, mi amor! ❤️
+    </h1>
+
+    <p>
+        Seis meses pueden parecer solo una fecha,
+        pero para mí son cientos de momentos,
+        sonrisas, conversaciones y recuerdos
+        que quiero guardar para siempre.
+    </p>
+
+    <div class="header-controls">
+
+        <button
+            class="control-button"
+            id="themeButton"
+            type="button"
+        >
+            🌙 Tema
+        </button>
+
+        <button
+            class="control-button"
+            id="musicButton"
+            type="button"
+        >
+            🎵 Música
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- NAVEGACIÓN -->
+
+<nav class="chapter-nav">
+
+    <button
+        class="chapter-button active"
+        data-chapter="chapter1"
+        type="button"
+    >
+        Nuestra historia
+    </button>
+
+    <button
+        class="chapter-button"
+        data-chapter="chapter2"
+        type="button"
+    >
+        Tú y yo
+    </button>
+
+    <button
+        class="chapter-button"
+        data-chapter="chapter3"
+        type="button"
+    >
+        Mi porqué
+    </button>
+
+</nav>
+
+
+<!-- =====================================================
+     CAPÍTULO 1
+===================================================== -->
+
+<section
+    class="chapter active"
+    id="chapter1"
+>
+
+    <div class="chapter-number">
+        Capítulo 01
+    </div>
+
+    <h2>
+        Nuestra historia
+    </h2>
+
+    <p class="chapter-intro">
+        Todo comenzó el 29 de marzo de 2026.
+        Y desde entonces, cada día contigo
+        se ha convertido en una pequeña parte
+        de una historia que quiero seguir escribiendo.
+    </p>
+
+
+    <div class="days-counter">
+
+        <span
+            class="days-number"
+            id="daysTogether"
+        >
+            0
+        </span>
+
+        <span class="days-label">
+            días escribiendo nuestra historia
+        </span>
+
+    </div>
+
+
+    <div class="music-section">
+
+        <div class="music-title">
+            Una canción para nosotros 🎵
+        </div>
+
+        <p class="chapter-intro">
+            Porque hay canciones que simplemente
+            terminan teniendo un significado especial.
+        </p>
+
+
+        <!--
+            YOUTUBE OFICIAL
+
+            Risk It All — Bruno Mars
+        -->
+
+        <div class="youtube-wrapper">
+
+            <iframe
+                id="youtubePlayer"
+                src="https://www.youtube.com/embed/lY5V4hSLWY8?enablejsapi=1&rel=0&playsinline=1"
+                title="Bruno Mars - Risk It All"
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     CAPÍTULO 2
+===================================================== -->
+
+<section
+    class="chapter"
+    id="chapter2"
+>
+
+    <div class="chapter-number">
+        Capítulo 02
+    </div>
+
+    <h2>
+        Tú y yo
+    </h2>
+
+    <p class="chapter-intro">
+        Algunas fotografías pueden guardar mucho más
+        que una imagen. Pueden guardar una sensación,
+        una sonrisa, un lugar y un momento que queremos
+        volver a vivir.
+    </p>
+
+
+    <div class="carousel">
+
+        <div
+            class="photo-frame"
+            id="photoFrame"
+        >
+
+            <img
+                id="photo"
+                src="foto1.jpg"
+                alt="Nuestro recuerdo 1"
+            >
+
+        </div>
+
+
+        <button
+            class="carousel-arrow left"
+            id="prevPhoto"
+            type="button"
+            aria-label="Foto anterior"
+        >
+            ‹
+        </button>
+
+
+        <button
+            class="carousel-arrow right"
+            id="nextPhoto"
+            type="button"
+            aria-label="Siguiente foto"
+        >
+            ›
+        </button>
+
+
+        <div class="photo-caption">
+
+            <div class="caption-line"></div>
+
+            <p id="photoCaption">
+                Y sin darnos cuenta,
+                comenzamos a escribir nuestra historia. ❤️
+            </p>
+
+            <div
+                class="photo-counter"
+                id="photoCounter"
+            >
+                01 / 06
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     CAPÍTULO 3
+===================================================== -->
+
+<section
+    class="chapter"
+    id="chapter3"
+>
+
+    <div class="chapter-number">
+        Capítulo 03
+    </div>
+
+    <h2>
+        Mi porqué
+    </h2>
+
+    <p class="chapter-intro">
+        Podría escribir cientos de razones,
+        pero hay algunas que siempre vuelven
+        a mi mente cuando pienso en ti.
+    </p>
+
+
+    <div
+        class="reason-box"
+        id="reasonBox"
+    >
+
+        <div
+            class="reason-number"
+            id="reasonNumber"
+        >
+            Razón 01
+        </div>
+
+        <div
+            class="reason-text"
+            id="reasonText"
+        >
+            Porque contigo puedo ser completamente yo.
+        </div>
+
+        <div class="reason-hint">
+            Toca para descubrir otra razón ❤️
+        </div>
+
+    </div>
+
+
+    <button
+        class="primary-button letter-button"
+        id="letterButton"
+        type="button"
+    >
+        Leer mi carta para ti 💌
+    </button>
+
+</section>
+
+
+</section>
+
+</main>
+
+
+<!-- =====================================================
+     CARTA
+===================================================== -->
+
+<div
+    class="letter-modal"
+    id="letterModal"
+>
+
+    <article class="letter-card">
+
+        <button
+            class="letter-close"
+            id="letterClose"
+            type="button"
+            aria-label="Cerrar carta"
+        >
+            ×
+        </button>
+
+
+        <div class="letter-kicker">
+            Una carta para ti
+        </div>
+
+
+        <h2>
+            Para mi Princesa ❤️
+        </h2>
+
+
+        <p>
+            Hoy no es un día cualquiera, es algo muy
+            especial y es un momento que vengo esperando
+            hace mucho.
+        </p>
+
+
+        <p>
+            No hay un solo día en el que no estés en mi
+            mente, solo espero el momento de poder tenerte
+            a mi lado, estar juntos y olvidarnos de todo
+            y que solo seamos tú y yo.
+        </p>
+
+
+        <p>
+            Gracias por todos estos días que hemos pasado
+            juntos, por las salidas, las caminatas en la
+            noche, por todos los lugares que hemos visitado,
+            por cada sonrisa que hemos tenido, cada anécdota
+            y por ser mi lugar seguro en el mundo.
+        </p>
+
+
+        <p>
+            Prometo seguir cuidando de ti y de lo nuestro,
+            y en verdad deseo poder seguir celebrando cada
+            momento contigo mes a mes.
+        </p>
+
+
+        <p>
+            No sabes lo feliz que me haces y de todo lo que
+            he llegado a sentir por ti; no deseo a nadie más
+            a mi lado, solo te veo a ti cada día, en mis
+            planes, y en verdad deseo un futuro contigo.
+        </p>
+
+
+        <p>
+            Te amo mucho mi vida, ¡feliz 6 meses juntos,
+            mi amor! ❤️
+        </p>
+
+
+        <p>
+            Espero esta pequeña sorpresa te guste porque
+            es un pequeño recuerdo de tanto que hemos
+            vivido y aún nos queda mucho más...
+        </p>
+
+
+        <div class="letter-signature">
+            Siempre tú. ❤️
+        </div>
+
+    </article>
+
+</div>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script>
+
+/* =====================================================
+   CONTADOR 30 SEGUNDOS
+===================================================== */
+
+const TEST_DURATION = 30;
 
 let remainingSeconds = TEST_DURATION;
+
 let countdownTimer = null;
+
 
 const countdownScreen =
     document.getElementById("countdownScreen");
@@ -31,10 +2460,12 @@ const secondsElement =
     document.getElementById("seconds");
 
 
-function updateCountdown() {
+function updateCountdown(){
 
     const days =
-        Math.floor(remainingSeconds / 86400);
+        Math.floor(
+            remainingSeconds / 86400
+        );
 
     const hours =
         Math.floor(
@@ -51,32 +2482,34 @@ function updateCountdown() {
 
 
     daysElement.textContent =
-        String(days).padStart(2, "0");
+        String(days).padStart(2,"0");
 
     hoursElement.textContent =
-        String(hours).padStart(2, "0");
+        String(hours).padStart(2,"0");
 
     minutesElement.textContent =
-        String(minutes).padStart(2, "0");
+        String(minutes).padStart(2,"0");
 
     secondsElement.textContent =
-        String(seconds).padStart(2, "0");
+        String(seconds).padStart(2,"0");
 
 
-    if (remainingSeconds <= 0) {
+    if(remainingSeconds <= 0){
 
         unlockPage();
 
         return;
     }
 
+
     remainingSeconds--;
 }
 
 
-function unlockPage() {
+function unlockPage(){
 
     clearInterval(countdownTimer);
+
 
     daysElement.textContent = "00";
     hoursElement.textContent = "00";
@@ -95,15 +2528,697 @@ function unlockPage() {
 
         document.body.classList.remove("locked");
 
-    }, 3500);
+    },3500);
 }
 
 
-/* Iniciar contador */
 updateCountdown();
 
-countdownTimer = setInterval(
-    updateCountdown,
-    1000
+countdownTimer =
+    setInterval(
+        updateCountdown,
+        1000
+    );
+
+
+/* =====================================================
+   YOUTUBE API
+===================================================== */
+
+let youtubePlayer = null;
+
+let youtubeReady = false;
+
+
+function onYouTubeIframeAPIReady(){
+
+    youtubePlayer =
+        new YT.Player(
+            "youtubePlayer",
+            {
+                events:{
+                    onReady:function(){
+                        youtubeReady = true;
+                    }
+                }
+            }
+        );
+}
+
+
+/* Cargar API de YouTube */
+
+const youtubeScript =
+    document.createElement("script");
+
+youtubeScript.src =
+    "https://www.youtube.com/iframe_api";
+
+document.head.appendChild(
+    youtubeScript
 );
+
+
+/* =====================================================
+   PORTADA + MÚSICA
+===================================================== */
+
+const startButton =
+    document.getElementById(
+        "startButton"
+    );
+
+const cover =
+    document.getElementById(
+        "cover"
+    );
+
+
+startButton.addEventListener(
+    "click",
+    () => {
+
+        cover.classList.add(
+            "hidden"
+        );
+
+
+        /*
+            Intentar iniciar la canción
+            después de la interacción
+            del usuario.
+        */
+
+        if(
+            youtubeReady &&
+            youtubePlayer
+        ){
+
+            youtubePlayer.playVideo();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   NAVEGACIÓN
+===================================================== */
+
+const chapterButtons =
+    document.querySelectorAll(
+        ".chapter-button"
+    );
+
+const chapters =
+    document.querySelectorAll(
+        ".chapter"
+    );
+
+
+chapterButtons.forEach(
+    button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                const target =
+                    button.dataset.chapter;
+
+
+                chapterButtons.forEach(
+                    item => {
+
+                        item.classList.remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+
+                chapters.forEach(
+                    chapter => {
+
+                        chapter.classList.remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+
+                button.classList.add(
+                    "active"
+                );
+
+
+                document
+                    .getElementById(target)
+                    .classList.add(
+                        "active"
+                    );
+
+            }
+        );
+
+    }
+);
+
+
+/* =====================================================
+   DÍAS JUNTOS
+===================================================== */
+
+const startDate =
+    new Date(
+        2026,
+        2,
+        29,
+        0,
+        0,
+        0
+    );
+
+
+function updateDaysTogether(){
+
+    const now =
+        new Date();
+
+
+    const difference =
+        now.getTime() -
+        startDate.getTime();
+
+
+    const days =
+        Math.max(
+            0,
+            Math.floor(
+                difference / 86400000
+            )
+        );
+
+
+    document
+        .getElementById(
+            "daysTogether"
+        )
+        .textContent =
+            days;
+}
+
+
+updateDaysTogether();
+
+
+/* =====================================================
+   CARRUSEL
+===================================================== */
+
+const photos = [
+
+    "foto1.jpg",
+    "foto2.jpg",
+    "foto3.jpg",
+    "foto4.jpg",
+    "foto5.jpg",
+    "foto6.jpg"
+
+];
+
+
+const captions = [
+
+    "Y sin darnos cuenta, comenzamos a escribir nuestra historia. ❤️",
+
+    "Cada momento contigo se ha convertido en un recuerdo que quiero guardar para siempre.",
+
+    "De todas las cosas bonitas que me has regalado, tu sonrisa sigue siendo mi favorita.",
+
+    "No necesito un lugar perfecto; si estoy contigo, cualquier lugar se siente especial.",
+
+    "Seis meses pueden parecer poco, pero contigo he vivido momentos que significan muchísimo para mí.",
+
+    "Esto es solo una parte de nuestra historia... todavía nos quedan muchísimas páginas por escribir juntos. ❤️"
+
+];
+
+
+let currentPhoto = 0;
+
+
+const photo =
+    document.getElementById(
+        "photo"
+    );
+
+const photoCaption =
+    document.getElementById(
+        "photoCaption"
+    );
+
+const photoCounter =
+    document.getElementById(
+        "photoCounter"
+    );
+
+const photoFrame =
+    document.getElementById(
+        "photoFrame"
+    );
+
+
+function showPhoto(index){
+
+    currentPhoto =
+        (index + photos.length) %
+        photos.length;
+
+
+    photoFrame.classList.add(
+        "changing"
+    );
+
+
+    setTimeout(
+        () => {
+
+            photo.src =
+                photos[currentPhoto];
+
+            photo.alt =
+                `Nuestro recuerdo ${currentPhoto + 1}`;
+
+
+            photoCaption.textContent =
+                captions[currentPhoto];
+
+
+            photoCounter.textContent =
+                `${String(currentPhoto + 1).padStart(2,"0")} / 06`;
+
+
+            photoFrame.classList.remove(
+                "changing"
+            );
+
+        },
+        180
+    );
+}
+
+
+document
+    .getElementById("prevPhoto")
+    .addEventListener(
+        "click",
+        () => {
+
+            showPhoto(
+                currentPhoto - 1
+            );
+
+        }
+    );
+
+
+document
+    .getElementById("nextPhoto")
+    .addEventListener(
+        "click",
+        () => {
+
+            showPhoto(
+                currentPhoto + 1
+            );
+
+        }
+    );
+
+
+/* =====================================================
+   SWIPE
+===================================================== */
+
+let touchStartX = 0;
+
+
+photoFrame.addEventListener(
+    "touchstart",
+    event => {
+
+        touchStartX =
+            event.touches[0].clientX;
+
+    },
+    {
+        passive:true
+    }
+);
+
+
+photoFrame.addEventListener(
+    "touchend",
+    event => {
+
+        const touchEndX =
+            event.changedTouches[0].clientX;
+
+        const difference =
+            touchEndX -
+            touchStartX;
+
+
+        if(
+            Math.abs(difference) < 45
+        ){
+            return;
+        }
+
+
+        if(
+            difference < 0
+        ){
+
+            showPhoto(
+                currentPhoto + 1
+            );
+
+        }else{
+
+            showPhoto(
+                currentPhoto - 1
+            );
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   RAZONES
+===================================================== */
+
+const reasons = [
+
+    "Porque contigo puedo ser completamente yo.",
+
+    "Porque tu sonrisa puede cambiar completamente mi día.",
+
+    "Porque haces que hasta los momentos más simples tengan algo especial.",
+
+    "Porque contigo siento que tengo un lugar donde puedo estar en paz.",
+
+    "Porque cuando pienso en mi futuro, inevitablemente apareces tú.",
+
+    "Porque simplemente eres tú... y eso es suficiente para amarte cada día más. ❤️"
+
+];
+
+
+let currentReason = 0;
+
+
+const reasonBox =
+    document.getElementById(
+        "reasonBox"
+    );
+
+const reasonNumber =
+    document.getElementById(
+        "reasonNumber"
+    );
+
+const reasonText =
+    document.getElementById(
+        "reasonText"
+    );
+
+
+function showReason(index){
+
+    currentReason =
+        (index + reasons.length) %
+        reasons.length;
+
+
+    reasonNumber.textContent =
+        `Razón ${String(currentReason + 1).padStart(2,"0")}`;
+
+
+    reasonText.textContent =
+        reasons[currentReason];
+
+
+    reasonText.style.animation =
+        "none";
+
+
+    void reasonText.offsetWidth;
+
+
+    reasonText.style.animation =
+        "captionIn .5s ease";
+}
+
+
+reasonBox.addEventListener(
+    "click",
+    () => {
+
+        showReason(
+            currentReason + 1
+        );
+
+    }
+);
+
+
+/* =====================================================
+   CARTA
+===================================================== */
+
+const letterButton =
+    document.getElementById(
+        "letterButton"
+    );
+
+const letterModal =
+    document.getElementById(
+        "letterModal"
+    );
+
+const letterClose =
+    document.getElementById(
+        "letterClose"
+    );
+
+
+letterButton.addEventListener(
+    "click",
+    () => {
+
+        letterModal.classList.add(
+            "open"
+        );
+
+        document.body.style.overflow =
+            "hidden";
+
+    }
+);
+
+
+letterClose.addEventListener(
+    "click",
+    closeLetter
+);
+
+
+letterModal.addEventListener(
+    "click",
+    event => {
+
+        if(
+            event.target ===
+            letterModal
+        ){
+
+            closeLetter();
+
+        }
+
+    }
+);
+
+
+function closeLetter(){
+
+    letterModal.classList.remove(
+        "open"
+    );
+
+    document.body.style.overflow =
+        "";
+}
+
+
+/* =====================================================
+   TEMA
+===================================================== */
+
+const themeButton =
+    document.getElementById(
+        "themeButton"
+    );
+
+
+themeButton.addEventListener(
+    "click",
+    () => {
+
+        document.body.classList.toggle(
+            "light-mode"
+        );
+
+
+        if(
+            document.body.classList.contains(
+                "light-mode"
+            )
+        ){
+
+            themeButton.textContent =
+                "☀️ Tema";
+
+        }else{
+
+            themeButton.textContent =
+                "🌙 Tema";
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   BOTÓN MÚSICA
+===================================================== */
+
+const musicButton =
+    document.getElementById(
+        "musicButton"
+    );
+
+
+musicButton.addEventListener(
+    "click",
+    () => {
+
+        const player =
+            document.getElementById(
+                "youtubePlayer"
+            );
+
+
+        player.scrollIntoView({
+            behavior:"smooth",
+            block:"center"
+        });
+
+
+        if(
+            youtubeReady &&
+            youtubePlayer
+        ){
+
+            youtubePlayer.playVideo();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   CORAZONES FLOTANTES
+===================================================== */
+
+function createHeart(){
+
+    const heart =
+        document.createElement(
+            "div"
+        );
+
+
+    heart.className =
+        "heart-bg";
+
+
+    heart.textContent =
+        "♥";
+
+
+    heart.style.left =
+        Math.random() * 100 + "%";
+
+
+    heart.style.fontSize =
+        (10 + Math.random() * 18) +
+        "px";
+
+
+    heart.style.animationDuration =
+        (8 + Math.random() * 8) +
+        "s";
+
+
+    document.body.appendChild(
+        heart
+    );
+
+
+    setTimeout(
+        () => {
+
+            heart.remove();
+
+        },
+        17000
+    );
+}
+
+
+setInterval(
+    createHeart,
+    1200
+);
+
+
+/* =====================================================
+   PRECARGAR FOTOS
+===================================================== */
+
+photos.forEach(
+    source => {
+
+        const image =
+            new Image();
+
+        image.src =
+            source;
+
+    }
+);
+
 </script>
+
+</body>
+</html>
