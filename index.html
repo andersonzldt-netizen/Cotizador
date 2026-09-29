@@ -1,494 +1,2475 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">Sorpresa Especial ❤️ - 6 Meses</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Playfair+Display:ital,wght@0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #e11d48;
-            --bg-gradient: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 50%, #fce7f3 100%);
-            --card-bg: #ffffff;
-            --text-main: #1f2937;
-            --text-muted: #4b5563;
-            --border-color: rgba(244, 114, 182, 0.25);
-            --shadow: 0 20px 40px -15px rgba(225, 29, 72, 0.15);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Felices 6 Meses, mi amor ❤️</title>
 
-        [data-theme="dark"] {
-            --primary: #f43f5e;
-            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #2c0b1a 100%);
-            --card-bg: #1e293b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: rgba(244, 114, 182, 0.15);
-            --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-        * { box-sizing: border-box; margin: 0; padding: 0; transition: background 0.3s ease, color 0.3s ease; }
+<style>
+:root{
+    --wine:#7f1238;
+    --wine-dark:#310713;
+    --ruby:#be123c;
+    --rose:#fb7185;
+    --gold:#d6ad62;
+    --gold-light:#f5dfaa;
+    --text:#35131f;
+}
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg-gradient);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-            overflow-x: hidden;
-        }
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
 
-        .hearts-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
-        .floating-heart { position: absolute; color: var(--primary); opacity: 0.2; animation: floatUp 7s linear infinite; }
+html{
+    scroll-behavior:smooth;
+}
 
-        @keyframes floatUp {
-            0% { transform: translateY(110vh) rotate(0deg) scale(0.5); opacity: 0; }
-            50% { opacity: 0.4; }
-            100% { transform: translateY(-10vh) rotate(360deg) scale(1.2); opacity: 0; }
-        }
+body{
+    min-height:100vh;
+    overflow-x:hidden;
+    font-family:'Montserrat',sans-serif;
+    color:var(--text);
 
-        .container {
-            max-width: 420px;
-            width: 100%;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 28px 22px;
-            border-radius: 30px;
-            box-shadow: var(--shadow);
-            text-align: center;
-            position: relative;
-            z-index: 1;
-            animation: fadeIn 0.8s ease-out;
-        }
+    background:
+        radial-gradient(circle at 20% 10%,rgba(251,113,133,.16),transparent 30%),
+        radial-gradient(circle at 90% 80%,rgba(214,173,98,.14),transparent 30%),
+        linear-gradient(135deg,#fff9f5,#f8e9e1);
+}
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+body.countdown-active{
+    overflow:hidden;
+}
 
-        .top-actions { 
-            display: flex; 
-            justify-content: flex-end; 
-            gap: 8px; 
-            margin-bottom: 6px;
-        }
-        
-        .icon-btn {
-            background: var(--border-color);
-            border: none;
-            color: var(--text-main);
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.85rem;
-        }
-        .icon-btn:hover { background: var(--primary); color: white; transform: scale(1.05); }
 
-        .heart-main {
-            width: 50px; height: 50px; margin: 0 auto 10px;
-            fill: var(--primary);
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+/* =====================================================
+   FONDO
+===================================================== */
 
-        h1 { font-family: 'Cinzel', serif; font-size: 1.4rem; letter-spacing: 1px; margin-bottom: 6px; color: var(--primary); }
-        .subtitle { font-size: 0.82rem; margin-bottom: 20px; opacity: 0.8; font-weight: 500; }
+.background-glow{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:-5;
+}
 
-        /* PANTALLA DE ACCESO / BLOQUEO INICIAL */
-        #lockScreen {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 0;
-        }
-        .lock-input {
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 14px;
-            border: 1px solid var(--border-color);
-            background: var(--border-color);
-            color: var(--text-main);
-            font-size: 0.95rem;
-            text-align: center;
-            margin-bottom: 12px;
-            outline: none;
-        }
-        .lock-input:focus { border-color: var(--primary); }
-        .lock-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 14px;
-            font-weight: 600;
-            width: 100%;
-            cursor: pointer;
-            font-size: 0.95rem;
-            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
-        }
-        .error-msg { color: var(--primary); font-size: 0.8rem; margin-top: 8px; display: none; }
+.background-glow::before,
+.background-glow::after{
+    content:"";
+    position:absolute;
+    border-radius:50%;
+    filter:blur(90px);
+    opacity:.28;
+}
 
-        /* CONTENIDO PRINCIPAL OCULTO HASTA DESBLOQUEAR */
-        #mainContent { display: none; }
+.background-glow::before{
+    width:300px;
+    height:300px;
+    background:#fb7185;
+    top:-100px;
+    left:-100px;
+}
 
-        /* NAVEGADOR DE CAPÍTULOS */
-        .chapters-nav {
-            display: flex;
-            justify-content: center;
-            gap: 6px;
-            margin-bottom: 18px;
-        }
-        .chap-dot {
-            font-size: 0.75rem;
-            padding: 6px 12px;
-            border-radius: 20px;
-            background: var(--border-color);
-            color: var(--text-muted);
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .chap-dot.active {
-            background: var(--primary);
-            color: white;
-        }
+.background-glow::after{
+    width:350px;
+    height:350px;
+    background:#d6ad62;
+    bottom:-130px;
+    right:-120px;
+}
 
-        .chapter-section { display: none; }
-        .chapter-section.active { display: block; animation: fadeIn 0.5s ease; }
 
-        /* CARRUSEL */
-        .carousel-container {
-            background: #ffffff;
-            padding: 10px 10px 22px 10px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-            margin-bottom: 16px;
-            position: relative;
-        }
-        .carousel-view {
-            width: 100%;
-            height: 220px;
-            overflow: hidden;
-            border-radius: 8px;
-            position: relative;
-            touch-action: pan-y;
-            background: #e2e8f0;
-        }
-        .carousel-track { display: flex; width: 300%; height: 100%; }
-        .carousel-slide { width: 33.3333%; height: 100%; flex-shrink: 0; }
-        .carousel-slide img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
-        .nav-btn {
-            position: absolute; top: 44%; transform: translateY(-50%);
-            background: rgba(0,0,0,0.5); color: white; border: none;
-            width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
-            z-index: 5; font-size: 0.8rem; display: flex; align-items: center; justify-content: center;
-        }
-        .prev { left: 14px; } .next { right: 14px; }
-        .dots { display: flex; justify-content: center; gap: 6px; margin-top: 10px; }
-        .dot { width: 6px; height: 6px; background: #cbd5e1; border-radius: 50%; cursor: pointer; }
-        .dot.active { background: var(--primary); width: 16px; border-radius: 6px; }
+/* =====================================================
+   CONTADOR 5 MINUTOS
+===================================================== */
 
-        /* CONTADOR */
-        .counter-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
-        .counter-box { background: var(--border-color); padding: 10px 2px; border-radius: 12px; }
-        .num { font-family: 'Cinzel', serif; font-size: 1.15rem; font-weight: 700; color: var(--primary); display: block; }
-        .lab { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; opacity: 0.8; }
+#countdownScreen{
+    position:fixed;
+    inset:0;
+    z-index:3000;
 
-        /* RAZONES */
-        .reasons-card {
-            background: var(--border-color);
-            border-radius: 14px;
-            padding: 14px;
-            margin-bottom: 14px;
-            cursor: pointer;
-            border: 1px dashed var(--primary);
-        }
-        .reasons-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
-        .reasons-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.9rem; color: var(--text-main); line-height: 1.4; }
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
-        .next-chap-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 0.85rem;
-            margin-top: 10px;
-            width: 100%;
-        }
+    padding:25px;
 
-        /* MODAL CARTA FINAL */
-        .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 100; opacity: 0; pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-        .modal.active { opacity: 1; pointer-events: auto; }
-        .modal-content {
-            background: var(--card-bg); width: 90%; max-width: 340px;
-            padding: 24px 20px; border-radius: 24px; position: relative;
-            transform: translateY(20px);
-            transition: transform 0.3s ease;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
-        }
-        .modal.active .modal-content { transform: translateY(0); }
-        .modal h2 { font-family: 'Cinzel', serif; color: var(--primary); margin-bottom: 10px; font-size: 1.1rem; }
-        .modal p { line-height: 1.6; font-size: 0.88rem; margin-bottom: 16px; text-align: left; color: var(--text-main); }
-        .close-btn { background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 12px; font-weight: 600; cursor: pointer; width: 100%; font-size: 0.9rem; }
-    </style>
+    color:white;
+
+    background:
+        radial-gradient(
+            circle at 50% 42%,
+            rgba(190,18,60,.30),
+            transparent 34%
+        ),
+        radial-gradient(
+            circle at 50% 70%,
+            rgba(214,173,98,.10),
+            transparent 35%
+        ),
+        linear-gradient(
+            145deg,
+            #110208,
+            #350817 48%,
+            #120208
+        );
+
+    transition:
+        opacity 1.2s ease,
+        visibility 1.2s ease;
+}
+
+#countdownScreen.hidden{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+}
+
+.countdown-content{
+    width:min(440px,100%);
+    text-align:center;
+    animation:countdownEntrance 1.2s ease;
+}
+
+@keyframes countdownEntrance{
+    from{
+        opacity:0;
+        transform:translateY(30px) scale(.97);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+}
+
+.countdown-kicker{
+    font-size:10px;
+    letter-spacing:5px;
+    text-transform:uppercase;
+    color:var(--gold-light);
+    margin-bottom:18px;
+}
+
+.countdown-title{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(38px,11vw,52px);
+    font-weight:500;
+    line-height:.95;
+    margin-bottom:15px;
+}
+
+.countdown-subtitle{
+    font-family:'Cormorant Garamond',serif;
+    font-size:21px;
+    color:#f6dedf;
+    line-height:1.35;
+    max-width:380px;
+    margin:0 auto 35px;
+}
+
+.countdown-clock{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:9px;
+    margin-bottom:28px;
+}
+
+.time-box{
+    width:92px;
+    padding:18px 8px 15px;
+    border-radius:20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.10),
+            rgba(255,255,255,.025)
+        );
+
+    border:1px solid rgba(214,173,98,.30);
+
+    box-shadow:
+        inset 0 0 25px rgba(255,255,255,.025),
+        0 12px 35px rgba(0,0,0,.28);
+
+    backdrop-filter:blur(10px);
+}
+
+.time-number{
+    display:block;
+
+    font-family:'Cormorant Garamond',serif;
+    font-size:55px;
+    line-height:.85;
+
+    color:#fff5df;
+
+    text-shadow:
+        0 0 25px rgba(214,173,98,.25);
+}
+
+.time-label{
+    display:block;
+    margin-top:13px;
+
+    font-size:8px;
+    letter-spacing:3px;
+
+    color:#d9b9bd;
+    text-transform:uppercase;
+}
+
+.time-separator{
+    font-family:'Cormorant Garamond',serif;
+    font-size:45px;
+    color:var(--gold);
+}
+
+.countdown-message{
+    font-family:'Cormorant Garamond',serif;
+    font-size:19px;
+    color:#e8cfd3;
+}
+
+
+/* =====================================================
+   DESBLOQUEO
+===================================================== */
+
+.unlock-message{
+    position:absolute;
+    inset:0;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+
+    text-align:center;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(214,173,98,.18),
+            transparent 42%
+        );
+
+    opacity:0;
+    pointer-events:none;
+
+    transition:opacity 1s ease;
+}
+
+.unlock-message.show{
+    opacity:1;
+}
+
+.unlock-heart{
+    position:relative;
+    width:110px;
+    height:110px;
+    margin-bottom:24px;
+}
+
+.unlock-heart::before{
+    content:"♥";
+
+    position:absolute;
+    inset:0;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:90px;
+
+    color:#f2b7c2;
+
+    text-shadow:
+        0 0 15px rgba(251,113,133,.9),
+        0 0 35px rgba(214,173,98,.65),
+        0 0 75px rgba(190,18,60,.7);
+
+    animation:finalHeart 1.2s ease-in-out infinite;
+}
+
+@keyframes finalHeart{
+    0%,100%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.18);
+    }
+}
+
+.unlock-title{
+    font-family:'Cormorant Garamond',serif;
+    font-size:44px;
+    color:white;
+}
+
+.unlock-subtitle{
+    font-family:'Cormorant Garamond',serif;
+    font-size:22px;
+    color:var(--gold-light);
+    margin-top:8px;
+}
+
+
+/* =====================================================
+   PORTADA
+===================================================== */
+
+#cover{
+    position:fixed;
+    inset:0;
+    z-index:1000;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:25px;
+
+    color:white;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(190,18,60,.25),
+            transparent 36%
+        ),
+        linear-gradient(
+            145deg,
+            #16040b,
+            #350817 45%,
+            #16040b
+        );
+
+    transition:
+        opacity 1s ease,
+        visibility 1s ease;
+}
+
+#cover.hidden{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+}
+
+.cover-content{
+    width:min(440px,100%);
+    text-align:center;
+    animation:coverIn 1.5s ease forwards;
+}
+
+@keyframes coverIn{
+    from{
+        opacity:0;
+        transform:translateY(30px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+
+/* =====================================================
+   CORAZÓN MEJORADO
+===================================================== */
+
+.hero-heart{
+    position:relative;
+
+    width:165px;
+    height:165px;
+
+    margin:0 auto 25px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+
+/* Halo exterior */
+
+.hero-heart::before{
+    content:"";
+
+    position:absolute;
+
+    width:150px;
+    height:150px;
+
+    border-radius:50%;
+
+    border:1px solid rgba(214,173,98,.35);
+
+    box-shadow:
+        0 0 25px rgba(214,173,98,.18),
+        inset 0 0 30px rgba(214,173,98,.08);
+
+    animation:heartHalo 3s ease-in-out infinite;
+}
+
+@keyframes heartHalo{
+    0%,100%{
+        transform:scale(.90);
+        opacity:.40;
+    }
+
+    50%{
+        transform:scale(1.12);
+        opacity:1;
+    }
+}
+
+
+/* Halo interior */
+
+.hero-heart::after{
+    content:"";
+
+    position:absolute;
+
+    width:112px;
+    height:112px;
+
+    border-radius:50%;
+
+    border:1px solid rgba(251,113,133,.25);
+
+    box-shadow:
+        0 0 35px rgba(190,18,60,.20);
+
+    animation:heartHalo2 3s ease-in-out infinite;
+}
+
+@keyframes heartHalo2{
+    0%,100%{
+        transform:scale(1.05);
+    }
+
+    50%{
+        transform:scale(.84);
+    }
+}
+
+
+/* Corazón central */
+
+.heart-shape{
+    position:relative;
+
+    z-index:2;
+
+    width:68px;
+    height:68px;
+
+    transform:rotate(-45deg);
+
+    background:
+        linear-gradient(
+            145deg,
+            #ffe0e5 0%,
+            #f9a0af 28%,
+            #fb7185 55%,
+            #be123c 100%
+        );
+
+    border-radius:8px 0 8px 8px;
+
+    box-shadow:
+        0 0 12px rgba(251,113,133,.80),
+        0 0 30px rgba(190,18,60,.60),
+        0 0 65px rgba(214,173,98,.28);
+
+    animation:heroHeartBeat 2s ease-in-out infinite;
+}
+
+.heart-shape::before,
+.heart-shape::after{
+    content:"";
+
+    position:absolute;
+
+    width:68px;
+    height:68px;
+
+    border-radius:50%;
+
+    background:
+        linear-gradient(
+            145deg,
+            #ffe0e5 0%,
+            #f9a0af 28%,
+            #fb7185 55%,
+            #be123c 100%
+        );
+}
+
+.heart-shape::before{
+    top:-34px;
+    left:0;
+}
+
+.heart-shape::after{
+    top:0;
+    left:34px;
+}
+
+@keyframes heroHeartBeat{
+    0%,100%{
+        transform:rotate(-45deg) scale(1);
+    }
+
+    50%{
+        transform:rotate(-45deg) scale(1.13);
+    }
+}
+
+
+/* Brillo */
+
+.heart-shine{
+    position:absolute;
+
+    z-index:5;
+
+    width:17px;
+    height:9px;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.70);
+
+    transform:
+        rotate(45deg)
+        translate(-2px,-3px);
+
+    filter:blur(1px);
+
+    pointer-events:none;
+}
+
+
+/* Partículas */
+
+.heart-particle{
+    position:absolute;
+
+    width:4px;
+    height:4px;
+
+    border-radius:50%;
+
+    background:var(--gold-light);
+
+    box-shadow:
+        0 0 10px var(--gold);
+
+    animation:particleFloat 3s ease-in-out infinite;
+}
+
+.p1{
+    top:4px;
+    left:22px;
+    animation-delay:.2s;
+}
+
+.p2{
+    top:25px;
+    right:5px;
+    animation-delay:.8s;
+}
+
+.p3{
+    bottom:18px;
+    left:4px;
+    animation-delay:1.4s;
+}
+
+.p4{
+    bottom:2px;
+    right:25px;
+    animation-delay:2s;
+}
+
+@keyframes particleFloat{
+    0%,100%{
+        transform:translateY(0) scale(.8);
+        opacity:.3;
+    }
+
+    50%{
+        transform:translateY(-12px) scale(1.4);
+        opacity:1;
+    }
+}
+
+.cover-small{
+    font-size:10px;
+    letter-spacing:5px;
+    text-transform:uppercase;
+    color:var(--gold-light);
+    margin-bottom:15px;
+}
+
+.cover-title{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(46px,13vw,72px);
+    line-height:.88;
+    font-weight:500;
+    margin-bottom:20px;
+}
+
+.cover-subtitle{
+    font-family:'Cormorant Garamond',serif;
+    font-size:24px;
+    line-height:1.3;
+    color:#f6dedf;
+    margin-bottom:18px;
+}
+
+.cover-date{
+    font-size:11px;
+    letter-spacing:4px;
+    color:var(--gold);
+    margin-bottom:35px;
+}
+
+.start-button{
+    border:1px solid rgba(214,173,98,.7);
+
+    background:
+        linear-gradient(
+            135deg,
+            #be123c,
+            #7f1238
+        );
+
+    color:white;
+
+    padding:15px 27px;
+
+    border-radius:50px;
+
+    font-family:'Montserrat',sans-serif;
+    font-size:13px;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,.35);
+
+    transition:.3s ease;
+}
+
+.start-button:hover{
+    transform:translateY(-3px);
+    box-shadow:0 18px 40px rgba(0,0,0,.45);
+}
+
+
+/* =====================================================
+   CONTENIDO PRINCIPAL
+===================================================== */
+
+.page{
+    width:min(520px,100%);
+    margin:auto;
+    padding:25px 16px 60px;
+}
+
+.main-card{
+    background:rgba(255,255,255,.73);
+
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,.8);
+
+    border-radius:30px;
+
+    box-shadow:
+        0 25px 70px rgba(50,5,20,.22);
+
+    overflow:hidden;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.header{
+    padding:38px 25px 28px;
+
+    text-align:center;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(127,18,56,.96),
+            rgba(53,8,23,.98)
+        );
+
+    color:white;
+
+    position:relative;
+}
+
+.header h1{
+    font-family:'Cormorant Garamond',serif;
+    font-size:42px;
+    font-weight:600;
+    line-height:1;
+    margin-bottom:12px;
+}
+
+.header p{
+    font-family:'Cormorant Garamond',serif;
+    font-size:21px;
+    color:#f8dfe2;
+}
+
+.header-kicker{
+    font-size:10px;
+    letter-spacing:4px;
+    color:var(--gold-light);
+    text-transform:uppercase;
+    margin-bottom:12px;
+}
+
+.controls{
+    position:absolute;
+    top:15px;
+    right:15px;
+    display:flex;
+    gap:7px;
+}
+
+.icon-button{
+    width:35px;
+    height:35px;
+
+    border:none;
+    border-radius:50%;
+
+    background:rgba(255,255,255,.12);
+
+    color:white;
+    cursor:pointer;
+}
+
+
+/* =====================================================
+   NAVEGACIÓN
+===================================================== */
+
+.chapter-nav{
+    display:flex;
+    padding:10px;
+    gap:6px;
+
+    background:rgba(255,255,255,.65);
+
+    border-bottom:
+        1px solid rgba(127,18,56,.08);
+}
+
+.chapter-btn{
+    flex:1;
+
+    border:0;
+    background:transparent;
+
+    padding:10px 5px;
+
+    border-radius:12px;
+
+    font-family:'Montserrat',sans-serif;
+
+    font-size:9px;
+    font-weight:600;
+
+    color:#8b6872;
+
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+.chapter-btn.active{
+    background:var(--wine);
+    color:white;
+
+    box-shadow:
+        0 6px 18px rgba(127,18,56,.25);
+}
+
+
+/* =====================================================
+   CAPÍTULOS
+===================================================== */
+
+.chapter{
+    display:none;
+
+    padding:28px 22px;
+
+    animation:
+        chapterIn .55s ease;
+}
+
+.chapter.active{
+    display:block;
+}
+
+@keyframes chapterIn{
+    from{
+        opacity:0;
+        transform:translateY(12px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.chapter-number{
+    font-size:10px;
+    letter-spacing:3px;
+
+    color:var(--wine);
+
+    text-transform:uppercase;
+
+    margin-bottom:8px;
+}
+
+.chapter h2{
+    font-family:'Cormorant Garamond',serif;
+
+    font-size:38px;
+    line-height:1;
+
+    color:var(--wine-dark);
+
+    margin-bottom:12px;
+}
+
+.chapter-intro{
+    font-family:'Cormorant Garamond',serif;
+
+    font-size:20px;
+    line-height:1.35;
+
+    color:#72545f;
+
+    margin-bottom:25px;
+}
+
+
+/* =====================================================
+   DÍAS
+===================================================== */
+
+.days-box{
+    background:
+        linear-gradient(
+            135deg,
+            #fff,
+            #f8e9e1
+        );
+
+    border:
+        1px solid rgba(190,18,60,.1);
+
+    border-radius:22px;
+
+    padding:25px 15px;
+
+    text-align:center;
+
+    margin-bottom:25px;
+}
+
+.days-number{
+    font-family:'Cormorant Garamond',serif;
+
+    font-size:64px;
+    line-height:.8;
+
+    color:var(--wine);
+}
+
+.days-label{
+    margin-top:12px;
+
+    font-size:10px;
+    letter-spacing:3px;
+
+    text-transform:uppercase;
+
+    color:#8d6b74;
+}
+
+
+/* =====================================================
+   SPOTIFY
+===================================================== */
+
+.music-section{
+    margin-top:22px;
+
+    padding:18px;
+
+    border-radius:20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #fff,
+            #f7ebe5
+        );
+
+    border:
+        1px solid rgba(127,18,56,.1);
+}
+
+.music-title{
+    font-family:'Cormorant Garamond',serif;
+
+    text-align:center;
+
+    font-size:23px;
+
+    color:var(--wine-dark);
+
+    margin-bottom:13px;
+}
+
+.spotify-frame{
+    width:100%;
+    height:80px;
+
+    border-radius:12px;
+    border:0;
+}
+
+
+/* =====================================================
+   CARRUSEL
+===================================================== */
+
+.carousel{
+    position:relative;
+}
+
+.photo-wrapper{
+    border-radius:24px;
+    overflow:hidden;
+
+    background:#32101d;
+
+    box-shadow:
+        0 18px 45px rgba(53,8,23,.18);
+}
+
+.photo{
+    width:100%;
+    height:390px;
+
+    object-fit:cover;
+    display:block;
+
+    transition:
+        opacity .3s ease,
+        transform .5s ease;
+}
+
+.photo.fade{
+    opacity:.2;
+    transform:scale(1.02);
+}
+
+.caption{
+    min-height:150px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fffaf7,
+            #f8e9e1
+        );
+
+    padding:24px 22px 20px;
+
+    text-align:center;
+
+    position:relative;
+}
+
+.caption::before{
+    content:"";
+
+    width:42px;
+    height:2px;
+
+    background:var(--gold);
+
+    position:absolute;
+
+    top:16px;
+    left:50%;
+
+    transform:translateX(-50%);
+}
+
+.caption-text{
+    font-family:'Cormorant Garamond',serif;
+
+    font-size:23px;
+    line-height:1.25;
+
+    color:var(--wine-dark);
+
+    animation:
+        captionIn .45s ease;
+}
+
+@keyframes captionIn{
+    from{
+        opacity:0;
+        transform:translateY(8px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.carousel-button{
+    position:absolute;
+
+    top:180px;
+
+    width:42px;
+    height:42px;
+
+    border:
+        1px solid rgba(255,255,255,.6);
+
+    border-radius:50%;
+
+    background:
+        rgba(53,8,23,.55);
+
+    color:white;
+
+    cursor:pointer;
+
+    font-size:22px;
+
+    z-index:3;
+
+    backdrop-filter:blur(8px);
+}
+
+.carousel-button.left{
+    left:10px;
+}
+
+.carousel-button.right{
+    right:10px;
+}
+
+.photo-counter{
+    text-align:center;
+
+    margin-top:14px;
+
+    font-size:10px;
+    letter-spacing:3px;
+
+    color:#8b6872;
+}
+
+
+/* =====================================================
+   RAZONES
+===================================================== */
+
+.reason-box{
+    min-height:190px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+    align-items:center;
+
+    text-align:center;
+
+    padding:25px;
+
+    border-radius:24px;
+
+    background:
+        radial-gradient(
+            circle at top,
+            #fff,
+            #f8e8e0
+        );
+
+    border:
+        1px solid rgba(190,18,60,.08);
+
+    box-shadow:
+        0 15px 35px rgba(53,8,23,.08);
+
+    cursor:pointer;
+}
+
+.reason-number{
+    font-size:10px;
+    letter-spacing:3px;
+
+    color:var(--gold);
+
+    margin-bottom:15px;
+}
+
+.reason-text{
+    font-family:'Cormorant Garamond',serif;
+
+    font-size:28px;
+    line-height:1.15;
+
+    color:var(--wine-dark);
+
+    transition:opacity .2s ease;
+}
+
+.reason-hint{
+    font-size:9px;
+    color:#967b83;
+
+    margin-top:18px;
+
+    letter-spacing:1px;
+}
+
+.letter-button{
+    width:100%;
+
+    margin-top:25px;
+
+    padding:16px;
+
+    border:none;
+    border-radius:50px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--wine),
+            var(--ruby)
+        );
+
+    color:white;
+
+    font-family:'Montserrat',sans-serif;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 12px 28px rgba(127,18,56,.25);
+}
+
+
+/* =====================================================
+   CARTA
+===================================================== */
+
+.letter-modal{
+    position:fixed;
+    inset:0;
+
+    z-index:2000;
+
+    background:
+        rgba(25,2,10,.82);
+
+    backdrop-filter:blur(12px);
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    padding:20px;
+
+    opacity:0;
+    visibility:hidden;
+
+    transition:.5s;
+}
+
+.letter-modal.show{
+    opacity:1;
+    visibility:visible;
+}
+
+.letter-card{
+    width:min(600px,100%);
+
+    max-height:90vh;
+
+    overflow-y:auto;
+
+    background:
+        linear-gradient(
+            145deg,
+            #fffaf7,
+            #f7e9e2
+        );
+
+    border-radius:28px;
+
+    padding:35px 27px;
+
+    box-shadow:
+        0 30px 100px rgba(0,0,0,.45);
+
+    transform:
+        translateY(30px)
+        scale(.96);
+
+    transition:.5s;
+}
+
+.letter-modal.show .letter-card{
+    transform:
+        translateY(0)
+        scale(1);
+}
+
+.letter-top{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.letter-heart{
+    font-size:38px;
+    color:var(--ruby);
+
+    animation:
+        finalHeart 2s infinite;
+}
+
+.letter-title{
+    font-family:'Cormorant Garamond',serif;
+
+    font-size:38px;
+
+    color:var(--wine-dark);
+
+    margin-top:8px;
+}
+
+.letter-content{
+    font-family:'Cormorant Garamond',serif;
+
+    font-size:20px;
+    line-height:1.55;
+
+    color:#4e3039;
+}
+
+.letter-content p{
+    margin-bottom:18px;
+}
+
+.close-letter{
+    display:block;
+
+    margin:25px auto 0;
+
+    border:
+        1px solid rgba(127,18,56,.25);
+
+    background:white;
+
+    color:var(--wine);
+
+    padding:11px 22px;
+
+    border-radius:50px;
+
+    cursor:pointer;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width:430px){
+
+    .page{
+        padding:12px 10px 40px;
+    }
+
+    .main-card{
+        border-radius:25px;
+    }
+
+    .header h1{
+        font-size:38px;
+    }
+
+    .photo{
+        height:350px;
+    }
+
+    .carousel-button{
+        top:160px;
+    }
+
+    .chapter{
+        padding:25px 18px;
+    }
+
+    .time-box{
+        width:78px;
+    }
+
+    .time-number{
+        font-size:47px;
+    }
+
+    .countdown-title{
+        font-size:40px;
+    }
+}
+
+</style>
 </head>
-<body data-theme="light">
 
-    <div class="hearts-bg" id="heartsBg"></div>
+<body class="countdown-active">
 
-    <div class="container">
-        <!-- PANTALLA DE BLOQUEO INICIAL CON "AMOCHITO" -->
-        <div id="lockScreen">
-            <svg class="heart-main" viewBox="0 0 32 29.6">
-                <path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2
-                c6.3-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z"/>
-            </svg>
-            <h1>Hola, Amochito ❤️</h1>
-            <p class="subtitle">Escribe tu apodo o fecha especial para ver tu sorpresa de 6 meses:</p>
-            <input type="text" id="passInput" class="lock-input" placeholder="Ej: amochito, bri o 2903">
-            <button class="lock-btn" onclick="unlockSurprise()">Desbloquear Sorpresa ✨</button>
-            <div class="error-msg" id="errorMsg">¡Inténtalo de nuevo, mi amochito! (Pista: amochito o bri)</div>
+<div class="background-glow"></div>
+
+
+<!-- =====================================================
+     CONTADOR
+===================================================== -->
+
+<section id="countdownScreen">
+
+    <div class="countdown-content" id="countdownContent">
+
+        <div class="countdown-kicker">
+            Una pequeña sorpresa para ti
         </div>
 
-        <!-- CONTENIDO PRINCIPAL -->
-        <div id="mainContent">
-            <div class="top-actions">
-                <button class="icon-btn" onclick="openLetter()" title="Abrir carta especial">✉️</button>
-                <button class="icon-btn" onclick="toggleAudio()" id="audioBtn" title="Música">⏸️</button>
-                <button class="icon-btn" onclick="toggleTheme()" title="Tema">🌙</button>
+        <h1 class="countdown-title">
+            Nuestra historia está esperando...
+        </h1>
+
+        <p class="countdown-subtitle">
+            Falta muy poquito para abrir este pequeño recuerdo de nosotros. ❤️
+        </p>
+
+        <div class="countdown-clock">
+
+            <div class="time-box">
+
+                <span class="time-number" id="minutes">
+                    05
+                </span>
+
+                <span class="time-label">
+                    minutos
+                </span>
+
             </div>
 
-            <svg class="heart-main" viewBox="0 0 32 29.6">
-                <path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2
-                c6.3-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z"/>
-            </svg>
-
-            <h1>¡Felices 6 Meses, Amochito!</h1>
-            <p class="subtitle">Nuestra historia capítulo a capítulo</p>
-
-            <!-- NAVEGADOR DE CAPÍTULOS -->
-            <div class="chapters-nav">
-                <div class="chap-dot active" onclick="switchChap(1)">1. Tiempo</div>
-                <div class="chap-dot" onclick="switchChap(2)">2. Momentos</div>
-                <div class="chap-dot" onclick="switchChap(3)">3. Razones</div>
+            <div class="time-separator">
+                :
             </div>
 
-            <!-- CAPÍTULO 1: TIEMPO -->
-            <div class="chapter-section active" id="chap1">
-                <div class="counter-grid">
-                    <div class="counter-box"><span class="num" id="anos">0</span><span class="lab">Años</span></div>
-                    <div class="counter-box"><span class="num" id="meses">0</span><span class="lab">Meses</span></div>
-                    <div class="counter-box"><span class="num" id="dias">0</span><span class="lab">Días</span></div>
-                    <div class="counter-box"><span class="num" id="horas">0</span><span class="lab">Horas</span></div>
-                    <div class="counter-box"><span class="num" id="minutos">0</span><span class="lab">Mins</span></div>
-                    <div class="counter-box"><span class="num" id="segundos">0</span><span class="lab">Segs</span></div>
-                </div>
-                <p style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Te amo mucho con demasiado desde el 29 de marzo...</p>
-                <button class="next-chap-btn" onclick="switchChap(2)">Siguiente capítulo ➔</button>
+            <div class="time-box">
+
+                <span class="time-number" id="seconds">
+                    00
+                </span>
+
+                <span class="time-label">
+                    segundos
+                </span>
+
             </div>
 
-            <!-- CAPÍTULO 2: MOMENTOS (CARRUSEL) -->
-            <div class="chapter-section" id="chap2">
-                <div class="carousel-container">
-                    <button class="nav-btn prev" onclick="moveSlide(-1)">❮</button>
-                    <button class="nav-btn next" onclick="moveSlide(1)">❯</button>
-                    <div class="carousel-view" id="carouselView">
-                        <div class="carousel-track" id="track">
-                            <div class="carousel-slide"><img src="foto1.jpg" alt="Momento 1"></div>
-                            <div class="carousel-slide"><img src="foto2.jpg" alt="Momento 2"></div>
-                            <div class="carousel-slide"><img src="foto3.jpg" alt="Momento 3"></div>
-                        </div>
-                    </div>
-                    <div class="dots" id="dotsContainer">
-                        <div class="dot active" onclick="currentSlide(0)"></div>
-                        <div class="dot" onclick="currentSlide(1)"></div>
-                        <div class="dot" onclick="currentSlide(2)"></div>
-                    </div>
-                </div>
-                <button class="next-chap-btn" onclick="switchChap(3)">Siguiente capítulo ➔</button>
-            </div>
-
-            <!-- CAPÍTULO 3: RAZONES -->
-            <div class="chapter-section" id="chap3">
-                <div class="reasons-card" onclick="changeReason()">
-                    <div class="reasons-title" id="reasonHeader">💡 Razón 1 de 6 (Toca para ver otra)</div>
-                    <div class="reasons-text" id="reasonText">"Por la forma en que tu sonrisa ilumina incluso mis días más grises." 💕</div>
-                </div>
-                <button class="next-chap-btn" onclick="openLetter()">Abrir Carta Final 💌</button>
-            </div>
         </div>
+
+        <div class="countdown-message">
+            Prepárate... ❤️
+        </div>
+
     </div>
 
-    <!-- CARTA FINAL -->
-    <div class="modal" id="letterModal">
-        <div class="modal-content">
-            <h2>¡Felices 6 Meses, Amochito! ❤️</h2>
-            <p>No hay un solo día en que no agradezca tenerte a mi lado. ¡Te amo mucho con demasiado! Cada segundo contigo se vuelve inolvidable, y no importa el lugar, mientras sea junto a ti. Gracias por ser esa hermosa casualidad que le da sentido a todo.<br><br>Me encanta cada risa que compartimos y la paz que me das con solo sonreír. Prometo seguir cuidando de lo nuestro y celebrando cada momento a tu lado. Te amo hoy, mañana y siempre.</p>
-            <button class="close-btn" onclick="closeLetter()">Cerrar con amor 💋</button>
+
+    <div class="unlock-message" id="unlockMessage">
+
+        <div class="unlock-heart">
+            ♥
         </div>
+
+        <div class="unlock-title">
+            Ya llegó el momento...
+        </div>
+
+        <div class="unlock-subtitle">
+            ❤️
+        </div>
+
     </div>
 
-    <audio id="bgMusic" loop>
-        <source src="https://www.bensound.com/bensound-music/bensound-tenderness.mp3" type="audio/mpeg">
-    </audio>
+</section>
 
-    <script>
-        // DESBLOQUEO DE SORPRESA CON "AMOCHITO"
-        function unlockSurprise() {
-            const val = document.getElementById('passInput').value.trim().toLowerCase();
-            if(val === 'amochito' || val === '2903' || val === 'bri' || val === '29 de marzo' || val === '6 meses') {
-                document.getElementById('lockScreen').style.display = 'none';
-                document.getElementById('mainContent').style.display = 'block';
-                const audio = document.getElementById('bgMusic');
-                audio.play().catch(e => console.log("Audio bloqueado"));
-                for(let i=0; i<20; i++) { setTimeout(spawnHeart, i * 100); }
-            } else {
-                const err = document.getElementById('errorMsg');
-                err.style.display = 'block';
-                setTimeout(() => err.style.display = 'none', 3000);
+
+<!-- =====================================================
+     PORTADA
+===================================================== -->
+
+<section id="cover">
+
+    <div class="cover-content">
+
+        <div class="hero-heart">
+
+            <div class="heart-shape">
+                <div class="heart-shine"></div>
+            </div>
+
+            <span class="heart-particle p1"></span>
+            <span class="heart-particle p2"></span>
+            <span class="heart-particle p3"></span>
+            <span class="heart-particle p4"></span>
+
+        </div>
+
+        <div class="cover-small">
+            Una historia que apenas comienza
+        </div>
+
+        <h1 class="cover-title">
+            Seis meses
+        </h1>
+
+        <p class="cover-subtitle">
+            infinitos recuerdos...
+        </p>
+
+        <div class="cover-date">
+            29 · 03 · 2026
+        </div>
+
+        <button
+            class="start-button"
+            id="startButton">
+
+            Comenzar nuestra historia ❤️
+
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     CONTENIDO
+===================================================== -->
+
+<main class="page">
+
+<div class="main-card">
+
+
+<header class="header">
+
+    <div class="controls">
+
+        <button
+            class="icon-button"
+            id="musicButton"
+            type="button">
+            🔊
+        </button>
+
+        <button
+            class="icon-button"
+            id="themeButton"
+            type="button">
+            ☾
+        </button>
+
+    </div>
+
+    <div class="header-kicker">
+        Para la persona que amo
+    </div>
+
+    <h1>
+        ¡Felices 6 meses, mi amor! ❤️
+    </h1>
+
+    <p>
+        Nuestra historia, nuestros momentos
+        y todo lo que aún nos queda por vivir.
+    </p>
+
+</header>
+
+
+<!-- =====================================================
+     NAVEGACIÓN
+===================================================== -->
+
+<nav class="chapter-nav">
+
+    <button
+        class="chapter-btn active"
+        data-chapter="story"
+        type="button">
+        Nuestra historia
+    </button>
+
+    <button
+        class="chapter-btn"
+        data-chapter="us"
+        type="button">
+        Tú y yo
+    </button>
+
+    <button
+        class="chapter-btn"
+        data-chapter="why"
+        type="button">
+        Mi porqué
+    </button>
+
+</nav>
+
+
+<!-- =====================================================
+     CAPÍTULO 1
+===================================================== -->
+
+<section class="chapter active" id="story">
+
+    <div class="chapter-number">
+        Capítulo 01
+    </div>
+
+    <h2>
+        Nuestra historia
+    </h2>
+
+    <p class="chapter-intro">
+        Seis meses pueden parecer solo una fecha...
+        pero para mí son cientos de pequeños momentos
+        que quiero guardar para siempre.
+    </p>
+
+    <div class="days-box">
+
+        <div
+            class="days-number"
+            id="daysTogether">
+            0
+        </div>
+
+        <div class="days-label">
+            días escribiendo nuestra historia
+        </div>
+
+    </div>
+
+
+    <div class="music-section">
+
+        <div class="music-title">
+            Una canción para nosotros ❤️
+        </div>
+
+        <iframe
+            class="spotify-frame"
+            src="https://open.spotify.com/embed/track/5Told0PzDeSU8ebqqWcheA?utm_source=generator"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy">
+        </iframe>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     CAPÍTULO 2
+===================================================== -->
+
+<section class="chapter" id="us">
+
+    <div class="chapter-number">
+        Capítulo 02
+    </div>
+
+    <h2>
+        Tú y yo
+    </h2>
+
+    <p class="chapter-intro">
+        Seis momentos. Seis recuerdos.
+        Y una historia que todavía tiene muchísimo
+        por contar.
+    </p>
+
+    <div class="carousel">
+
+        <button
+            class="carousel-button left"
+            id="prevButton"
+            type="button">
+            ‹
+        </button>
+
+        <div class="photo-wrapper">
+
+            <img
+                id="carouselImage"
+                class="photo"
+                src="foto1.jpg"
+                alt="Nuestro recuerdo">
+
+            <div class="caption">
+
+                <div
+                    class="caption-text"
+                    id="captionText">
+
+                    Y sin darnos cuenta,
+                    comenzamos a escribir nuestra historia. ❤️
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <button
+            class="carousel-button right"
+            id="nextButton"
+            type="button">
+            ›
+
+        </button>
+
+    </div>
+
+    <div
+        class="photo-counter"
+        id="photoCounter">
+        01 / 06
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     CAPÍTULO 3
+===================================================== -->
+
+<section class="chapter" id="why">
+
+    <div class="chapter-number">
+        Capítulo 03
+    </div>
+
+    <h2>
+        Mi porqué
+    </h2>
+
+    <p class="chapter-intro">
+        Porque hay muchas cosas que amo de ti...
+        y estas son solo algunas.
+    </p>
+
+    <div
+        class="reason-box"
+        id="reasonBox">
+
+        <div
+            class="reason-number"
+            id="reasonNumber">
+            01 / 06
+        </div>
+
+        <div
+            class="reason-text"
+            id="reasonText">
+
+            Porque contigo puedo ser completamente yo.
+
+        </div>
+
+        <div class="reason-hint">
+            Toca para descubrir la siguiente ❤️
+        </div>
+
+    </div>
+
+    <button
+        class="letter-button"
+        id="openLetter"
+        type="button">
+
+        Leer mi carta para ti 💌
+
+    </button>
+
+</section>
+
+</div>
+</main>
+
+
+<!-- =====================================================
+     CARTA
+===================================================== -->
+
+<div
+    class="letter-modal"
+    id="letterModal">
+
+    <div class="letter-card">
+
+        <div class="letter-top">
+
+            <div class="letter-heart">
+                ♥
+            </div>
+
+            <h2 class="letter-title">
+                Para mi Princesa ❤️
+            </h2>
+
+        </div>
+
+        <div class="letter-content">
+
+            <p>
+                Hoy no es un día cualquiera,
+                es algo muy especial y es un momento
+                que vengo esperando hace mucho.
+            </p>
+
+            <p>
+                No hay un solo día en el que no estés
+                en mi mente, solo espero el momento
+                de poder tenerte a mi lado,
+                estar juntos y olvidarnos de todo
+                y que solo seamos tú y yo.
+            </p>
+
+            <p>
+                Gracias por todos estos días que hemos
+                pasado juntos, por las salidas,
+                las caminatas en la noche,
+                por todos los lugares que hemos visitado,
+                por cada sonrisa que hemos tenido,
+                cada anécdota y por ser mi lugar seguro
+                en el mundo.
+            </p>
+
+            <p>
+                Prometo seguir cuidando de ti y de lo nuestro,
+                y en verdad deseo poder seguir celebrando
+                cada momento contigo mes a mes.
+            </p>
+
+            <p>
+                No sabes lo feliz que me haces y de todo
+                lo que he llegado a sentir por ti;
+                no deseo a nadie más a mi lado,
+                solo te veo a ti cada día,
+                en mis planes, y en verdad deseo
+                un futuro contigo.
+            </p>
+
+            <p>
+                Te amo mucho mi vida,
+                ¡feliz 6 meses juntos, mi amor! ❤️
+            </p>
+
+            <p>
+                Espero esta pequeña sorpresa te guste
+                porque es un pequeño recuerdo de tanto
+                que hemos vivido y aún nos queda mucho más...
+            </p>
+
+        </div>
+
+        <button
+            class="close-letter"
+            id="closeLetter"
+            type="button">
+
+            Volver a nuestra historia
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   CONTADOR DE PRUEBA — 5 MINUTOS
+===================================================== */
+
+const TEST_SECONDS = 5 * 60;
+
+let remainingSeconds = TEST_SECONDS;
+let countdownTimer = null;
+
+
+const countdownScreen =
+    document.getElementById("countdownScreen");
+
+const countdownContent =
+    document.getElementById("countdownContent");
+
+const unlockMessage =
+    document.getElementById("unlockMessage");
+
+const minutesElement =
+    document.getElementById("minutes");
+
+const secondsElement =
+    document.getElementById("seconds");
+
+
+function renderCountdown(){
+
+    const minutes =
+        Math.floor(
+            remainingSeconds / 60
+        );
+
+    const seconds =
+        remainingSeconds % 60;
+
+
+    minutesElement.textContent =
+        String(minutes).padStart(2,"0");
+
+    secondsElement.textContent =
+        String(seconds).padStart(2,"0");
+}
+
+
+function finishCountdown(){
+
+    clearInterval(countdownTimer);
+
+    minutesElement.textContent = "00";
+    secondsElement.textContent = "00";
+
+    countdownContent.style.opacity = "0";
+
+    unlockMessage.classList.add("show");
+
+
+    setTimeout(() => {
+
+        countdownScreen.classList.add("hidden");
+
+        document.body.classList.remove(
+            "countdown-active"
+        );
+
+    },3200);
+}
+
+
+function startCountdown(){
+
+    renderCountdown();
+
+    countdownTimer =
+        setInterval(() => {
+
+            remainingSeconds--;
+
+            if(remainingSeconds <= 0){
+
+                finishCountdown();
+
+                return;
+
             }
+
+            renderCountdown();
+
+        },1000);
+}
+
+
+startCountdown();
+
+
+/* =====================================================
+   PORTADA
+===================================================== */
+
+const cover =
+    document.getElementById("cover");
+
+const startButton =
+    document.getElementById("startButton");
+
+
+startButton.addEventListener(
+    "click",
+    () => {
+
+        cover.classList.add("hidden");
+
+        window.scrollTo({
+            top:0,
+            behavior:"smooth"
+        });
+
+    }
+);
+
+
+/* =====================================================
+   DÍAS
+===================================================== */
+
+const daysTogether =
+    document.getElementById("daysTogether");
+
+
+const startDate =
+    new Date(
+        2026,
+        2,
+        29,
+        0,
+        0,
+        0
+    );
+
+
+function updateDays(){
+
+    const now = new Date();
+
+    const difference =
+        now - startDate;
+
+    const days =
+        Math.max(
+            0,
+            Math.floor(
+                difference /
+                (
+                    1000 *
+                    60 *
+                    60 *
+                    24
+                )
+            )
+        );
+
+    daysTogether.textContent = days;
+}
+
+
+updateDays();
+
+setInterval(
+    updateDays,
+    60000
+);
+
+
+/* =====================================================
+   CAPÍTULOS
+===================================================== */
+
+const chapterButtons =
+    document.querySelectorAll(".chapter-btn");
+
+const chapters =
+    document.querySelectorAll(".chapter");
+
+
+chapterButtons.forEach(button => {
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            const target =
+                button.dataset.chapter;
+
+
+            chapterButtons.forEach(btn => {
+
+                btn.classList.remove("active");
+
+            });
+
+
+            chapters.forEach(chapter => {
+
+                chapter.classList.remove("active");
+
+            });
+
+
+            button.classList.add("active");
+
+
+            document
+                .getElementById(target)
+                .classList.add("active");
+
+
+            window.scrollTo({
+                top:0,
+                behavior:"smooth"
+            });
+
+        }
+    );
+
+});
+
+
+/* =====================================================
+   CARRUSEL
+===================================================== */
+
+const photos = [
+    "foto1.jpg",
+    "foto2.jpg",
+    "foto3.jpg",
+    "foto4.jpg",
+    "foto5.jpg",
+    "foto6.jpg"
+];
+
+
+const captions = [
+
+    "Y sin darnos cuenta, comenzamos a escribir nuestra historia. ❤️",
+
+    "Cada momento contigo se ha convertido en un recuerdo que quiero guardar para siempre.",
+
+    "De todas las cosas bonitas que me has regalado, tu sonrisa sigue siendo mi favorita.",
+
+    "No necesito un lugar perfecto; si estoy contigo, cualquier lugar se siente especial.",
+
+    "Seis meses pueden parecer poco, pero contigo he vivido momentos que significan muchísimo para mí.",
+
+    "Esto es solo una parte de nuestra historia... todavía nos quedan muchísimas páginas por escribir juntos. ❤️"
+
+];
+
+
+let currentPhoto = 0;
+
+
+const carouselImage =
+    document.getElementById("carouselImage");
+
+const captionText =
+    document.getElementById("captionText");
+
+const photoCounter =
+    document.getElementById("photoCounter");
+
+const prevButton =
+    document.getElementById("prevButton");
+
+const nextButton =
+    document.getElementById("nextButton");
+
+
+function updateCarousel(){
+
+    carouselImage.classList.add("fade");
+
+
+    setTimeout(() => {
+
+        carouselImage.src =
+            photos[currentPhoto];
+
+        captionText.textContent =
+            captions[currentPhoto];
+
+
+        photoCounter.textContent =
+            String(currentPhoto + 1)
+                .padStart(2,"0")
+            + " / 06";
+
+
+        carouselImage.classList.remove("fade");
+
+    },180);
+}
+
+
+nextButton.addEventListener(
+    "click",
+    () => {
+
+        currentPhoto++;
+
+        if(
+            currentPhoto >=
+            photos.length
+        ){
+            currentPhoto = 0;
         }
 
-        // CONTROL DE CAPÍTULOS
-        function switchChap(n) {
-            document.querySelectorAll('.chapter-section').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.chap-dot').forEach(el => el.classList.remove('active'));
-            document.getElementById('chap' + n).classList.add('active');
-            document.querySelectorAll('.chap-dot')[n-1].classList.add('active');
+        updateCarousel();
+
+    }
+);
+
+
+prevButton.addEventListener(
+    "click",
+    () => {
+
+        currentPhoto--;
+
+        if(currentPhoto < 0){
+
+            currentPhoto =
+                photos.length - 1;
+
         }
 
-        // CARRUSEL
-        const track = document.getElementById('track');
-        const view = document.getElementById('carouselView');
-        const dots = document.getElementsByClassName('dot');
-        let slideIndex = 0;
-        const totalSlides = 3;
-        let startX = 0, prevTranslate = 0, isDragging = false;
+        updateCarousel();
 
-        function updateCarousel() {
-            track.style.transition = "transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)";
-            track.style.transform = `translateX(-${slideIndex * (100 / totalSlides)}%)`;
-            prevTranslate = -slideIndex * view.clientWidth;
-            for (let dot of dots) dot.classList.remove('active');
-            if(dots[slideIndex]) dots[slideIndex].classList.add('active');
+    }
+);
+
+
+/* =====================================================
+   SWIPE
+===================================================== */
+
+let touchStartX = 0;
+let touchEndX = 0;
+
+
+carouselImage.addEventListener(
+    "touchstart",
+    event => {
+
+        touchStartX =
+            event.changedTouches[0].screenX;
+
+    }
+);
+
+
+carouselImage.addEventListener(
+    "touchend",
+    event => {
+
+        touchEndX =
+            event.changedTouches[0].screenX;
+
+        const distance =
+            touchEndX - touchStartX;
+
+
+        if(Math.abs(distance) < 50){
+            return;
         }
 
-        function moveSlide(n) {
-            slideIndex = (slideIndex + n + totalSlides) % totalSlides;
-            updateCarousel();
+
+        if(distance < 0){
+            nextButton.click();
+        }
+        else{
+            prevButton.click();
         }
 
-        function currentSlide(n) {
-            slideIndex = n;
-            updateCarousel();
+    }
+);
+
+
+/* =====================================================
+   RAZONES
+===================================================== */
+
+const reasons = [
+
+    "Porque contigo puedo ser completamente yo.",
+
+    "Porque tu sonrisa puede cambiar completamente mi día.",
+
+    "Porque haces que hasta los momentos más simples tengan algo especial.",
+
+    "Porque contigo siento que tengo un lugar donde puedo estar en paz.",
+
+    "Porque cuando pienso en mi futuro, inevitablemente apareces tú.",
+
+    "Porque simplemente eres tú... y eso es suficiente para amarte cada día más. ❤️"
+
+];
+
+
+let currentReason = 0;
+
+
+const reasonBox =
+    document.getElementById("reasonBox");
+
+const reasonNumber =
+    document.getElementById("reasonNumber");
+
+const reasonText =
+    document.getElementById("reasonText");
+
+
+function updateReason(){
+
+    reasonNumber.textContent =
+        String(currentReason + 1)
+            .padStart(2,"0")
+        + " / 06";
+
+
+    reasonText.style.opacity = "0";
+
+
+    setTimeout(() => {
+
+        reasonText.textContent =
+            reasons[currentReason];
+
+        reasonText.style.opacity = "1";
+
+    },180);
+}
+
+
+reasonBox.addEventListener(
+    "click",
+    () => {
+
+        currentReason++;
+
+        if(
+            currentReason >=
+            reasons.length
+        ){
+
+            currentReason = 0;
+
         }
 
-        view.addEventListener('touchstart', touchStart);
-        view.addEventListener('touchend', touchEnd);
-        view.addEventListener('touchmove', touchMove);
-        view.addEventListener('mousedown', touchStart);
-        view.addEventListener('mouseup', touchEnd);
-        view.addEventListener('mouseleave', touchEnd);
-        view.addEventListener('mousemove', touchMove);
+        updateReason();
 
-        function getPositionX(e) { return e.type.includes('mouse') ? e.pageX : e.touches[0].clientX; }
-        function touchStart(e) { startX = getPositionX(e); isDragging = true; track.style.transition = "none"; }
-        function touchMove(e) {
-            if (!isDragging) return;
-            const currentDiff = getPositionX(e) - startX;
-            track.style.transform = `translateX(${prevTranslate + currentDiff}px)`;
-        }
-        function touchEnd(e) {
-            if (!isDragging) return;
-            isDragging = false;
-            const movedBy = getPositionX(e) - startX;
-            if (movedBy < -50 && slideIndex < totalSlides - 1) slideIndex++;
-            else if (movedBy > 50 && slideIndex > 0) slideIndex--;
-            updateCarousel();
+    }
+);
+
+
+/* =====================================================
+   CARTA
+===================================================== */
+
+const openLetter =
+    document.getElementById("openLetter");
+
+const closeLetter =
+    document.getElementById("closeLetter");
+
+const letterModal =
+    document.getElementById("letterModal");
+
+
+openLetter.addEventListener(
+    "click",
+    () => {
+
+        letterModal.classList.add("show");
+
+        document.body.style.overflow =
+            "hidden";
+
+    }
+);
+
+
+closeLetter.addEventListener(
+    "click",
+    () => {
+
+        letterModal.classList.remove("show");
+
+        document.body.style.overflow =
+            "";
+
+    }
+);
+
+
+letterModal.addEventListener(
+    "click",
+    event => {
+
+        if(event.target === letterModal){
+
+            letterModal.classList.remove("show");
+
+            document.body.style.overflow =
+                "";
+
         }
 
-        // RAZONES
-        const reasons = [
-            "\"Por la forma en que tu sonrisa ilumina incluso mis días más grises.\" 💕",
-            "\"Porque a tu lado aprendí lo que significa sentir paz y hogar al mismo tiempo.\" ✨",
-            "\"Por tus ocurrencias, tus abrazos y cada risa que compartimos.\" 🌹",
-            "\"Porque cada detalle tuyo hace que me enamore un poquito más cada día.\" 🌸",
-            "\"Porque me inspiras a ser mejor persona y apoyas mis sueños con todo tu cariño.\" 🌟",
-            "\"Porque eres mi refugio favorito y te amo mucho con demasiado.\" 💖"
-        ];
-        let rIdx = 0;
-        function changeReason() {
-            rIdx = (rIdx + 1) % reasons.length;
-            document.getElementById('reasonHeader').innerText = `💡 Razón ${rIdx + 1} de 6 (Toca para ver otra)`;
-            document.getElementById('reasonText').innerText = reasons[rIdx];
+    }
+);
+
+
+/* =====================================================
+   TEMA
+===================================================== */
+
+const themeButton =
+    document.getElementById("themeButton");
+
+let darkMode = false;
+
+
+themeButton.addEventListener(
+    "click",
+    () => {
+
+        darkMode = !darkMode;
+
+
+        if(darkMode){
+
+            document.body.style.background =
+                "linear-gradient(145deg,#16040b,#350817)";
+
+            themeButton.textContent = "☀";
+
+        }
+        else{
+
+            document.body.style.background =
+                "radial-gradient(circle at 20% 10%,rgba(251,113,133,.16),transparent 30%),radial-gradient(circle at 90% 80%,rgba(214,173,98,.12),transparent 30%),linear-gradient(135deg,#fff9f5,#f8e9e1)";
+
+            themeButton.textContent = "☾";
+
         }
 
-        // CARTA Y CORAZONES
-        function openLetter() { 
-            document.getElementById('letterModal').classList.add('active'); 
-            for(let i=0; i<20; i++) { setTimeout(spawnHeart, i * 80); }
-        }
-        function closeLetter() { document.getElementById('letterModal').classList.remove('active'); }
+    }
+);
 
-        function spawnHeart() {
-            const h = document.createElement('div');
-            h.classList.add('floating-heart');
-            h.innerHTML = '❤️';
-            h.style.left = Math.random() * 100 + 'vw';
-            h.style.fontSize = (Math.random() * 22 + 12) + 'px';
-            h.style.animationDuration = (Math.random() * 3 + 4) + 's';
-            document.getElementById('heartsBg').appendChild(h);
-            setTimeout(() => h.remove(), 7000);
-        }
-        setInterval(spawnHeart, 700);
 
-        // CONTADOR
-        const start = new Date(2026, 2, 29, 0, 0, 0);
-        function updateCounter() {
-            const now = new Date();
-            let diff = now - start;
-            if (diff < 0) diff = 0;
-            const s = Math.floor(diff/1000)%60;
-            const m = Math.floor(diff/1000/60)%60;
-            const h = Math.floor(diff/1000/60/60)%24;
-            const dTot = Math.floor(diff/1000/60/60/24);
-            
-            let y = now.getFullYear() - start.getFullYear();
-            let mon = now.getMonth() - start.getMonth();
-            let d = now.getDate() - start.getDate();
-            if (d < 0) { mon--; d += new Date(now.getFullYear(), now.getMonth(), 0).getDate(); }
-            if (mon < 0) { y--; mon += 12; }
+/* =====================================================
+   CORAZONES FLOTANTES
+===================================================== */
 
-            document.getElementById('anos').innerText = y;
-            document.getElementById('meses').innerText = mon;
-            document.getElementById('dias').innerText = d;
-            document.getElementById('horas').innerText = h;
-            document.getElementById('minutos').innerText = m;
-            document.getElementById('segundos').innerText = s;
-            document.getElementById('pageTitle').innerText = `❤️ ${dTot} Días | 6 Meses Juntos`;
-        }
-        setInterval(updateCounter, 1000);
+function createHeart(){
 
-        let playing = true;
-        const audio = document.getElementById('bgMusic');
-        function toggleAudio() { 
-            playing ? audio.pause() : audio.play(); 
-            playing = !playing; 
-            document.getElementById('audioBtn').innerText = playing ? '⏸️' : '🎵';
-        }
-        function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
-    </script>
+    const heart =
+        document.createElement("div");
+
+    heart.className = "heart-bg";
+
+    heart.textContent =
+        Math.random() > .5
+            ? "♥"
+            : "♡";
+
+    heart.style.left =
+        Math.random() * 100 + "vw";
+
+    heart.style.fontSize =
+        (12 + Math.random() * 20) + "px";
+
+    heart.style.animationDuration =
+        (7 + Math.random() * 7) + "s";
+
+
+    document.body.appendChild(heart);
+
+
+    setTimeout(
+        () => heart.remove(),
+        14000
+    );
+}
+
+
+setInterval(
+    createHeart,
+    1200
+);
+
+
+/* =====================================================
+   PRECARGA DE FOTOS
+===================================================== */
+
+photos.forEach(src => {
+
+    const image = new Image();
+
+    image.src = src;
+
+});
+
+</script>
+
 </body>
 </html>
